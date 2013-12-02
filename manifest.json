@@ -1,0 +1,26 @@
+{
+  
+  "manifest_version": 2,
+  "name": "Auto Login",
+  "version": "2.0.0",
+
+  
+  "description": "Automatically login to your favourite websites, even if session timed out",
+  "icons": {  
+   "48" : "sample-48.png",
+    "128" : "sample-128.png"
+	},
+
+  
+  
+  "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
+ "background": { "scripts": ["global.js"] },
+ "web_accessible_resources": [
+    "autologin.xml"
+    
+  ],
+  
+  
+  "permissions": ["tabs", "http://*/*", "https://*/*"]
+  
+}
