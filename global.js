@@ -1,7 +1,7 @@
 
 
 var globalAutologinHandler = {
-	doc:null,
+	doc:null ,
 	initialized:false,
 	autologinList:null,	
 	autologinXMLList:null,
