@@ -3,8 +3,7 @@
 
 var autoLogin = {
 	doc:null,
-	initialized:false,	
-	//server:"http://localhost:9999/autologin/",
+	initialized:false,		
 	autologinList:null,	
 	autologinXMLList:null,			
 	

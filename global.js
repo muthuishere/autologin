@@ -229,19 +229,22 @@ globalAutologinHandler.autologinList=dummyresp;
 	xhttp.open("GET",dname,false); 
 	xhttp.send(); 
 	
-	globalAutologinHandler.updateResponse( xhttp.responseXML)
+	localStorage["autologinxml"] =xhttp.responseText;
+	globalAutologinHandler.loadDoc();
 	}, 
-	servercallback:function(flgError,req){
-		
-		if(flgError == 1){
-			alert(req);
-			return;
-		}
-//	alert(req.responseText);
-//return req.responseText
-		globalAutologinHandler.updateResponse(req.responseXML)
-		
-		},	
+	loadDoc:function() { 
+	
+	
+	if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
+	return;
+	
+var rawxml=localStorage["autologinxml"] ;
+			  var parser = new DOMParser();
+            var docxml = parser.parseFromString(rawxml, "text/xml");
+	
+	globalAutologinHandler.updateResponse( docxml)
+	}, 
+	
 			
 	
 
@@ -259,7 +262,8 @@ return a.hostname
 	
 };
 
-globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
+//globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
+globalAutologinHandler.loadDoc()
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if(changeInfo.status == "complete" && globalAutologinHandler.canInjectURL(tab.url)) {
