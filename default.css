@@ -40,7 +40,10 @@
 	strong
 	{
 	}
-	
+	td{
+	text-align:center;
+	align:center;
+	}
 	a
 	{
 		color: #862525;
@@ -55,223 +58,13 @@
 	{
 		overflow: hidden;
 		margin: 0em auto;
-		width: 1200px;
+		width: 800px;
 	}
-	
-/*********************************************************************************/
-/* Image Style                                                                   */
-/*********************************************************************************/
-
-	.image
-	{
-		display: inline-block;
-	}
-	
-	.image img
-	{
-		display: block;
-		width: 100%;
-	}
-	
-	.image-full
-	{
-		display: block;
-		width: 100%;
-		margin: 0 0 2em 0;
-	}
-	
-	.image-left
-	{
-		float: left;
-		margin: 0 2em 2em 0;
-	}
-	
-	.image-centered
-	{
-		display: block;
-		margin: 0 0 2em 0;
-	}
-	
-	.image-centered img
-	{
-		margin: 0 auto;
-		width: auto;
-	}
-
-/*********************************************************************************/
-/* List Styles                                                                   */
-/*********************************************************************************/
-
-	ul.style1
-	{
-		margin: 0;
-		padding: 2em 0 0 0;
-	}
-
-	ul.style1 li
-	{
-		float: left;
-		display: inline-block;
-		padding: 0px 0px 0px 20px;
-	}
-	
-	ul.style1 li:first-child
-	{
-		padding-left: 0px;
-	}
-	
-	ul.style3
-	{
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-		list-style: none;
-		color: #6c6c6c
-	}
-	
-	ul.style3 li
+	.container
 	{
 		overflow: hidden;
-		display: block;
-		padding: 0.8em 0em 0em 0em;
-		margin: 0 0 1.3em 0;
-		border-top: 1px solid #D1CFCE;
-	}
-	
-	ul.style3 li:first-child
-	{
-		padding-top: 0;
-		border-top: none;
-	}
-	
-	ul.style3 p
-	{
-		margin: 0;
-	}
-	
-	ul.style3 a
-	{
-		display: block;
-		text-decoration: none;
-		color: #2D2D2D;
-	}
-	
-	ul.style3 a:hover
-	{
-		text-decoration: underline;
-	}
-	
-	ul.style3 h3
-	{
-		padding: 15px 0em 5px 0em;
-		text-transform: uppercase;
-		font-size: 1.1em;
-		font-weight: 700;
-		color: #454445;
-	}
-	
-	ul.style3 .first
-	{
-		padding-top: 0;
-		background: none;
-	}
-	
-	ul.style3 .date
-	{
-		float: left;
-		position: relative;
-		width: 60px;
-		height: 50px;
-		margin: 10px 1.5em 0em 0em;
-		padding: 10px 0em 0em 0em;
-		background: #862525;
-		border-radius: 5px;
-		box-shadow: 0px 0px 0px 5px rgba(255,255,255,0.1);
-		line-height: normal;
-		text-align: center;
-		text-transform: uppercase;
-		text-shadow: 0px 1px 0px rgba(0,0,0,.2);
-		font-size: 0.8em;
-		font-weight: 400;
-		color: #FFF;
-	}
-	
-	ul.style3 .date:after
-	{
-		content: '';
-		display: block;
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: 6px;
-	}
-	
-	ul.style3 .date b
-	{
-		margin: 0;
-		padding: 0;
-		display: block;
-		font-size: 1.8em;
-		font-weight: 400;
-		color: #FFFFFF;
-	}
-	
-	ul.style3 .date a
-	{
-		color: #FFFFFF !important;
-	}
-	
-	ul.style3 .date a:hover
-	{
-		text-decoration: none;
-	}
-
-	
-
-
-/*********************************************************************************/
-/* Social Icon Styles                                                            */
-/*********************************************************************************/
-
-	ul.contact
-	{
-		overflow:  hidden;
-		margin: 0em 0 3em 0;
-		padding-top: 1em;
-		text-align: center;
-	}
-	
-	ul.contact li
-	{
-		display: inline-block;
-		padding: 0em 0.30em;
-		font-size: 1em;
-	}
-	
-	ul.contact li span
-	{
-		display: none;
-		margin: 0;
-		padding: 0;
-	}
-	
-	ul.contact li a
-	{
-		color: #FFF;
-	}
-	
-	ul.contact li a:before
-	{
-		display: inline-block;
-		background: #862525;
-		border-radius: 5px;
-		width: 50px;
-		height: 50px;
-		line-height: 50px;
-		text-align: center;
-		color: #FFFFFF;
+		margin: 0em auto;
+		width: 800px;
 	}
 
 /*********************************************************************************/
@@ -406,61 +199,6 @@
 /* Menu                                                                          */
 /*********************************************************************************/
 
-	#menu
-	{
-		position: absolute;
-		top: 2em;
-		right: 0;
-	}
-	
-	#menu ul
-	{
-		display: inline-block;
-	}
-	
-	#menu li
-	{
-		display: block;
-		float: left;
-		text-align: center;
-	}
-	
-	#menu li a, #menu li span
-	{
-		padding: 1em 1.5em;
-		text-decoration: none;
-		font-weight: 400;
-		color: rgba(0,0,0,.8);
-	}
-	
-	#menu li:hover a, #menu li.active a, #menu li.active span
-	{
-	}
-	
-	#menu a:hover
-	{
-		text-decoration: underline;
-	}
-	
-	#menu .current_page_item a
-	{
-	}
-	
-	#menu .icon
-	{
-	}
-
-/*********************************************************************************/
-/* Banner                                                                        */
-/*********************************************************************************/
-
-	#banner-wrapper
-	{
-		overflow: hidden;
-		padding: 10em 0em 10em 0em;
-		background: url(images/bg01.jpg) no-repeat center top;
-		background-size: 100% auto;
-	}
 
 /*********************************************************************************/
 /* Page                                                                          */
@@ -469,7 +207,7 @@
 	#page-wrapper
 	{
 		overflow: hidden;
-		padding: 5em 0em;
+		padding: 1em 0em;
 		background: #FFF;
 	}
 
