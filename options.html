@@ -9,7 +9,7 @@
 <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
-
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 
 
 </head>
@@ -35,11 +35,17 @@
 			<th>Domain</th>
 			<th>Username</th>
 			<th>Password</th>
+			<th>Change</th>
 			</tr>
 			<tr>
 			<td>google.com</td>
 			<td>xxxx</td>
 			<td>yyyy</td>
+			<td>
+			<a href="#">edit</a>
+			<a href="#">remove</a>
+			</td>
+			
 			</tr>
 			</table>
 			
@@ -53,6 +59,64 @@
 <div id="copyright">
 	&nbsp;
 </div>
+<script language="javascript">
 
+
+function Add(){
+    $("#tblData tbody").append(
+        "<tr>"+
+        "<td><input type='text'/></td>"+
+        "<td><input type='text'/></td>"+
+        "<td><input type='text'/></td>"+
+        "<td><img src='images/disk.png' class='btnSave'><img src='images/delete.png' class='btnDelete'/></td>"+
+        "</tr>");
+     
+        $(".btnSave").bind("click", Save);     
+        $(".btnDelete").bind("click", Delete);
+};
+
+function Save(){
+    var par = $(this).parent().parent(); //tr
+    var tddomainName = par.children("td:nth-child(1)");
+    var tduserName = par.children("td:nth-child(2)");
+    var tdpassword = par.children("td:nth-child(3)");
+    var tdButtons = par.children("td:nth-child(4)");
+ 
+    tddomainName.html(tddomainName.children("input[type=text]").val());
+    tduserName.html(tduserName.children("input[type=text]").val());
+    tdpassword.html(tdpassword.children("input[type=text]").val());
+    tdButtons.html("<img src='images/delete.png' class='btnDelete'/><img src='images/pencil.png' class='btnEdit'/>");
+ 
+    $(".btnEdit").bind("click", Edit);
+    $(".btnDelete").bind("click", Delete);
+};
+
+
+function Edit(){
+    var par = $(this).parent().parent(); //tr
+    var tddomainName = par.children("td:nth-child(1)");
+    var tduserName = par.children("td:nth-child(2)");
+    var tdpassword = par.children("td:nth-child(3)");
+    var tdButtons = par.children("td:nth-child(4)");
+ 
+    tddomainName.html("<input type='text' id='txtdomainName' value='"+tddomainName.html()+"'/>");
+    tduserName.html("<input type='text' id='txtuserName' value='"+tduserName.html()+"'/>");
+    tdpassword.html("<input type='text' id='txtpassword' value='"+tdpassword.html()+"'/>");
+    tdButtons.html("<img src='images/disk.png' class='btnSave'/>");
+ 
+    $(".btnSave").bind("click", Save);
+    $(".btnEdit").bind("click", Edit);
+    $(".btnDelete").bind("click", Delete);
+};
+
+
+function Delete(){
+    var par = $(this).parent().parent(); //tr
+    par.remove();
+};
+
+
+
+</script>
 </body>
 </html>
