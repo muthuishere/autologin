@@ -74,7 +74,8 @@
 	.button
 	{
 		display: inline-block;
-		padding: 1em 2em 1em 2em;
+		/*padding: 1em 2em 1em 2em; */
+		padding:0.4em 0.4em 0.4em 0.4em;
 		background: #862525;
 		border-radius: 5px;
 		letter-spacing: 0.20em;
@@ -83,6 +84,12 @@
 		font-weight: 400;
 		font-size: 0.90em;
 		color: #FFF;
+	}
+	
+	.button:hover
+	{
+		-webkit-box-shadow: 0px 0px 18px 4px rgba(119, 119, 119, 0.86);
+		background: #352121;
 	}
 	
 	.button:before

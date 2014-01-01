@@ -39,17 +39,28 @@
 			</tr>
 			<tr>
 			<td>google.com</td>
-			<td>xxxx</td>
-			<td>yyyy</td>
+			<td><input type="text" value="xxxx"/></td>
+			<td><input type="password" value="yyyy"/></td>
 			<td>
-			<a href="#">edit</a>
-			<a href="#">remove</a>
+			
+			<a  onclick="remove('google.com')" href="#">remove</a>
+			
+				<a id="devinit"  onclick="init()" href="#">init</a>
+				
+					<a onclick="saveObject()" href="#">sav</a>
 			</td>
 			
 			</tr>
 			</table>
+			<div style="height:20px"> &nbsp; </div>
 			
-			<a href="#" class="button">Save All</a>
+			<div style="width:480px">
+			<div style="float:right"> 
+			<a href="#" class="button">Update </a>
+			</div>
+			
+			</div>
+			<div style="height:20px;clear:both"> &nbsp; </div>
 		</div>
 		
 	</div>
@@ -61,6 +72,26 @@
 </div>
 <script language="javascript">
 
+var domainXml=null
+
+function init(){
+
+
+var rawxml=localStorage["autologinxml"] ;
+			  var parser = new DOMParser();
+            domainXml = parser.parseFromString(rawxml, "text/xml");
+			
+			console.log(domainXml)
+}
+
+function saveObject(){
+
+var oSerializer = new XMLSerializer();
+var rawxml = oSerializer.serializeToString(domainXml);
+console.log(rawxml)
+
+
+}
 
 function Add(){
     $("#tblData tbody").append(
