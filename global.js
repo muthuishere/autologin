@@ -119,11 +119,15 @@ return false;
   
   },
   
+  // returns 
+  //0 - If Script can be injected
+  //-1 - If URL is blacklisted
+  //1- for remaining status
    canInjectURL: function(curlocation) {
    
    if(globalAutologinHandler.autologinList == null){
 			
-		  return false;
+		  return 1;
 	  }
   
   
@@ -131,16 +135,19 @@ return false;
 	if(globalAutologinHandler.getXmlObjectForPage(curlocation) != false &&  globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
 	
 	
-	return true
+	return 0;
 	
 		
 		
 	
 	}
-	if(globalAutologinHandler.blacklistDomains.indexOf(curdomainName) != -1)
+	if(globalAutologinHandler.blacklistDomains.indexOf(curdomainName) != -1){
 		console.log("Blacklisted domain" + curdomainName)
 	
-	 return false;
+	 return -1;
+	
+	}
+	return 1;
 	
 	
    },
@@ -266,11 +273,19 @@ return a.hostname
 globalAutologinHandler.loadDoc()
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if(changeInfo.status == "complete" && globalAutologinHandler.canInjectURL(tab.url)) {
-        chrome.tabs.executeScript(tabId, {file:"autoLogin.js"}, function() {
-            //script injected
-        });
-    }
+    if(changeInfo.status == "complete" ){
+	
+	var status=globalAutologinHandler.canInjectURL(tab.url)
+		if(  status == 0) {
+			chrome.tabs.executeScript(tabId, {file:"autoLogin.js"}, function() {
+				//script injected
+			});
+		}else if( status == 1) {
+			chrome.tabs.executeScript(tabId, {file:"autoLoginCapture.js"}, function() {
+				//script injected
+			});
+		}
+	}
 });
 
 
@@ -282,7 +297,14 @@ chrome.runtime.onMessage.addListener(
                 "from the extension");
 				
 				
-	 if (request.action == "cansubmit"){
+	 if (request.action == "captureautologin"){
+	
+			chrome.pageAction.show(sender.tab.id);
+			 // Return nothing to let the connection be cleaned up.
+		  sendResponse({});
+	
+	
+	}else if (request.action == "cansubmit"){
 	
 	
 	var flgResponse=globalAutologinHandler.canSubmit(sender.tab.url)
@@ -300,3 +322,13 @@ chrome.runtime.onMessage.addListener(
 	}
      
   });
+  
+  
+  
+// Called when the user clicks on the page action.
+chrome.pageAction.onClicked.addListener(function(tab) {
+
+alert("clicked")
+
+});
+
