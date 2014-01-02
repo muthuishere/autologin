@@ -5,51 +5,11 @@ var autoLogin = {
 	doc:null,
 	initialized:false,		
 	autologinList:null,	
-	autologinXMLList:null,			
+	autologinXMLList:null,	
+	formObject:null,
+userelemName:null,
+pwdelemName:null,	
 	
-  readURL:function(url,callback){
-
-		
-	
-		var req = new XMLHttpRequest();
-		req.open('GET', url, true);
-		req.onreadystatechange =  function (aEvt) {
-		  if (req.readyState == 4) {
-			 if(req.status ==200)
-			  callback(0,req);
-			 else
-			  callback(1,"Error reading file " + url);
-		  }
-		}; 
-		req.send(null);
-	  
-  },
-  init: function() {
-    
-	
-
-		autoLogin.downloadfromServer();
-		
-	
-	
-	gBrowser.addEventListener('DOMContentLoaded', function (event) {
-    
-	var isFrame = (event.target instanceof Ci.nsIDOMHTMLDocument &&
-    event.target != gBrowser.contentDocument);
-  if (isFrame) {
-    return;
-  }
- // alert("loaded")
-  autoLogin.handlePageLoad();
-
-}, false)
-	
-	  },
-	
-  
-  uninit: function() {
- 
-  },
 
 ismatchURL:function(currentURL,elemname){
 		
@@ -129,99 +89,66 @@ var elemid=document.getElementById(id);
     },
 
 
-   jq: function(formulae) {
-	    $mb = jQuery.noConflict();		
-	   return $mb(formulae, document);
-   },
-     hasalreadyloggedin: function(formulae) {
-	   
-	   if(formulae == "")
-	   		return false;
-	   
-
-try{	  
-	  var elemhtml=autoLogin.jq(formulae);
+   initFormObject: function(formname) {
+	 
+	  var formObject=autoLogin.getelembyidname("form",formname)
 	  
-	  if (null != elemhtml.html())
-	  	return true;
+	  autoLogin.formObject=null;
+	    console.log(formObject)
+	  if( null != formObject){
+	 
+			autoLogin.formObject=formObject;
+			
+			
+	  }else{
 	  
-}catch(exception){
+	  
+			  
+		var forms = document.querySelectorAll('form');
+		var formelement;
+		for (var i = 0, formelement; formelement = forms[i]; i++) {
+			//work with element
+			
+			var inputpwdelems=formelement.querySelectorAll('input[type="password"]');
+			var inputtxtelems=formelement.querySelectorAll('input[type="text"]');
+			
+			var inputuserelem=formelement.querySelector('input[name="'+autoLogin.userelemName+'"]');
+			var inputpwdelem=formelement.querySelector('input[name="'+autoLogin.pwdelemName+'"]');
+			
 	
-}
+				if(null != inputuserelem && null != inputpwdelem && inputpwdelems.length==1 ){
+					autoLogin.formObject=formelement;
+					break;
+					}
+			
+			
+			}
+			
+		}
 
-return false;
+	
 	
  
   
   },
-   getformelem: function(formname) {
-	   
-	   if(autoLogin.startsWith(formname,"$") && formname.indexOf("=") > 0){
-		   lformname=formname.replace("$","");
-		   	   
-			   splitelem=lformname.split("=");
-			   attribName=splitelem[0];
-   			   findValue=splitelem[1];
-			   //alert("find " + attribName + "==" + findValue);
-			   var divs = document.getElementsByTagName("form"), i=divs.length;
-	while (i--) {
-		
-	   if ( divs[i].getAttribute(attribName) !== null){
-		   
-		   var attribValue=divs[i].getAttribute(attribName);
-			attribValue=attribValue.toLowerCase();
-			findValue=findValue.toLowerCase();
-			
-		   if(findValue == attribValue  ){
-			
-				 return divs[i];
-		   }
-	   } 
-	}
-	
-	//alert("Cannot find form " + formname)
-			return null;
-	   
-	   }else{
-	  var formelem=autoLogin.getelembyidname("form",formname)
-	  
-
-		
-			return formelem;
-	}
-
-		//alert("elemname is null" + elemname);
-	return null;
-	
- 
+  getinputelem: function(elemname) {
   
-  },
-  getinputelem: function(formname,elemname) {
-	  var formelem=autoLogin.getformelem(formname)
-	  
+  
+	  var formelem=autoLogin.formObject
+	
 	if(formelem == null){
-	//	alert("form is null" + formname);
-			return null;
-	}
-	
-	var divs = formelem.getElementsByTagName("input"), i=divs.length;
-	while (i--) {
-		
-	   if ( divs[i].getAttribute("name") !== null){
-		   
-		   var divcontainername=divs[i].getAttribute("name");
-			divcontainername=divcontainername.toLowerCase();
-			elemname=elemname.toLowerCase();
-			
-		   if(divcontainername == elemname  ){
-			
-				 return divs[i];
-		   }
-	   } 
-	}
-	
-		//alert("elemname is null" + elemname);
+	//	alert("form is null" + elemname);
 	return null;
+	}
+	
+	var inputelem=formelem.querySelector('input[name="'+elemname+'"]');
+	if(null == inputelem)
+	inputelem=formelem.querySelector('input[id="'+elemname+'"]');
+		
+	
+	
+		return inputelem;
+	
 	
  
   
@@ -241,24 +168,8 @@ return false;
   getelembyname: function(tagname,elemname) {
 
 	
+		return document.querySelector(tagname+'[name="'+elemname+'"]');
 
-	var divs = document.getElementsByTagName(tagname), i=divs.length;
-	while (i--) {
-		
-	   if ( divs[i].getAttribute("name") !== null){
-		   
-		   var divcontainername=divs[i].getAttribute("name");
-			divcontainername=divcontainername.toLowerCase();
-			elemname=elemname.toLowerCase();
-			
-		   if(divcontainername.indexOf(elemname) != -1  ){
-			
-				 return divs[i];
-		   }
-	   } 
-	}
-	
-	return null;
   },fireMouseEvent: function (type, node) {
     var doc = node.ownerDocument;
     var event = doc.createEvent("MouseEvents");
@@ -272,13 +183,7 @@ return false;
 	
 		try{
 
-//if(1 == 1){
-//	autoLogin.hasalreadyloggedin('ul#memberTools:contains("Log Out")');
-//	
-//alert("log in");
-//	autoLogin.hasalreadyloggedin('ul#memberTools:contains("Log In")');
-//return;	
-//}
+
 				 
 	  if(autoLogin.autologinList == null){
 			autoLogin.logmessage("Data not Loaded")
@@ -323,15 +228,14 @@ jsonObj.url=autoLogin.getXMLElementval(xmlObj,"url");
 	  jsonObj.btnelement=autoLogin.getXMLElementval(xmlObj,"btnelement");
 	  jsonObj.formelement=autoLogin.getXMLElementval(xmlObj,"formelement");
 	  
-	  
-	  jsonObj.alreadyloggedelement=autoLogin.getXMLElementval(xmlObj,"alreadyloggedelement");
-
-
-
-
+	
+		autoLogin.userelemName=jsonObj.userelement
+		autoLogin.pwdelemName=jsonObj.pwdelement
+	
+		autoLogin.initFormObject(jsonObj.formelement)
 		  var doc= document;
-		 userelem=autoLogin.getinputelem(jsonObj.formelement, jsonObj.userelement)
-		 pwdelem=autoLogin.getinputelem(jsonObj.formelement,jsonObj.pwdelement)
+		 userelem=autoLogin.getinputelem(jsonObj.userelement)
+		 pwdelem=autoLogin.getinputelem(jsonObj.pwdelement)
 		 
 		 if(userelem != null && pwdelem != null ){
 			 
@@ -347,12 +251,12 @@ jsonObj.url=autoLogin.getXMLElementval(xmlObj,"url");
 			console.log("Submitting form")
 			if(jsonObj.btnelement == ""){
 			//Submit form	
-				formelem=autoLogin.getformelem(jsonObj.formelement);// autoLogin.getelembyidname("form",);
+				
 				//alert("submitting" + autoLogin.dump(formelem));
-				formelem.submit();
+				autoLogin.formObject.submit();
 		
 			}else{
-				btnelem=autoLogin.getinputelem(jsonObj.formelement,jsonObj.btnelement);
+				btnelem=autoLogin.getinputelem(jsonObj.btnelement);
 				autoLogin.fireMouseEvent("click", btnelem);
 			//	sleep(5);
 			}
@@ -366,10 +270,7 @@ jsonObj.url=autoLogin.getXMLElementval(xmlObj,"url");
 
 		 	autoLogin.logmessage("Invalid Page");
 		  
-		  	//var myJSONObject = [ {"url": "http://www.facebook.com",  "loginurl": "http://www.facebook.com", "issame": "1","userelement": "email", "pwdelement": "email","type":"submit", "btnelement": "","frmelement": "login_form"}, {"url": "http://localhost/cash/facebook.htm",  "loginurl": "http://localhost/cash/facebook.htm", "issame": "1","userelement": "email", "pwdelement": "email","type":"submit", "btnelement": "","frmelement": "login_form"}]
-			
-//$mb = jQuery.noConflict();
-
+		  	
 
 
 
@@ -458,8 +359,29 @@ var prefs = Components.classes["@mozilla.org/preferences-service;1"]
 			return "";	
 		}
 	},
-	updateResponse:function(docxml){
+	init:function(){
+	
+	
+	chrome.runtime.sendMessage({action: "getData"}, function(response) {
+	
+		autoLogin.loadDocument(response.xml)
+		autoLogin.handlePageLoad();
+	});
+	
+	
+
+	
+	
+	},
+	loadDocument:function(rawxml){
 		
+		
+		
+		
+		  var parser = new DOMParser();
+            var docxml = parser.parseFromString(rawxml, "text/xml");
+			
+			
 var dummyresp='';
 
 autoLogin.autologinXMLList=docxml;
@@ -475,17 +397,6 @@ var divs = docxml.getElementsByTagName("site"), i=divs.length;
 	  return null;
 	  
 
-	  /**
-	  
-	  <url>www.facebook.com</url>
-<loginurl>www.facebook.com</loginurl>
-<username>walterw43@gmail.com</username>
-<password>test1234</password>
-<userelement>email</userelement>
-<pwdelement>pass</pwdelement>
-<btnelement></btnelement>
-<formelement>login_form</formelement>
-	  */
 while (i--) {
 	
 	 var partner= {}; 
@@ -512,43 +423,13 @@ autoLogin.autologinList=dummyresp;
 
     autoLogin.logmessage(dummyresp);
 
-		return true;  
+		//return true;  
 		 }catch(exception){
 			 
 			alert("decode issue" + exception) 
-			return null;
+			//return null;
 		 }
 
-
-
-	},
-	loadXMLDoc:function(dname) { 
-
-
-	  xhttp=new XMLHttpRequest(); 
-
-	xhttp.open("GET",dname,false); 
-	xhttp.send(); 
-	
-	autoLogin.updateResponse( xhttp.responseXML)
-	}, 
-	servercallback:function(flgError,req){
-		
-		if(flgError == 1){
-			alert(req);
-			return;
-		}
-//	alert(req.responseText);
-//return req.responseText
-		autoLogin.updateResponse(req.responseXML)
-		
-		},	
-			
-	
-	downloadfromServer:function(){
-		url=autoLogin.server + autoLogin.getuserdata;
-		autoLogin.readURL(url,autoLogin.servercallback)
-	
 
 	},
 	
@@ -571,36 +452,6 @@ return a.hostname
 	 //return str.replace(/\/+$/, '');
 },
   
-
-	 
-	   goTrackURL: function() {
-
-	trackURL=document.getElementById("gotrackButton").getAttribute("tooltiptext");
-
-		if(trackURL != "")
-			autoLogin.onPointsUpdate(trackURL);
-
-
-	
-	autoLogin.closeNotificationBar();
-	
-		
-	  },
-	  
-	 
-
-	////////////////////////////////////////////////////////////////////////////
-	// The LoadURL() function loads the specified URL in the browser.
-	////////////////////////////////////////////////////////////////////////////
-	LoadURL: function(url)
-	{
-		// Set the browser window's location to the incoming URL
-		window._content.document.location = url;
-	
-		// Make sure that we get the focus
-		window.content.focus();
-	},
-
 
 	
 
@@ -629,8 +480,8 @@ return a.hostname
 
 
 
-autoLogin.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
-autoLogin.handlePageLoad();
+autoLogin.init()
+
 //window.addEventListener("load", function(e) { autoLogin.handlePageLoad(); }, false); 
 //window.addEventListener("unload", function() {autoLogin.uninit()}, false);
 
