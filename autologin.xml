@@ -1,22 +1,3 @@
 <root>
-<site>
-<url>https://webmail.tcs.com</url>
-<loginurl>https://webmail.tcs.com</loginurl>
-<username>muthukumaran n</username>
-<password>TCS@152656</password>
-<userelement>Username</userelement>
-<pwdelement>Password</pwdelement>
-<btnelement></btnelement>
-<formelement>_TCSLoginUserForm</formelement>
-</site>
-<site>
-<url>https://auth.ultimatix.net</url>
-<loginurl>https://auth.ultimatix.net</loginurl>
-<username>152656</username>
-<password>Jan#2014</password>
-<userelement>USER</userelement>
-<pwdelement>PASSWORD</pwdelement>
-<btnelement></btnelement>
-<formelement>loginForm</formelement>
-</site>
+
 </root>
