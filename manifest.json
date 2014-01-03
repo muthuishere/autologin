@@ -7,8 +7,8 @@
 
   "description": "Automatically login to your favourite websites, even if session timed out",
   "icons": {  
-   "48" : "autologin-48.png",
-    "128" : "autologin-128.png"
+   "48" : "images/autologin-48.png",
+    "128" : "images/autologin-128.png"
 	},
 
   
@@ -18,14 +18,11 @@
  
     "page_action" :
   {
-    "default_icon" : "autologin-19.png",
+    "default_icon" : "images/autologin-19.png",
     "default_title" : "Add AutoLogin for the page"
   },
   
- "web_accessible_resources": [
-    "autologin.xml"
-    
-  ],
+ 
   
   "options_page": "options.html",
   "permissions": ["tabs", "http://*/*", "https://*/*"]

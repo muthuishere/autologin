@@ -7,9 +7,10 @@
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
-<link href="default.css" rel="stylesheet" type="text/css" media="all" />
-<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
-<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/fonts.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/options.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="scripts/options.js"></script>
 
 
 </head>
@@ -29,34 +30,24 @@
 <div id="page-wrapper">
 	
 	<div id="" >
-		<div class="boxA" style="width:800px">
-			<table>
+		<div id="divoptionContainer" class="boxA" style="width:800px">
+			<table id="tblOptions" style="width:680px" >
+			<tbody>
 			<tr>
 			<th>Domain</th>
 			<th>Username</th>
 			<th>Password</th>
-			<th>Change</th>
+			<th>Enabled</th>
+			<th>Remove</th>
 			</tr>
-			<tr>
-			<td>google.com</td>
-			<td><input type="text" value="xxxx"/></td>
-			<td><input type="password" value="yyyy"/></td>
-			<td>
 			
-			<a  onclick="remove('google.com')" href="#">remove</a>
-			
-				<a id="devinit"  onclick="init()" href="#">init</a>
-				
-					<a onclick="saveObject()" href="#">sav</a>
-			</td>
-			
-			</tr>
+			</tbody>
 			</table>
 			<div style="height:20px"> &nbsp; </div>
 			
-			<div style="width:480px">
+			<div style="width:680px">
 			<div style="float:right"> 
-			<a href="#" class="button">Update </a>
+			<a id="btnUpdate" href="#" class="button">Update </a>
 			</div>
 			
 			</div>
@@ -70,84 +61,5 @@
 <div id="copyright">
 	&nbsp;
 </div>
-<script language="javascript">
-
-var domainXml=null
-
-function init(){
-
-
-var rawxml=localStorage["autologinxml"] ;
-			  var parser = new DOMParser();
-            domainXml = parser.parseFromString(rawxml, "text/xml");
-			
-			console.log(domainXml)
-}
-
-function saveObject(){
-
-var oSerializer = new XMLSerializer();
-var rawxml = oSerializer.serializeToString(domainXml);
-console.log(rawxml)
-
-
-}
-
-function Add(){
-    $("#tblData tbody").append(
-        "<tr>"+
-        "<td><input type='text'/></td>"+
-        "<td><input type='text'/></td>"+
-        "<td><input type='text'/></td>"+
-        "<td><img src='images/disk.png' class='btnSave'><img src='images/delete.png' class='btnDelete'/></td>"+
-        "</tr>");
-     
-        $(".btnSave").bind("click", Save);     
-        $(".btnDelete").bind("click", Delete);
-};
-
-function Save(){
-    var par = $(this).parent().parent(); //tr
-    var tddomainName = par.children("td:nth-child(1)");
-    var tduserName = par.children("td:nth-child(2)");
-    var tdpassword = par.children("td:nth-child(3)");
-    var tdButtons = par.children("td:nth-child(4)");
- 
-    tddomainName.html(tddomainName.children("input[type=text]").val());
-    tduserName.html(tduserName.children("input[type=text]").val());
-    tdpassword.html(tdpassword.children("input[type=text]").val());
-    tdButtons.html("<img src='images/delete.png' class='btnDelete'/><img src='images/pencil.png' class='btnEdit'/>");
- 
-    $(".btnEdit").bind("click", Edit);
-    $(".btnDelete").bind("click", Delete);
-};
-
-
-function Edit(){
-    var par = $(this).parent().parent(); //tr
-    var tddomainName = par.children("td:nth-child(1)");
-    var tduserName = par.children("td:nth-child(2)");
-    var tdpassword = par.children("td:nth-child(3)");
-    var tdButtons = par.children("td:nth-child(4)");
- 
-    tddomainName.html("<input type='text' id='txtdomainName' value='"+tddomainName.html()+"'/>");
-    tduserName.html("<input type='text' id='txtuserName' value='"+tduserName.html()+"'/>");
-    tdpassword.html("<input type='text' id='txtpassword' value='"+tdpassword.html()+"'/>");
-    tdButtons.html("<img src='images/disk.png' class='btnSave'/>");
- 
-    $(".btnSave").bind("click", Save);
-    $(".btnEdit").bind("click", Edit);
-    $(".btnDelete").bind("click", Delete);
-};
-
-
-function Delete(){
-    var par = $(this).parent().parent(); //tr
-    par.remove();
-};
-
-
-
-</script>
 </body>
 </html>

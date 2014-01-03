@@ -9,7 +9,8 @@ var globalAutologinHandler = {
 	lastloggedInTimeinMilliseconds:0,
 	blacklistDomains:new Array(),
 	
-
+	
+	
 	addAutoLoginInfo:function(autoLoginInfo){
 	
 	var rawxml=""
@@ -150,7 +151,19 @@ return false;
   
   
     var curdomainName=Utils.getdomainName(curlocation)
-	if(globalAutologinHandler.getXmlObjectForPage(curlocation) != false &&  globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
+	var curXMLObject=globalAutologinHandler.getXmlObjectForPage(curlocation) 
+	
+	var flgAutologinEnabled=true;
+	
+	if(curXMLObject != false){
+	var enabledautologinValue =  globalAutologinHandler.getXMLElementval(curXMLObject,"enabled"); 
+	
+	if(null == enabledautologinValue || ""== enabledautologinValue || enabledautologinValue == "true")
+		flgAutologinEnabled=true
+	else
+		flgAutologinEnabled=false
+	}
+	if(curXMLObject != false &&  flgAutologinEnabled == true && globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
 	
 	
 	return 0;
@@ -160,11 +173,18 @@ return false;
 	
 	}
 	if(globalAutologinHandler.blacklistDomains.indexOf(curdomainName) != -1){
-		console.log("Blacklisted domain" + curdomainName)
-	
-	 return -1;
+		
+		console.log("Blacklisted domain" + curdomainName)	
+		return -1;
 	
 	}
+	
+	if(flgAutologinEnabled == false){
+	
+		console.log("Disabled domain" + curdomainName)	
+		return -1;
+	}
+	
 	return 1;
 	
 	
@@ -205,7 +225,7 @@ globalAutologinHandler.autologinXMLList=docxml;
 
   globalAutologinHandler.logmessage(docxml );
 var divs = docxml.getElementsByTagName("site"), i=divs.length;
-  globalAutologinHandler.logmessage("getResposnseasJSON" + i );
+  //globalAutologinHandler.logmessage("getResposnseasJSON" + i );
   if(i == 0)
 	  return null;
 	  
@@ -216,7 +236,7 @@ while (i--) {
 partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
 
 	  partner.loginurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
-	 // partner.username=globalAutologinHandler.getXMLElementval(divs[i],"username");
+	 partner.username=globalAutologinHandler.getXMLElementval(divs[i],"username");
 	
 		   partner.password=globalAutologinHandler.getXMLElementval(divs[i],"password");
 	  partner.userelement=globalAutologinHandler.getXMLElementval(divs[i],"userelement");
@@ -224,17 +244,18 @@ partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
 	  
 	  
 	  partner.btnelement=globalAutologinHandler.getXMLElementval(divs[i],"btnelement");
+	  partner.enabled=globalAutologinHandler.getXMLElementval(divs[i],"enabled");
 	  partner.formelement=globalAutologinHandler.getXMLElementval(divs[i],"formelement");
 	   
 		jsonresp.push(partner);
-//alert(globalAutologinHandler.dump(partner) );
+
 }
 
 dummyresp=JSON.stringify(jsonresp);
 
 globalAutologinHandler.autologinList=dummyresp;
 
-    globalAutologinHandler.logmessage(dummyresp);
+    //globalAutologinHandler.logmessage(dummyresp);
 
 		return true;  
 		 }catch(exception){
@@ -269,6 +290,8 @@ globalAutologinHandler.autologinList=dummyresp;
             var docxml = parser.parseFromString(rawxml, "text/xml");
 	
 	globalAutologinHandler.updateResponse( docxml)
+	
+	
 	}, 
 	
 			
@@ -300,7 +323,7 @@ var Utils={
 		
 		var domainName=Utils.getdomainName(tab.url)
 		
-		chrome.pageAction.setIcon({tabId:tab.id,path:"autologin-19-capture.png"} , function() {
+		chrome.pageAction.setIcon({tabId:tab.id,path:"images/autologin-19-capture.png"} , function() {
 		
 				chrome.pageAction.setTitle({tabId :tab.id,title:"Capture in progress for" + domainName})
 				
@@ -314,7 +337,7 @@ var Utils={
 	setCaptureReady:function( tab){
 		
 		var domainName=Utils.getdomainName(tab.url)
-		chrome.pageAction.setIcon({tabId :tab.id,path:"autologin-19.png"} , function() {
+		chrome.pageAction.setIcon({tabId :tab.id,path:"images/autologin-19.png"} , function() {
 		
 		
 				chrome.pageAction.setTitle({tabId :tab.id,title:"Add AutoLogin for " +domainName })
@@ -357,11 +380,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 	
 	var status=globalAutologinHandler.canInjectURL(tab.url)
 		if(  status == 0) {
-			chrome.tabs.executeScript(tabId, {file:"autoLogin.js"}, function() {
+			chrome.tabs.executeScript(tabId, {file:"scripts/autoLogin.js"}, function() {
 				//script injected
 			});
 		}else if( status == 1) {
-			chrome.tabs.executeScript(tabId, {file:"autoLoginCapture.js"}, function() {
+			chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
 				//script injected
 			});
 		}
@@ -391,6 +414,13 @@ chrome.runtime.onMessage.addListener(
 			var rawxml=localStorage["autologinxml"] ;
 			
 	sendResponse({"xml": rawxml});
+	
+	
+	}else if (request.action == "refreshData"){
+	
+	globalAutologinHandler.loadDoc()
+			
+	sendResponse({});
 	
 	
 	}else if (request.action == "cansubmit"){

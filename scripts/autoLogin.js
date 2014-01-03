@@ -403,7 +403,7 @@ while (i--) {
 partner.url=autoLogin.getXMLElementval(divs[i],"url");
 
 	  partner.loginurl=autoLogin.getXMLElementval(divs[i],"loginurl");
-	 // partner.username=autoLogin.getXMLElementval(divs[i],"username");
+	 partner.username=autoLogin.getXMLElementval(divs[i],"username");
 	
 		   partner.password=autoLogin.getXMLElementval(divs[i],"password");
 	  partner.userelement=autoLogin.getXMLElementval(divs[i],"userelement");
