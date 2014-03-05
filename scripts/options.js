@@ -34,7 +34,7 @@ var autoLoginOptions = {
 	},
 	validateViewOptions:function(event){
 	 
-	 var curpwd=document.getelementByID("txtaskpassword").value;
+	 var curpwd=document.getElementById("txtaskpassword").value;
 
 	
 	

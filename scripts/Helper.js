@@ -10,6 +10,8 @@ setkeypass:function(tmpKey){
 encrypt:function(txt){
  
  var result=""
+ if(undefined == txt || null == txt )
+	return result
  for(i=0; i<txt.length;i++)
     {
         result += String.fromCharCode(Helper.key^txt.charCodeAt(i));
@@ -22,6 +24,8 @@ decrypt:function(encryptedtxt){
 
 	
     var result="";    
+	if(undefined == encryptedtxt || null == encryptedtxt )
+	return result
     for(i=0; i<encryptedtxt.length; i++)
     {
         result += String.fromCharCode(Helper.key^encryptedtxt.charCodeAt(i));
