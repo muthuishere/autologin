@@ -196,7 +196,7 @@ return false;
 
 //  alert(aMessage)
 
-console.log(aMessage)
+//console.log(aMessage)
 
 	
 },
@@ -395,9 +395,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
+    // console.log(sender.tab ?
+                // "from a content script:" + sender.tab.url :
+                // "from the extension");
 				
 				
 	 if (request.action == "captureautologin"){
@@ -425,12 +425,12 @@ chrome.runtime.onMessage.addListener(
 			if(userCredential == savedCredential){
 			
 			globalAutologinHandler.loggedIn=true
-			sendResponse({"valid":"true" });
+			sendResponse({"valid":true});
 			}
 				
 			else{
 			globalAutologinHandler.loggedIn=false;
-				sendResponse({"valid":"false" });
+				sendResponse({"valid":false });
 				}
 	
 	

@@ -40,6 +40,7 @@ if (typeof String.prototype.isEqual!= 'function') {
 
 function captureElementforForm(formelement){
 
+try{
 var inputtxtelems=formelement.querySelectorAll('input');
 	
 	var inputpwdelems=formelement.querySelectorAll('input[type="password"]');
@@ -66,6 +67,13 @@ var inputtxtelems=formelement.querySelectorAll('input');
 	}
 	
 	return false;
+	}catch(exception){
+	
+		console.log(exception);
+		return false;
+	
+	
+	}
 
 }
 function onBeforeAutoLoginSubmit(){

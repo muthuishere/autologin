@@ -32,6 +32,33 @@ var autoLoginOptions = {
 				
 		}
 	},
+	validateViewOptions:function(event){
+	 
+	 var curpwd=document.getelementByID("txtaskpassword").value;
+
+	
+	
+	 
+	 
+	 	chrome.extension.sendMessage({action: "validateCredential",info:curpwd}, function(response) {
+				
+				if(response.valid){
+				
+					autoLoginOptions.loadOptions();
+				
+				}else{
+				
+					alert("Invalid Credentials")
+				
+				}
+				
+				});
+				
+		
+		
+		
+	
+	},
 	infoChanged:function(event){
 	 var domainrow=event.target.parentNode.parentNode;
 	  autoLoginOptions.changedDomains.push(domainrow.getAttribute("domainname"));
@@ -56,8 +83,22 @@ var autoLoginOptions = {
 	}
 	
 	},
-    init: function () {
+	init:function(){
+	
+	
+	
+		var buttonaskPassword = document.querySelector('input#btnaskpassword');
+		 buttonaskPassword.addEventListener('click', autoLoginOptions.validateViewOptions, false);
+		 
+		 
+	},
+    loadOptions: function () {
 
+	
+	
+	document.querySelector('div#divpasswordask').style.display="none";
+	document.querySelector('div#divoptionContainer').style.display="";
+	
         var rawxml = Helper.decrypt(localStorage["autologinxml"]);
 		
        var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(rawxml);
