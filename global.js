@@ -8,6 +8,7 @@ var globalAutologinHandler = {
 	lastloggedInDomain:null,	
 	lastloggedInTimeinMilliseconds:0,
 	blacklistDomains:new Array(),
+	loggedIn:false,
 	
 	
 	
@@ -18,15 +19,14 @@ var globalAutologinHandler = {
 	if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
 		rawxml="<root></root>"
 	else
-		rawxml=localStorage["autologinxml"]
+		rawxml=Helper.decrypt(localStorage["autologinxml"])
 	
 	
-	console.log(rawxml)
 	
 	rawxml=rawxml.replace("</root>",autoLoginInfo + "</root>");
 		
-		console.log(rawxml)
-		localStorage["autologinxml"]=rawxml;
+		
+		localStorage["autologinxml"]= Helper.encrypt(rawxml);
 		globalAutologinHandler.loadDoc();
 	
 	},
@@ -275,7 +275,7 @@ globalAutologinHandler.autologinList=dummyresp;
 	xhttp.open("GET",dname,false); 
 	xhttp.send(); 
 	
-	localStorage["autologinxml"] =xhttp.responseText;
+	localStorage["autologinxml"] =Helper.encrypt(xhttp.responseText);
 	globalAutologinHandler.loadDoc();
 	}, 
 	loadDoc:function() { 
@@ -284,7 +284,7 @@ globalAutologinHandler.autologinList=dummyresp;
 	if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
 	return;
 	
-			var rawxml=localStorage["autologinxml"] ;
+			var rawxml= Helper.decrypt(localStorage["autologinxml"] );
 			
 			  var parser = new DOMParser();
             var docxml = parser.parseFromString(rawxml, "text/xml");
@@ -411,9 +411,54 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "getData"){
 	
 	
-			var rawxml=localStorage["autologinxml"] ;
+			var rawxml= Helper.decrypt(localStorage["autologinxml"] );
 			
 	sendResponse({"xml": rawxml});
+	
+	
+	}else if (request.action == "validateCredential"){
+	
+			var userCredential=request.info;
+			
+			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			
+			if(userCredential == savedCredential){
+			
+			globalAutologinHandler.loggedIn=true
+			sendResponse({"valid":"true" });
+			}
+				
+			else{
+			globalAutologinHandler.loggedIn=false;
+				sendResponse({"valid":"false" });
+				}
+	
+	
+	}else if (request.action == "addCredential"){
+	
+			var credential=request.info;
+			
+			localStorage["credential"]= Helper.encrypt(credential);
+			
+				sendResponse({"success":"true" });
+			
+	
+	
+	}else if (request.action == "updateCredential"){
+	
+			var credential=request.currentCredential;
+			
+			var newCredential=request.newCredential;
+			
+			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			
+			if(credential == savedCredential){
+				localStorage["credential"]= Helper.encrypt(newCredential);
+				sendResponse({"valid":"true" });
+				}
+			else
+				sendResponse({"valid":"false" });
+			
 	
 	
 	}else if (request.action == "refreshData"){

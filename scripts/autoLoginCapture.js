@@ -9,11 +9,39 @@ var captureForm;
 
 var forms = document.querySelectorAll('form');
 
+var flgCaptured=false
 for (var i = 0, formelement; formelement = forms[i]; i++) {
     //work with element
 	
+	var res=captureElementforForm(formelement)
 	
-	var inputtxtelems=formelement.querySelectorAll('input');
+	if(res){
+	flgCaptured=true
+	i=formelement.length+1;//to break
+	}
+		
+	
+	
+}
+
+if(!flgCaptured){
+
+//No Captured check for whole body
+	var res=captureElementforForm(document.querySelector('body'))
+
+}
+
+
+if (typeof String.prototype.isEqual!= 'function') {
+    String.prototype.isEqual = function (str){
+        return this.toUpperCase()==str.toUpperCase();
+     };
+}
+
+function captureElementforForm(formelement){
+
+var inputtxtelems=formelement.querySelectorAll('input');
+	
 	var inputpwdelems=formelement.querySelectorAll('input[type="password"]');
 
 	if(inputtxtelems.length>1 && inputpwdelems.length==1  ){
@@ -32,21 +60,14 @@ for (var i = 0, formelement; formelement = forms[i]; i++) {
 				});
 				
 				//Break loop
-				i=forms.length+1;
+				return true;
 	}
 	
 	}
 	
+	return false;
+
 }
-
-
-if (typeof String.prototype.isEqual!= 'function') {
-    String.prototype.isEqual = function (str){
-        return this.toUpperCase()==str.toUpperCase();
-     };
-}
-
-
 function onBeforeAutoLoginSubmit(){
 
 	var inputtxtelems=captureForm.querySelectorAll('input');
@@ -70,10 +91,12 @@ var autoLoginInfo = {
   
   };
 
-  if(captureForm.name =="" || captureForm.name == null)
+  if(null != captureForm.getAttribute('id'))
 	autoLoginInfo.formelement=	captureForm.getAttribute('id');
-  else
+  else if(captureForm.name != "" && captureForm.name != null  )
 	autoLoginInfo.formelement=captureForm.name;
+  else
+	autoLoginInfo.formelement="";
   
   var bfrInputElement=null;
   

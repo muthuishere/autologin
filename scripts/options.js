@@ -58,7 +58,8 @@ var autoLoginOptions = {
 	},
     init: function () {
 
-        var rawxml = localStorage["autologinxml"];
+        var rawxml = Helper.decrypt(localStorage["autologinxml"]);
+		
        var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(rawxml);
         //tblOptions
 		//Add
@@ -171,8 +172,8 @@ searchdomain:function(domainname){
 	
 	   var oSerializer = new XMLSerializer();
         var rawxml = oSerializer.serializeToString(autoLoginOptions.autologinXMLList);
-        localStorage["autologinxml"] = rawxml;
-		console.log(rawxml)
+        localStorage["autologinxml"] = Helper.encrypt(rawxml);
+	
 		
 			chrome.extension.sendMessage({action: "refreshData"}, function(response) {
 				

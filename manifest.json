@@ -14,7 +14,7 @@
   
   
   "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
- "background": { "scripts": ["global.js"] },
+ "background": { "scripts": ["scripts/Helper.js","global.js"] },
  
     "page_action" :
   {
