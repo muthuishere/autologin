@@ -177,7 +177,7 @@
 	#header
 	{
 		position: relative;
-		padding: 3em 0em;
+		/* padding: 3em 0em;*/
 	}
 
 /*********************************************************************************/
@@ -186,7 +186,7 @@
 
 	#logo
 	{
-		position: absolute;
+		/*position: absolute;*/
 		top: 1em;
 		left: 0;
 	}
@@ -199,7 +199,7 @@
 	#logo a
 	{
 		text-decoration: none;
-		color: #862525;
+		color: #000;
 	}
 
 /*********************************************************************************/

@@ -1,0 +1,36 @@
+//On Auto Login Capture 
+
+	if present show a floating div with a button to capture Autologin
+
+// on auto logging in 
+
+	if website has autologin data
+		
+		if the password is not set ,
+			show a floating div to set password
+				on submit , execute autologin.js init to start logging in
+			
+		if the password is  set ,	but not entered
+			show a floating div to validate password
+				on submit , validate password , 
+				
+							if error 
+								show a div mentioning password error 
+							else
+								execute autologin.js init to start logging in
+
+//On Options
+
+			Menus on top banner
+				Sites , Change password 
+			
+
+			show repective divs on clicking information
+
+			
+			on startup
+				if password is set
+						validate password  div error displayed down
+				if password is not set
+						show a div to set password
+				
