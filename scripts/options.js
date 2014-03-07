@@ -233,7 +233,9 @@ var autoLoginOptions = {
 	//find domain 
 	//remove from autologinxmllist
 	
+	document.querySelector("#sitechangedstatus").innerHTML="";
 	
+	document.querySelector("a#btnUpdate").setAttribute("class","button") ;
 	 var docxml=autoLoginOptions.autologinXMLList ;
 	 
 	 var domainrow=event.target.parentNode.parentNode.parentNode;
@@ -406,15 +408,13 @@ searchdomain:function(domainname){
 	
 	
 			
-			 try {
+			
            
  
             for (var i = document.querySelector("#tblOptions").rows.length; i > 1; i--) {
-						document.getElementById("tableID").deleteRow(i - 1);
+						document.querySelector("#tblOptions").deleteRow(i - 1);
 					} 
-            }catch(e) {
-                console.log(e);
-            }
+            
 			
 			
 	

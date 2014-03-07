@@ -8,7 +8,7 @@ var globalAutologinHandler = {
 	lastloggedInDomain:null,	
 	lastloggedInTimeinMilliseconds:0,
 	blacklistDomains:new Array(),
-	loggedIn:false,
+	loggedIn:true,
 	
 	
 	

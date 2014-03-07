@@ -48,15 +48,15 @@ var autoLoginCapture={
 			if(isVisiblepwdElement){
 			
 					autoLoginCapture.captureForm=formelement
-					
+					console.log("to be  captured")
 					//Create a floating div and show
-					/*
+					
 					chrome.extension.sendMessage({action: "captureautologin"}, function(response) {
 						
 						//console.log("Shown info")
 						
 						});
-						*/
+					
 						//Break loop
 						return true;
 			}
@@ -181,7 +181,7 @@ if (typeof String.prototype.isEqual!= 'function') {
 }
 
 
+autoLoginCapture.init();
 
 
-window.addEventListener("load", function(e) { autoLoginCapture.init(); }, false); 
 
