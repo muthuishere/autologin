@@ -1,6 +1,8 @@
 var autoLoginOptions = {    
     autologinXMLList: null,
 	changedDomains:new Array(),
+	hasPassword:true,
+	validated:false,
 
 	createXMLElement:function(node,elemName){
 	
@@ -34,6 +36,7 @@ var autoLoginOptions = {
 	},
 	validateViewOptions:function(event){
 	 
+	 document.querySelector("#validatepwdstatus").innerHTML=""
 	 var curpwd=document.getElementById("txtaskpassword").value;
 
 	
@@ -44,11 +47,17 @@ var autoLoginOptions = {
 				
 				if(response.valid){
 				
-					autoLoginOptions.loadOptions();
+					//Click menu
+					autoLoginOptions.validated=true
+					autoLoginOptions.menuSitesClicked("");
+					
+					
 				
 				}else{
 				
-					alert("Invalid Credentials")
+						document.querySelector("#validatepwdstatus").innerHTML="* Invalid Credentials"
+				
+					
 				
 				}
 				
@@ -60,6 +69,12 @@ var autoLoginOptions = {
 	
 	},
 	infoChanged:function(event){
+	
+	document.querySelector("#sitechangedstatus").innerHTML="";
+	
+	document.querySelector("a#btnUpdate").setAttribute("class","button") ;
+			
+			
 	 var domainrow=event.target.parentNode.parentNode;
 	  autoLoginOptions.changedDomains.push(domainrow.getAttribute("domainname"));
 	  var autoLoginObject=autoLoginOptions.searchdomain(domainrow.getAttribute("domainname"))
@@ -83,12 +98,86 @@ var autoLoginOptions = {
 	}
 	
 	},
+	menuSitesClicked:function(event){
+	
+	//On Sites clicked
+	
+	document.querySelector("#navigation").style.visibility="visible"
+	document.querySelector("#mnusitesparent").setAttribute("class", "current");
+	document.querySelector("#mnuchangepasswordparent").removeAttribute("class");
+	
+	document.querySelector("#divSites").style.display="";
+	document.querySelector("#divpasswordask").style.display="none";
+	document.querySelector("#divpasswordchange").style.display="none";
+	
+	autoLoginOptions.loadOptions();
+	
+	},
+	menuChangePasswordClicked:function(event){
+	
+	//On Sites clicked
+	
+	document.querySelector("#navigation").style.visibility="visible"
+	document.querySelector("#mnuchangepasswordparent").setAttribute("class", "current");
+	document.querySelector("#mnusitesparent").removeAttribute("class");
+	
+	document.querySelector("#divSites").style.display="none";
+	document.querySelector("#divpasswordask").style.display="none";
+	document.querySelector("#divpasswordchange").style.display="";
+	
+	if(autoLoginOptions.hasPassword ){
+		
+		
+	}else{
+	
+	
+	}
+	
+	},
+	showPasswordPane:function(){
+	
+	//On Sites clicked
+	
+	
+	document.querySelector("#navigation").style.visibility="hidden"
+	
+	
+	document.querySelector("#divSites").style.display="none";
+	document.querySelector("#divpasswordask").style.display="";
+	document.querySelector("#divpasswordchange").style.display="none";
+	
+	var buttonaskPassword = document.querySelector('input#btnaskpassword');
+		 buttonaskPassword.addEventListener('click', autoLoginOptions.validateViewOptions, false);
+		 
+	},
 	init:function(){
 	
 	
+				chrome.extension.sendMessage({action: "hasCredential"}, function(response) {
+				
+				if(response.valid){
+				
+					//Show Password panel
+					autoLoginOptions.hasPassword=true;
+					autoLoginOptions.validated=false;
+					autoLoginOptions.showPasswordPane();
+				}else{
+					//show sites
+				
+					autoLoginOptions.menuSitesClicked("");
+				}
+					
+				
+				
+				});
+				
 	
-		var buttonaskPassword = document.querySelector('input#btnaskpassword');
-		 buttonaskPassword.addEventListener('click', autoLoginOptions.validateViewOptions, false);
+	
+	document.querySelector('a#mnusites').addEventListener('click', autoLoginOptions.menuSitesClicked, false);
+	document.querySelector('a#mnuchangepassword').addEventListener('click', autoLoginOptions.menuChangePasswordClicked, false);
+	
+	
+		
 		 
 		 
 	},
@@ -96,9 +185,8 @@ var autoLoginOptions = {
 
 	
 	
-	document.querySelector('div#divpasswordask').style.display="none";
-	document.querySelector('div#divoptionContainer').style.display="";
-	
+	document.querySelector('#tblOptions').style.display="";
+			document.querySelector('#btnUpdate').style.display="";
         var rawxml = Helper.decrypt(localStorage["autologinxml"]);
 		
        var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(rawxml);
@@ -117,7 +205,7 @@ var autoLoginOptions = {
 		var inputElements = document.querySelectorAll('input.inp');
         for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
             //work with element
-			console.log(inputElement)
+			
             inputElement.addEventListener('change', autoLoginOptions.infoChanged, false);
 
         }
@@ -131,7 +219,10 @@ var autoLoginOptions = {
 		}else{
 		//remove table and buttons
 		
-			document.querySelector('div#divoptionContainer').innerHTML="No Sites Available for Auto Login"
+			document.querySelector('#sitechangedstatus').innerHTML="<h3>No Sites Available for Auto Login</h3>"
+			document.querySelector('#tblOptions').style.display="none";
+			document.querySelector('#btnUpdate').style.display="none";
+			
 		}
 		
 
@@ -209,7 +300,8 @@ searchdomain:function(domainname){
 	},
 	updateAutologin:function(event){
 	
-	
+		if(document.querySelector("a#btnUpdate").getAttribute("class") == "buttondisable" )
+			return;
 	
 	   var oSerializer = new XMLSerializer();
         var rawxml = oSerializer.serializeToString(autoLoginOptions.autologinXMLList);
@@ -219,7 +311,8 @@ searchdomain:function(domainname){
 			chrome.extension.sendMessage({action: "refreshData"}, function(response) {
 				
 				autoLoginOptions.updateinputBoxStyle();
-				alert("Successfully Updated")
+				
+				document.querySelector("#sitechangedstatus").innerHTML="Succesfully Updated";
 				
 				});
 				
@@ -249,7 +342,7 @@ searchdomain:function(domainname){
 
         autoLoginOptions.autologinXMLList = docxml;
         var jsonresp = new Array();
-
+		autoLoginOptions.cleanTable();
 
      //   try {
 
@@ -309,7 +402,23 @@ searchdomain:function(domainname){
 			 a.href = str;
 			return a.hostname
 	},
+	cleanTable:function(){
 	
+	
+			
+			 try {
+           
+ 
+            for (var i = document.querySelector("#tblOptions").rows.length; i > 1; i--) {
+						document.getElementById("tableID").deleteRow(i - 1);
+					} 
+            }catch(e) {
+                console.log(e);
+            }
+			
+			
+	
+	},
 	createRow:function(autoLoginInfo){
 	
 	

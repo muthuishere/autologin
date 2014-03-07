@@ -461,6 +461,17 @@ chrome.runtime.onMessage.addListener(
 			
 	
 	
+	} else if (request.action == "hasCredential"){
+	
+			
+			
+			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			
+			var result=(savedCredential != "")
+			
+				sendResponse({"valid":result});
+			
+	
 	}else if (request.action == "refreshData"){
 	
 	globalAutologinHandler.loadDoc()

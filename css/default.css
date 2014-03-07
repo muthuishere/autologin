@@ -71,6 +71,23 @@
 /* Button Style                                                                  */
 /*********************************************************************************/
 
+
+
+.buttondisable
+	{
+		display: inline-block;
+		/*padding: 1em 2em 1em 2em; */
+		padding:0.4em 0.4em 0.4em 0.4em;
+		background: #A09898;
+		border-radius: 5px;
+		letter-spacing: 0.20em;
+		text-decoration: none;
+		text-transform: uppercase;
+		font-weight: 400;
+		font-size: 0.90em;
+		color: #FFF;
+	}
+	
 	.button
 	{
 		display: inline-block;
@@ -356,7 +373,7 @@
 		color: rgba(0,0,0,.8);
 	}
 
-	#featured .button
+	#featured .button,#featured .buttondisable
 	{
 		margin-top: 1em;
 	}

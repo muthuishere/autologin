@@ -22,11 +22,11 @@
 		<h1><a href="#">Autologin Options</a></h1>
 		
       </div></td><td align="right">
-	<div id="navigation" style="float:right">
+	<div id="navigation" style="visibility:hidden;float:right">
 	
 		<ul style="margin-top:15px">
-			<li class="current"><a  id="mnusites" href="#">Sites</a></li>
-			<li><a id="mnuchangepassword" href="#">Password Mgmt</a></li>			
+			<li id="mnusitesparent" class="current"><a  id="mnusites" href="#">Sites</a></li>
+			<li id="mnuchangepasswordparent" ><a id="mnuchangepassword" href="#">Password Mgmt</a></li>			
 			
 		</ul>
 	
@@ -38,7 +38,9 @@
 <div id="page-wrapper">
 	
 	<div id="" >
-		<div id="divoptionContainer" class="boxA" style="display:none;width:800px">
+		<div id="divSites" class="boxA" style="display:none;width:800px">
+			<div id="sitechangedstatus" style="float:left;margin-left:50px;text-align:center;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></div>
+			
 			<table id="tblOptions" style="width:680px" >
 			<tbody>
 			<tr>
@@ -55,7 +57,7 @@
 			
 			<div style="width:680px">
 			<div style="float:right"> 
-			<a id="btnUpdate" href="#" class="button">Update </a>
+			<a id="btnUpdate"  href="#" class="buttondisable">Update </a>
 			</div>
 			
 			</div>
@@ -70,9 +72,15 @@
 			<th> <input type="password" id="txtaskpassword" /> </th>			
 			<th> <input type="button" id="btnaskpassword" value="Show" /> </th>			
 			</tr>
+			<tr>
+			<td colspan="3" align="right">
+			<span id="validatepwdstatus" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			</td>
+			</tr>
 			
 			</tbody>
 			</table>
+			
 			<div style="height:20px"> &nbsp; </div>
 			
 			<div style="height:20px;clear:both"> &nbsp; </div>
@@ -82,6 +90,12 @@
 			<table id="" style="width:680px" >
 			<tbody>
 			<tr>
+			<th>&nbsp;</th>
+			<th align="right"><div style="float:right"> <input type="button" id="btndisablepassword" value="Remove Password" /></div></th>			
+			
+			</tr>
+			
+			<tr id="rowoldpassword" >
 			<th>Enter Old Password :</th>
 			<th> <input type="password" id="txtoldpassword" /> </th>			
 			
@@ -102,10 +116,11 @@
 			
 			</tr>
 			<tr>
-			<th>&nbsp;</th>
-			<th> <input type="button" id="btndisablepassword" value="Remove Password" /></th>			
-			
+			<td colspan="2" align="right">
+			<span id="validatepwdstatus" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			</td>
 			</tr>
+			
 			</tbody>
 			</table>
 			<div style="height:20px"> &nbsp; </div>
