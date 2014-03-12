@@ -58,7 +58,7 @@ while (i--) {
 
 		 }catch(exception){
 			 
-			alert("Issue" + exception) 
+			console.log("Issue" + exception) 
 
 		 }
 
@@ -260,7 +260,7 @@ globalAutologinHandler.autologinList=dummyresp;
 		return true;  
 		 }catch(exception){
 			 
-			alert("decode issue" + exception) 
+			console.log("decode issue" + exception) 
 			return null;
 		 }
 

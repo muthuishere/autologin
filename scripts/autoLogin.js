@@ -36,7 +36,7 @@ var autoLogin = {
 
         } catch (exception) {
 
-            alert("Issue" + exception)
+            console.log("Issue" + exception)
 
         }
 
@@ -277,7 +277,7 @@ var autoLogin = {
             }
 
         } catch (exception) {
-            alert("process exception " + exception);
+            console.log("process exception " + exception);
         }
 
     },
@@ -427,7 +427,7 @@ var autoLogin = {
             //return true;  
         } catch (exception) {
 
-            alert("decode issue" + exception)
+            console.log("decode issue" + exception)
             //return null;
         }
 

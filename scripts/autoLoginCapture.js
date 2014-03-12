@@ -35,6 +35,10 @@ var autoLoginCapture={
 	captureElementforForm:function(formelement){
 				
 		try{
+		
+		if(undefined == formelement || null == formelement)
+		return;
+		
 		var inputtxtelems=formelement.querySelectorAll('input');
 			
 			var inputpwdelems=formelement.querySelectorAll('input[type="password"]');
@@ -48,7 +52,7 @@ var autoLoginCapture={
 			if(isVisiblepwdElement){
 			
 					autoLoginCapture.captureForm=formelement
-					console.log("to be  captured")
+				
 					//Create a floating div and show
 					
 					chrome.extension.sendMessage({action: "captureautologin"}, function(response) {
