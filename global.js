@@ -384,9 +384,19 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 				//script injected
 			});
 		}else if( status == 1) {
-			chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
-				//script injected
-			});
+		
+			var jscode='var extnid='+ chrome.extension.getURL("/");
+		
+			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
+						//script injected
+						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
+							//script injected
+						});
+			
+				});
+				
+				
+			
 		}
 	}
 });

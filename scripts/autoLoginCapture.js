@@ -32,6 +32,12 @@ var autoLoginCapture={
 			}
 
 	},
+	onCaptureAutoLogin:function(){
+	
+	var imgElem=document.querySelector("a#autologincapture img")
+	if (imgElem.getAttribute("src"))
+	
+	},
 	captureElementforForm:function(formelement){
 				
 		try{
@@ -54,13 +60,18 @@ var autoLoginCapture={
 					autoLoginCapture.captureForm=formelement
 				
 					//Create a floating div and show
+					var elemhtml='<div style="position:absolute;right:0"><a id="autologincapture" style="background" title="Click to Capture Auto Login Information" href="#"> <input type="image" src="'+extnid+'/images/capture_disable.png" ></a></div>'
+					document.body.innerHTML += elemhtml;
 					
+					
+					document.querySelector("a#autologincapture").addEventListener('click', autoLoginCapture.onCaptureAutoLogin, false);
+					/*
 					chrome.extension.sendMessage({action: "captureautologin"}, function(response) {
 						
 						//console.log("Shown info")
 						
 						});
-					
+					*/
 						//Break loop
 						return true;
 			}
