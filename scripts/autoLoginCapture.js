@@ -1,9 +1,18 @@
 
 var autoLoginCapture={
 	captureForm:null,
+	startCapture:false,
+	disableIconURL:"",
+	enableIconURL:"",
+	hoverIconURL:"",
+	
 	init:function(){
 			// query all forms 
 
+			autoLoginCapture.disableIconURL=extnid +"images/capture_disable.png"
+	autoLoginCapture.enableIconURL=extnid +"images/capture_enable.png"
+	autoLoginCapture.hoverIconURL=extnid +"images/capture_hover.png"
+	
 			// if form has one password field and one text field and both elements are visible
 			//call the autologin function to show
 
@@ -34,8 +43,28 @@ var autoLoginCapture={
 	},
 	onCaptureAutoLogin:function(){
 	
-	var imgElem=document.querySelector("a#autologincapture img")
-	if (imgElem.getAttribute("src"))
+	
+
+	if(autoLoginCapture.startCapture == false){
+	
+	//Change Background url
+	
+	
+		document.querySelector("div#autologincapture").className = "enable";;
+		document.querySelector("div#autologincapture").setAttribute("Title","Click to Disable Capturing Auto Login Information");
+	initAutoLoginCapture()
+	autoLoginCapture.startCapture = true
+	
+					
+					
+	}else{
+	
+document.querySelector("div#autologincapture").className = "disable";
+document.querySelector("div#autologincapture").setAttribute("Title","Click to Capture Auto Login Information");
+	removeAutoLoginCapture()
+	autoLoginCapture.startCapture = false
+	
+	}
 	
 	},
 	captureElementforForm:function(formelement){
@@ -58,13 +87,25 @@ var autoLoginCapture={
 			if(isVisiblepwdElement){
 			
 					autoLoginCapture.captureForm=formelement
-				
+					
+					var css='\n div#autologincapture.disable{ \n background:url("'+ autoLoginCapture.disableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n div#autologincapture.enable{ \n background:url("'+ autoLoginCapture.enableIconURL +'") no-repeat center; \n opacity:1.0; \n  }  \n div#autologincapture.enable:hover{ \n /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center; */ \n opacity:0.9; \n }\n  div#autologincapture.disable:hover{ \n  /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center;*/  opacity:1.0; \n}';
+					style=document.createElement('style');
+					if (style.styleSheet)
+						style.styleSheet.cssText=css;
+					else 
+						style.appendChild(document.createTextNode(css));
+					document.getElementsByTagName('head')[0].appendChild(style);
+					
+				//console.log("img urls :" + extnid +"images/capture_disable.png")
 					//Create a floating div and show
-					var elemhtml='<div style="position:absolute;right:0"><a id="autologincapture" style="background" title="Click to Capture Auto Login Information" href="#"> <input type="image" src="'+extnid+'/images/capture_disable.png" ></a></div>'
+					var elemhtml='<div style="position:absolute;top:0px;width:64px;height:64px;right:0"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
+					
 					document.body.innerHTML += elemhtml;
 					
 					
-					document.querySelector("a#autologincapture").addEventListener('click', autoLoginCapture.onCaptureAutoLogin, false);
+
+
+					document.querySelector("div#autologincapture").addEventListener('click', autoLoginCapture.onCaptureAutoLogin, false);
 					/*
 					chrome.extension.sendMessage({action: "captureautologin"}, function(response) {
 						
@@ -168,6 +209,7 @@ var autoLoginCapture={
 	}
 	
 }
+
 
 function initAutoLoginCapture(){
 

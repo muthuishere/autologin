@@ -22,7 +22,9 @@
     "default_title" : "Add AutoLogin for the page"
   },
   
- 
+ "web_accessible_resources": [
+    "images/*.png"  
+  ],
   
   "options_page": "options.html",
   "permissions": ["tabs", "http://*/*", "https://*/*"]

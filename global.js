@@ -385,8 +385,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			});
 		}else if( status == 1) {
 		
-			var jscode='var extnid='+ chrome.extension.getURL("/");
+			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
+		console.log("extn id" +jscode)
 			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
 						//script injected
 						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
