@@ -5,6 +5,7 @@ var autoLoginCapture={
 	disableIconURL:"",
 	enableIconURL:"",
 	hoverIconURL:"",
+	backgroundIconURL:"",
 	
 	init:function(){
 			// query all forms 
@@ -12,6 +13,7 @@ var autoLoginCapture={
 			autoLoginCapture.disableIconURL=extnid +"images/capture_disable.png"
 	autoLoginCapture.enableIconURL=extnid +"images/capture_enable.png"
 	autoLoginCapture.hoverIconURL=extnid +"images/capture_hover.png"
+	autoLoginCapture.backgroundIconURL=extnid +"images/bg.png"
 	
 			// if form has one password field and one text field and both elements are visible
 			//call the autologin function to show
@@ -88,6 +90,7 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 			
 					autoLoginCapture.captureForm=formelement
 					
+					
 					var css='\n div#autologincapture.disable{ \n background:url("'+ autoLoginCapture.disableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n div#autologincapture.enable{ \n background:url("'+ autoLoginCapture.enableIconURL +'") no-repeat center; \n opacity:1.0; \n  }  \n div#autologincapture.enable:hover{ \n /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center; */ \n opacity:0.9; \n }\n  div#autologincapture.disable:hover{ \n  /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center;*/  opacity:1.0; \n}';
 					style=document.createElement('style');
 					if (style.styleSheet)
@@ -98,7 +101,7 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 					
 				//console.log("img urls :" + extnid +"images/capture_disable.png")
 					//Create a floating div and show
-					var elemhtml='<div style="position:absolute;top:0px;width:64px;height:64px;right:0"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
+					var elemhtml='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
 					
 					document.body.innerHTML += elemhtml;
 					
@@ -131,6 +134,7 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 	},
 	onBeforeAutoLoginSubmit:function(){
 		
+		console.log("Before submitting");
 	var inputtxtelems=autoLoginCapture.captureForm.querySelectorAll('input');
 	
 
@@ -213,8 +217,11 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 
 function initAutoLoginCapture(){
 
-		if(undefined != autoLoginCapture.captureForm)
-		  autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
+		if(undefined != autoLoginCapture.captureForm){
+		console.log("Starting listener")
+		autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
+		}
+		  
 	
 
 }

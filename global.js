@@ -15,7 +15,7 @@ var globalAutologinHandler = {
 	addAutoLoginInfo:function(autoLoginInfo){
 	
 	var rawxml=""
-	
+	console.log("addAutoLoginInfo")
 	if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
 		rawxml="<root></root>"
 	else
