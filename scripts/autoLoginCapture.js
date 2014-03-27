@@ -54,7 +54,12 @@ var autoLoginCapture={
 	
 		document.querySelector("div#autologincapture").className = "enable";;
 		document.querySelector("div#autologincapture").setAttribute("Title","Click to Disable Capturing Auto Login Information");
-	initAutoLoginCapture()
+	//initAutoLoginCapture()
+	
+	//if(undefined != autoLoginCapture.captureForm){
+		console.log("Starting listener" +  autoLoginCapture.captureForm)
+		autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, true);
+		//}
 	autoLoginCapture.startCapture = true
 	
 					
@@ -101,9 +106,15 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 					
 				//console.log("img urls :" + extnid +"images/capture_disable.png")
 					//Create a floating div and show
-					var elemhtml='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
+					//var elemhtml='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
 					
-					document.body.innerHTML += elemhtml;
+					var divelem=document.createElement("div");
+						divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
+						document.body.appendChild(divelem);
+
+
+
+					//document.body.innerHTML += elemhtml;
 					
 					
 
@@ -115,6 +126,7 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 						//console.log("Shown info")
 						
 						});
+					
 					*/
 						//Break loop
 						return true;
@@ -132,9 +144,8 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 			}
 
 	},
-	onBeforeAutoLoginSubmit:function(){
+	onBeforeAutoLoginSubmit:function(event){
 		
-		console.log("Before submitting");
 	var inputtxtelems=autoLoginCapture.captureForm.querySelectorAll('input');
 	
 
@@ -218,7 +229,7 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 function initAutoLoginCapture(){
 
 		if(undefined != autoLoginCapture.captureForm){
-		console.log("Starting listener")
+		//console.log("Starting listener" +  autoLoginCapture.captureForm)
 		autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
 		}
 		  
