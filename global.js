@@ -451,7 +451,7 @@ chrome.runtime.onMessage.addListener(
 			
 			localStorage["credential"]= Helper.encrypt(credential);
 			
-				sendResponse({"success":"true" });
+				sendResponse({"valid":true });
 			
 	
 	
@@ -469,6 +469,16 @@ chrome.runtime.onMessage.addListener(
 				}
 			else
 				sendResponse({"valid":"false" });
+			
+	
+	
+	}else if (request.action == "updatePromptAtStartup"){
+	
+			
+			
+			localStorage["promptrequired"]= request.promptrequired;
+			
+				sendResponse({"valid":true });
 			
 	
 	

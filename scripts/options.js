@@ -113,6 +113,74 @@ var autoLoginOptions = {
 	autoLoginOptions.loadOptions();
 	
 	},
+	changePassword:function(pwd){
+	
+			chrome.extension.sendMessage({action: "validateCredential",info:pwd}, function(response) {
+					
+										
+						autoLoginOptions.changePassword(document.querySelector("#txtnewpassword").value)
+						alert("Password Changed")
+						autoLoginOptions.loadSettings();
+					
+					
+					});
+					
+	
+	},
+	flashdiv:function(divid,txt){
+	
+	document.querySelector("#"+divid).innerHTML=txt;
+	
+	setTimeout(function() {	
+	document.querySelector("#"+divid).innerHTML=""
+	}, 10000);
+
+
+	},
+	onBtnCancelChangePasswordClicked:function(event){
+	autoLoginOptions.loadSettings();
+	},
+	onBtnChangePasswordClicked:function(event){
+	
+	
+	if(document.querySelector("#txtnewpassword").value != document.querySelector("#txtnewpassword").value){
+	
+			autoLoginOptions.flashdiv("validatepwderror","Both Passwords should be same");
+			document.querySelector("#txtnewpassword").focus(); 
+			return;
+	
+	}
+	
+	if(autoLoginOptions.hasPassword==true){
+	
+		chrome.extension.sendMessage({action: "validateCredential",info:document.querySelector("#txtoldpassword").value}, function(response) {
+					
+					if(response.valid){
+						
+						autoLoginOptions.changePassword(document.querySelector("#txtnewpassword").value)
+						
+					}else{
+						//show sites
+					autoLoginOptions.flashdiv("validatepwderror","Invalid Old Password");
+								
+								document.querySelector("#txtoldpassword").focus(); 
+								return;
+					}
+						
+					
+					
+					});
+	
+	
+	}else{
+		
+		autoLoginOptions.changePassword(document.querySelector("#txtnewpassword").value)
+	
+	}
+	// if old password is visible
+	
+	
+	},
 	menuChangePasswordClicked:function(event){
 	
 	//On Sites clicked
@@ -124,14 +192,8 @@ var autoLoginOptions = {
 	document.querySelector("#divSites").style.display="none";
 	document.querySelector("#divpasswordask").style.display="none";
 	document.querySelector("#divpasswordchange").style.display="";
+	autoLoginOptions.loadSettings();
 	
-	if(autoLoginOptions.hasPassword ){
-		
-		
-	}else{
-	
-	
-	}
 	
 	},
 	showPasswordPane:function(){
@@ -176,11 +238,53 @@ var autoLoginOptions = {
 	document.querySelector('a#mnusites').addEventListener('click', autoLoginOptions.menuSitesClicked, false);
 	document.querySelector('a#mnuchangepassword').addEventListener('click', autoLoginOptions.menuChangePasswordClicked, false);
 	
-	
-		
 		 
 		 
 	},
+	 loadChangePassword: function () {
+	
+			document.querySelector('#btnchangepassword').addEventListener('click', autoLoginOptions.onBtnChangePasswordClicked, false);
+			document.querySelector('#btncancelchangepassword').addEventListener('click', autoLoginOptions.onBtnCancelChangePasswordClicked, false);
+			document.querySelector("#tblchangepwd").style.display="";
+			document.querySelector("#tblsettings").style.display="none";
+			 
+			 if(autoLoginOptions.hasPassword == false ){
+					document.querySelector("#rowoldpassword").style.display="none";
+		
+				}else{
+				
+				document.querySelector("#rowoldpassword").style.display="";
+				}
+	
+	 },
+	  loadSettings: function () {
+	  
+			document.querySelector("#tblchangepwd").style.display="none";
+			document.querySelector("#tblsettings").style.display="";
+			
+			//on change check box
+			
+			document.querySelector('#btnshowchangepwd').addEventListener('click', function(){
+					autoLoginOptions.loadChangePassword();
+			}, false);
+			
+			
+			document.querySelector('#chkpromptAutologin').addEventListener('change', function(event){
+					
+					alert(event.target.checked)
+					chrome.extension.sendMessage({action: "hasCredential",promptAtStartup:event.target.checked}, function(response) {
+				
+				
+				
+						});
+					
+			}, false);
+			
+			
+			//remove password
+			
+	
+	  },
     loadOptions: function () {
 
 	

@@ -87,11 +87,45 @@
 		</div>
 		
 			<div id="divpasswordchange" class="boxA" style="display:none;width:800px">
-			<table id="" style="width:680px" >
+			
+			<table id="tblsettings" style="width:680px" >
+			<tbody>
+			<tr>
+			
+			<th align="right"><div style="float:right"> </div></th>			
+			
+			</tr>
+			
+			
+			<tr>
+		
+			<th> <input type="checkbox" id="chkpromptAutologin" value="1" />Prompt Password for Autologin  per session </th>			
+			
+			</tr>
+			<tr  >
+			
+			<th> <input type="button" id="btnshowchangepwd" value="Change Password" /> </th>			
+			
+			</tr>
+			
+			
+			<tr>
+			<td colspan="2" align="right">
+			<span id="settingssuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			<span id="settingsfailure" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			</td>
+			</tr>
+			
+			</tbody>
+			</table>
+			
+			
+			
+			<table id="tblchangepwd" style="width:680px;display:none" >
 			<tbody>
 			<tr>
 			<th>&nbsp;</th>
-			<th align="right"><div style="float:right"> <input type="button" id="btndisablepassword" value="Remove Password" /></div></th>			
+			<th align="right"><div style="float:right"> </div></th>			
 			
 			</tr>
 			
@@ -106,18 +140,18 @@
 			
 			</tr>
 			<tr>
-			<th>Repeat New Password :</th>
+			<th>Confirm New Password :</th>
 			<th> <input type="password" id="txtrepeatnewpassword" /> </th>			
 			
 			</tr>
 			<tr>
-			<th>&nbsp;</th>
+			<th><input type="button" id="btncancelchangepassword" value="Cancel" /> </th>
 			<th> <input type="button" id="btnchangepassword" value="Change" /></th>			
 			
 			</tr>
 			<tr>
 			<td colspan="2" align="right">
-			<span id="validatepwdstatus" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			<span id="validatepwderror" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
 			</td>
 			</tr>
 			
