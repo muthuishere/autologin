@@ -7,6 +7,7 @@ var globalAutologinHandler = {
 	autologinXMLList:null,
 	lastloggedInDomain:null,	
 	lastloggedInTimeinMilliseconds:0,
+	
 	blacklistDomains:new Array(),
 	loggedIn:true,
 	
@@ -293,6 +294,23 @@ globalAutologinHandler.autologinList=dummyresp;
 	
 	
 	}, 
+	initExtension:function() { 
+	
+	//validate and set logged in
+	var credential=localStorage["credential"]
+	var promptrequired=localStorage["promptrequired"]
+	
+	if(undefined == credential || null == credential || undefined == promptrequired || null == promptrequired ||  promptrequired === 'false')
+		globalAutologinHandler.loggedIn=true
+	else
+			globalAutologinHandler.loggedIn=false
+			
+			console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
+			
+	globalAutologinHandler.loadDoc( )
+	
+	
+	}
 	
 			
 	
@@ -373,21 +391,34 @@ var Utils={
   };
 
 //globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
-globalAutologinHandler.loadDoc()
+globalAutologinHandler.initExtension()
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if(changeInfo.status == "complete" ){
 	
 	var status=globalAutologinHandler.canInjectURL(tab.url)
 		if(  status == 0) {
-			chrome.tabs.executeScript(tabId, {file:"scripts/autoLogin.js"}, function() {
-				//script injected
-			});
+		
+			if(globalAutologinHandler.loggedIn==false){
+			
+					
+						
+					chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCredentials.js"}, function() {
+						//script injected
+					});
+
+				
+				
+			}else{
+				chrome.tabs.executeScript(tabId, {file:"scripts/autoLogin.js"}, function() {
+					//script injected
+				});
+			}
 		}else if( status == 1) {
 		
 			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
-		console.log("extn id" +jscode)
+		
 			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
 						//script injected
 						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
@@ -427,15 +458,27 @@ chrome.runtime.onMessage.addListener(
 	sendResponse({"xml": rawxml});
 	
 	
+	}else if (request.action == "injectAutoLogin"){
+	
+	
+			chrome.tabs.executeScript(sender.tab.id, {file:"scripts/autoLogin.js"}, function() {
+					//script injected
+				});
+			
+		sendResponse({"valid":true});
+	
+	
 	}else if (request.action == "validateCredential"){
 	
 			var userCredential=request.info;
 			
 			var savedCredential= Helper.decrypt(localStorage["credential"] );
 			
+	
 			if(userCredential == savedCredential){
 			
 			globalAutologinHandler.loggedIn=true
+			
 			sendResponse({"valid":true});
 			}
 				
@@ -472,6 +515,16 @@ chrome.runtime.onMessage.addListener(
 			
 	
 	
+	}else if (request.action == "getPromptAtStartup"){
+	
+			
+			promptrequired=localStorage["promptrequired"]
+			
+			
+				sendResponse({"promptrequired":(promptrequired === 'true') });
+			
+	
+	
 	}else if (request.action == "updatePromptAtStartup"){
 	
 			
@@ -482,7 +535,7 @@ chrome.runtime.onMessage.addListener(
 			
 	
 	
-	} else if (request.action == "hasCredential"){
+	}else if (request.action == "hasCredential"){
 	
 			
 			

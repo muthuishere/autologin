@@ -53,7 +53,10 @@ var autoLoginCapture={
 	
 	
 		document.querySelector("div#autologincapture").className = "enable";;
-		document.querySelector("div#autologincapture").setAttribute("Title","Click to Disable Capturing Auto Login Information");
+		document.querySelector("div#autologincapture").setAttribute("title","Click to Disable Capturing Auto Login Information");
+		document.querySelector("div#autologincapture").setAttribute("alt","Click to Disable Capturing Auto Login Information");
+		document.querySelector("div#autologincapture").innerHTML="Click to Disable Capturing Auto Login Information";
+	//	document.querySelector("a#autologincapturelink").setAttribute("Title","Click to Disable Capturing Auto Login Information");
 	//initAutoLoginCapture()
 	
 	//if(undefined != autoLoginCapture.captureForm){
@@ -67,7 +70,9 @@ var autoLoginCapture={
 	}else{
 	
 document.querySelector("div#autologincapture").className = "disable";
-document.querySelector("div#autologincapture").setAttribute("Title","Click to Capture Auto Login Information");
+document.querySelector("div#autologincapture").setAttribute("title","Click to Capture Auto Login Information");
+document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto Login Information";
+//document.querySelector("a#autologincapturelink").setAttribute("Title","Click to Capture Auto Login Information");
 	removeAutoLoginCapture()
 	autoLoginCapture.startCapture = false
 	
@@ -109,7 +114,13 @@ document.querySelector("div#autologincapture").setAttribute("Title","Click to Ca
 					//var elemhtml='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
 					
 					var divelem=document.createElement("div");
-						divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
+						//divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:186px;width:191px;" class="disable" title="Click to Capture Auto Login Information" > &nbsp;</div></div>'
+						
+						divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;padding-top:186px;width:191px;font-face:Verdana;font-weight:bolder;font-size:11px;text-align:center" class="disable" title="Click to Capture Auto Login Information" > Click to Capture Auto Login Information</div></div>'
+						
+						
+						
+						
 						document.body.appendChild(divelem);
 
 

@@ -2,12 +2,13 @@
   
   "manifest_version": 2,
   "name": "Auto Login",
-  "version": "2.0.0",
+  "version": "2.3.0",
 
 
-  "description": "Automatically login to your favourite websites, even if session timed out",
+  "description": "Automatically login to your favourite websites without entering credentials ",
   "icons": {  
    "48" : "images/autologin-48.png",
+   "64" : "images/autologin-64.png",
     "128" : "images/autologin-128.png"
 	},
 
@@ -16,11 +17,6 @@
   "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
  "background": { "scripts": ["scripts/Helper.js","global.js"] },
  
-    "page_action" :
-  {
-    "default_icon" : "images/autologin-19.png",
-    "default_title" : "Add AutoLogin for the page"
-  },
   
  "web_accessible_resources": [
     "images/*.png"  

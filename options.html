@@ -18,8 +18,13 @@
 
 <div  style="background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));">
 <div id="header" class="container">
-	<table width="100%"><tbody><tr><td><div id="logo">
-		<h1><a href="#">Autologin Options</a></h1>
+	<table width="100%"><tbody><tr><td valign="middle">
+	
+	<div style="float:left"><img src="images/autologin-128.png"></div>
+	<div id="logo" style="float:left;padding-top:48px;">
+		<h1 >
+		
+		<a href="#">Autologin Options</a></h1>
 		
       </div></td><td align="right">
 	<div id="navigation" style="visibility:hidden;float:right">
@@ -37,8 +42,8 @@
 <div class="container">
 <div id="page-wrapper">
 	
-	<div id="" >
-		<div id="divSites" class="boxA" style="display:none;width:800px">
+	<div id="" class="boxA">
+		<div id="divSites"  style="display:none;width:800px">
 			<div id="sitechangedstatus" style="float:left;margin-left:50px;text-align:center;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></div>
 			
 			<table id="tblOptions" style="width:680px" >
@@ -64,7 +69,7 @@
 			<div style="height:20px;clear:both"> &nbsp; </div>
 		</div>
 		
-		<div id="divpasswordask" class="boxA" style="width:800px">
+		<div id="divpasswordask"  style="width:800px">
 			<table id="" style="width:680px" >
 			<tbody>
 			<tr>
@@ -86,25 +91,27 @@
 			<div style="height:20px;clear:both"> &nbsp; </div>
 		</div>
 		
-			<div id="divpasswordchange" class="boxA" style="display:none;width:800px">
+			<div id="divpasswordchange"  style="display:none;width:800px">
 			
-			<table id="tblsettings" style="width:680px" >
+			
+			
+			<table id="tblsettings" style="width: 680px;" cellpadding="10">
 			<tbody>
 			<tr>
 			
-			<th align="right"><div style="float:right"> </div></th>			
+			<th align="left"><u>Settings</u></th>			
 			
 			</tr>
 			
 			
 			<tr>
 		
-			<th> <input type="checkbox" id="chkpromptAutologin" value="1" />Prompt Password for Autologin  per session </th>			
+			<td style="text-align:left"> <input type="checkbox" id="chkpromptAutologin" value="1">Prompt Password before Autologin  per session </td>			
 			
 			</tr>
-			<tr  >
+			<tr>
 			
-			<th> <input type="button" id="btnshowchangepwd" value="Change Password" /> </th>			
+			<td style="text-align:left"> <input type="button" id="btnshowchangepwd" value="Change Password"> </td>			
 			
 			</tr>
 			
@@ -118,6 +125,7 @@
 			
 			</tbody>
 			</table>
+			
 			
 			
 			
@@ -152,17 +160,36 @@
 			<tr>
 			<td colspan="2" align="right">
 			<span id="validatepwderror" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				<span id="validatepwdsuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
 			</td>
 			</tr>
 			
 			</tbody>
 			</table>
+			
 			<div style="height:20px"> &nbsp; </div>
 			
 			<div style="height:20px;clear:both"> &nbsp; </div>
 		</div>
+	
+	
+	
+	<table  style="width:680px;" >
+			<tbody>
+			<tr>
+			
+			<th align="right">
+			
+			
+			
+			<span id="statusError" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				<span id="statusSuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				</th>			
+				</tr></tbody></table>
 	</div>
 	
+	
+				
 </div>
 </div>
 <div id="copyright">

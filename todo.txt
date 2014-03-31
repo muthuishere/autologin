@@ -34,3 +34,14 @@
 				if password is not set
 						show a div to set password
 				
+				
+globalAutologinHandler.loggedIn=true
+
+globalAutologinHandler.loggedIn=true
+
+
+	On Auto Logging in
+			check if false , 
+				if yes , 
+					show a div asking for autologging password
+						validate password and then start auto logging				

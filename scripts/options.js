@@ -115,12 +115,23 @@ var autoLoginOptions = {
 	},
 	changePassword:function(pwd){
 	
-			chrome.extension.sendMessage({action: "validateCredential",info:pwd}, function(response) {
+		chrome.extension.sendMessage({action: "addCredential",info:document.querySelector("#txtnewpassword").value}, function(response) {
 					
-										
-						autoLoginOptions.changePassword(document.querySelector("#txtnewpassword").value)
-						alert("Password Changed")
-						autoLoginOptions.loadSettings();
+					if(response.valid){
+						
+							autoLoginOptions.flashdiv("statusSuccess","Successfully changed Password");
+								
+								autoLoginOptions.viewSettings();
+								
+						
+					}else{
+						//show sites
+							
+								autoLoginOptions.flashdiv("statusError","Error in Updating Password Password");
+								document.querySelector("#txtnewpassword").focus(); 
+								return;
+					}
+						
 					
 					
 					});
@@ -133,19 +144,19 @@ var autoLoginOptions = {
 	
 	setTimeout(function() {	
 	document.querySelector("#"+divid).innerHTML=""
-	}, 10000);
+	}, 5000);
 
 
 	},
 	onBtnCancelChangePasswordClicked:function(event){
-	autoLoginOptions.loadSettings();
+	autoLoginOptions.viewSettings();
 	},
 	onBtnChangePasswordClicked:function(event){
 	
 	
-	if(document.querySelector("#txtnewpassword").value != document.querySelector("#txtnewpassword").value){
+	if(document.querySelector("#txtnewpassword").value != document.querySelector("#txtrepeatnewpassword").value){
 	
-			autoLoginOptions.flashdiv("validatepwderror","Both Passwords should be same");
+			autoLoginOptions.flashdiv("statusError","Both Passwords should be same");
 			document.querySelector("#txtnewpassword").focus(); 
 			return;
 	
@@ -161,7 +172,7 @@ var autoLoginOptions = {
 						
 					}else{
 						//show sites
-					autoLoginOptions.flashdiv("validatepwderror","Invalid Old Password");
+					autoLoginOptions.flashdiv("statusError","Invalid Old Password");
 								
 								document.querySelector("#txtoldpassword").focus(); 
 								return;
@@ -208,8 +219,18 @@ var autoLoginOptions = {
 	document.querySelector("#divpasswordask").style.display="";
 	document.querySelector("#divpasswordchange").style.display="none";
 	
+	 document.querySelector("input#txtaskpassword").addEventListener('keypress', function(event){
+		 if (event.which == 13 || event.keyCode == 13) {
+            autoLoginOptions.validateViewOptions();
+            return false;
+        }
+        return true;
+		 }, false);
+		 
+		 
 	var buttonaskPassword = document.querySelector('input#btnaskpassword');
 		 buttonaskPassword.addEventListener('click', autoLoginOptions.validateViewOptions, false);
+		  document.querySelector("input#txtaskpassword").focus();
 		 
 	},
 	init:function(){
@@ -225,7 +246,7 @@ var autoLoginOptions = {
 					autoLoginOptions.showPasswordPane();
 				}else{
 					//show sites
-				
+					autoLoginOptions.hasPassword=false;
 					autoLoginOptions.menuSitesClicked("");
 				}
 					
@@ -257,6 +278,12 @@ var autoLoginOptions = {
 				}
 	
 	 },
+	 viewSettings: function () {
+	  
+			document.querySelector("#tblchangepwd").style.display="none";
+			document.querySelector("#tblsettings").style.display="";
+			
+			},
 	  loadSettings: function () {
 	  
 			document.querySelector("#tblchangepwd").style.display="none";
@@ -269,10 +296,21 @@ var autoLoginOptions = {
 			}, false);
 			
 			
-			document.querySelector('#chkpromptAutologin').addEventListener('change', function(event){
+			
+			chrome.extension.sendMessage({action: "getPromptAtStartup"}, function(response) {
+				
+						if(response.promptrequired == true)
+							document.querySelector('#chkpromptAutologin').setAttribute("CHECKED","CHECKED")
+						else	
+							document.querySelector('#chkpromptAutologin').removeAttribute("CHECKED")
+				
+						});
+						
+						
+			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
-					alert(event.target.checked)
-					chrome.extension.sendMessage({action: "hasCredential",promptAtStartup:event.target.checked}, function(response) {
+					
+					chrome.extension.sendMessage({action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {
 				
 				
 				
@@ -293,6 +331,7 @@ var autoLoginOptions = {
 			document.querySelector('#btnUpdate').style.display="";
         var rawxml = Helper.decrypt(localStorage["autologinxml"]);
 		
+		document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
        var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(rawxml);
         //tblOptions
 		//Add
@@ -314,7 +353,13 @@ var autoLoginOptions = {
 
         }
 		
-		
+		 document.querySelector("input.inp").addEventListener('keypress', function(event){
+		 if (event.which == 13 || event.keyCode == 13) {
+           autoLoginOptions.updateAutologin()
+            return false;
+        }
+        return true;
+		 }, false);
 		
 		
 		 var buttonUpdate = document.querySelector('a#btnUpdate');
@@ -418,7 +463,9 @@ searchdomain:function(domainname){
 				
 				autoLoginOptions.updateinputBoxStyle();
 				
-				document.querySelector("#sitechangedstatus").innerHTML="Succesfully Updated";
+				
+				autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
+				document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
 				
 				});
 				
