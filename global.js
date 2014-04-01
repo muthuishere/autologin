@@ -16,7 +16,7 @@ var globalAutologinHandler = {
 	addAutoLoginInfo:function(autoLoginInfo){
 	
 	var rawxml=""
-	console.log("addAutoLoginInfo")
+	
 	if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
 		rawxml="<root></root>"
 	else
@@ -134,7 +134,7 @@ return false;
   globalAutologinHandler.lastloggedInDomain=curdomainName
   globalAutologinHandler.lastloggedInTimeinMilliseconds=curTimeinMs;
   
-  console.log("Updating Success Login for domain" + globalAutologinHandler.lastloggedInDomain + " at time" + globalAutologinHandler.lastloggedInTimeinMilliseconds)
+  //console.log("Updating Success Login for domain" + globalAutologinHandler.lastloggedInDomain + " at time" + globalAutologinHandler.lastloggedInTimeinMilliseconds)
   
   
   },
@@ -394,7 +394,8 @@ var Utils={
 globalAutologinHandler.initExtension()
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if(changeInfo.status == "complete" ){
+ 
+    if(tab.url !== undefined && changeInfo.status == "complete" ){
 	
 	var status=globalAutologinHandler.canInjectURL(tab.url)
 		if(  status == 0) {
@@ -416,6 +417,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			}
 		}else if( status == 1) {
 		
+		//console.log("got complete")
 			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
 		
@@ -423,6 +425,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 						//script injected
 						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
 							//script injected
+						//	console.log("got autoLoginCapture" +tabId)
 						});
 			
 				});
@@ -582,7 +585,7 @@ chrome.runtime.onMessage.addListener(
   });
   
   
-  
+/*  
 // Called when the user clicks on the page action.
 chrome.pageAction.onClicked.addListener(function(tab) {
 
@@ -590,3 +593,4 @@ chrome.pageAction.onClicked.addListener(function(tab) {
 
 });
 
+*/

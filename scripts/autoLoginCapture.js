@@ -1,4 +1,8 @@
 
+if (undefined == autoLoginCapture){
+
+
+
 var autoLoginCapture={
 	captureForm:null,
 	startCapture:false,
@@ -6,17 +10,15 @@ var autoLoginCapture={
 	enableIconURL:"",
 	hoverIconURL:"",
 	backgroundIconURL:"",
-	
+		
 	init:function(){
-			// query all forms 
-
-			autoLoginCapture.disableIconURL=extnid +"images/capture_disable.png"
+		
+	autoLoginCapture.disableIconURL=extnid +"images/capture_disable.png"
 	autoLoginCapture.enableIconURL=extnid +"images/capture_enable.png"
 	autoLoginCapture.hoverIconURL=extnid +"images/capture_hover.png"
 	autoLoginCapture.backgroundIconURL=extnid +"images/bg.png"
-	
-			// if form has one password field and one text field and both elements are visible
-			//call the autologin function to show
+	// if form has one password field and one text field and both elements are visible
+	//call the autologin function to show
 
 			var forms = document.querySelectorAll('form');
 
@@ -25,11 +27,14 @@ var autoLoginCapture={
 				//work with element
 				
 				var res=autoLoginCapture.captureElementforForm(formelement)
-				
-				if(res){
-				flgCaptured=true
-				i=formelement.length+1;//to break
-				}
+						
+						if(res){
+						
+						flgCaptured=true
+						i=formelement.length+1;//to break
+						
+						break;
+						}
 					
 				
 				
@@ -46,7 +51,7 @@ var autoLoginCapture={
 	onCaptureAutoLogin:function(){
 	
 	
-
+//console.log("on capture autologin")
 	if(autoLoginCapture.startCapture == false){
 	
 	//Change Background url
@@ -60,7 +65,7 @@ var autoLoginCapture={
 	//initAutoLoginCapture()
 	
 	//if(undefined != autoLoginCapture.captureForm){
-		console.log("Starting listener" +  autoLoginCapture.captureForm)
+		//console.log("Starting listener" +  autoLoginCapture.captureForm)
 		autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, true);
 		//}
 	autoLoginCapture.startCapture = true
@@ -271,3 +276,4 @@ autoLoginCapture.init();
 
 
 
+}
