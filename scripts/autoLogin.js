@@ -1,3 +1,5 @@
+if (undefined == autoLogin){
+
 var autoLogin = {
     doc: null,
     initialized: false,
@@ -481,5 +483,6 @@ var autoLogin = {
 
 autoLogin.init()
 
+}
 //window.addEventListener("load", function(e) { autoLogin.handlePageLoad(); }, false); 
 //window.addEventListener("unload", function() {autoLogin.uninit()}, false);
