@@ -4,12 +4,14 @@ if (undefined == autoLoginCapture){
 
 
 var autoLoginCapture={
-	captureForm:null,
+	captureForm:null,	
 	startCapture:false,
 	disableIconURL:"",
 	enableIconURL:"",
 	hoverIconURL:"",
 	backgroundIconURL:"",
+	alreadySubmitted:false,
+		
 		
 	init:function(){
 		
@@ -62,12 +64,13 @@ var autoLoginCapture={
 		document.querySelector("div#autologincapture").setAttribute("alt","Click to Disable Capturing Auto Login Information");
 		document.querySelector("div#autologincapture").innerHTML="Click to Disable Capturing Auto Login Information";
 	//	document.querySelector("a#autologincapturelink").setAttribute("Title","Click to Disable Capturing Auto Login Information");
-	//initAutoLoginCapture()
 	
-	//if(undefined != autoLoginCapture.captureForm){
-		//console.log("Starting listener" +  autoLoginCapture.captureForm)
-		autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, true);
-		//}
+	initAutoLoginCapture()
+	
+	
+		
+	//	autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, true);
+		
 	autoLoginCapture.startCapture = true
 	
 					
@@ -78,7 +81,7 @@ document.querySelector("div#autologincapture").className = "disable";
 document.querySelector("div#autologincapture").setAttribute("title","Click to Capture Auto Login Information");
 document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto Login Information";
 //document.querySelector("a#autologincapturelink").setAttribute("Title","Click to Capture Auto Login Information");
-	removeAutoLoginCapture()
+	autoLoginCapture.removeAutoLoginCapture()
 	autoLoginCapture.startCapture = false
 	
 	}
@@ -162,6 +165,10 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 	},
 	onBeforeAutoLoginSubmit:function(event){
 		
+		//if(autoLoginCapture.alreadySubmitted == true)
+		//	return
+			//alert("Inside")
+		autoLoginCapture.alreadySubmitted=true
 	var inputtxtelems=autoLoginCapture.captureForm.querySelectorAll('input');
 	
 
@@ -209,7 +216,7 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 						else if(inputelement.getAttribute('id') != null )
 								autoLoginInfo.btnelement=inputelement.getAttribute('id')
 							
-					}else if(elemType.isEqual("text")){
+					}else if(elemType.isEqual("text") || elemType.isEqual("email")){
 						autoLoginInfo.userelement=inputelement.name;
 						autoLoginInfo.username=inputelement.value;
 						
@@ -237,16 +244,114 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 				}
 			
 			return true;
+	},
+
+addClickEvents:function(btnelems){
+
+			for(var i in btnelems){
+			if(btnelems[i] instanceof Object){
+				//do stuff with postAs[i];
+				autoLoginCapture.addClickEventHandler(btnelems[i])
+			}
+		}
+
+},
+	addClickEventHandler:function(btnelem){
+	
+	
+	if( null == btnelem || null == btnelem.outerHTML || btnelem.outerHTML.toLowerCase().indexOf("reset") >0 || btnelem.outerHTML.toLowerCase().indexOf("cancel") > 0 )
+		return;
+	
+	
+		var btnhandler=""
+		
+		//console.log(btnelem.outerHTML.toLowerCase())
+		console.log(btnelem.outerHTML.toLowerCase().indexOf("onclick"))
+		if(btnelem.outerHTML.toLowerCase().indexOf("onclick") >0 ){
+		console.log(btnelem)
+			btnhandler=btnelem.getAttributeNode('onclick').nodeValue
+			btnelem.getAttributeNode('onclick').nodeValue=""
+			
+		}
+		
+		console.log("Capturing for  " + btnelem.outerHTML)
+		//verify onclick attribute exists
+		
+			btnelem.addEventListener("click", function(event){
+				autoLoginCapture.onBeforeAutoLoginSubmit(event)
+				eval(btnhandler)
+			}, false);
+		
+	
+	
 	}
+	
+	
 	
 }
 
 
 function initAutoLoginCapture(){
 
+console.log("Starting listener" +  autoLoginCapture.captureForm)
+
 		if(undefined != autoLoginCapture.captureForm){
 		//console.log("Starting listener" +  autoLoginCapture.captureForm)
 		autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
+		
+		// Add enter event to password field element 
+			//Verify Password field has been entered & userfield has been entered
+			
+		var pwdElem=autoLoginCapture.captureForm.querySelector("input[type='password']");
+		var pwdhandler=""
+		if(pwdElem.outerHTML.toLowerCase().indexOf("onkeydown") >0 ){
+			pwdhandler=pwdElem.getAttributeNode('onkeydown').nodeValue
+			pwdElem.getAttributeNode('onkeydown').nodeValue=""
+		}
+		
+		
+		pwdElem.addEventListener("keydown", function(event){
+		if(event.keycode==13) {
+		
+				//if(autoLoginCapture.captureForm.querySelector("input[type='password']").value !== "" )
+					autoLoginCapture.onBeforeAutoLoginSubmit(event)
+					
+					eval(pwdhandler)
+			}
+	
+		}, false);
+		
+		var btnelems=autoLoginCapture.captureForm.querySelectorAll("input[type='button']")
+		
+		if(null !==  btnelems){
+		
+			autoLoginCapture.addClickEvents(btnelems)
+			
+
+				
+		}
+		
+		
+		var aTags=autoLoginCapture.captureForm.querySelectorAll("a")
+		if(null !==  aTags){
+		autoLoginCapture.addClickEvents(aTags)
+		}
+				
+			
+		
+		
+		var btnTags=autoLoginCapture.captureForm.querySelectorAll('button')
+		
+		if(null !==  btnTags){
+			autoLoginCapture.addClickEvents(btnTags)
+				
+			
+		}
+			
+		
+		//Add on click event to any <a> tag or <input> tag or <button> tag
+			//Verify Password field has been entered & userfield has been entered
+		
 		}
 		  
 	
@@ -255,8 +360,10 @@ function initAutoLoginCapture(){
 
 function removeAutoLoginCapture(){
 
-if(undefined != autoLoginCapture.captureForm)
+if(undefined != autoLoginCapture.captureForm){
 			autoLoginCapture.captureForm.removeEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
+			
+			}
 	
 }
 

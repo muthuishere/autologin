@@ -1,8 +1,8 @@
 {
   
   "manifest_version": 2,
-  "name": "Auto Login",
-  "version": "2.4.0",
+  "name": "Auto Login (DEV)",
+  "version": "2.5.0",
 
 
   "description": "Automatically login to your favourite websites without entering credentials ",

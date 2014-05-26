@@ -23,7 +23,26 @@ var globalAutologinHandler = {
 		rawxml=Helper.decrypt(localStorage["autologinxml"])
 	
 	
+	console.log("Start addAutoLoginInfo with XML " + rawxml)	
 	
+	//Set Autologin List first
+	  var parser = new DOMParser();
+     var docxml = parser.parseFromString(rawxml, "text/xml");
+	globalAutologinHandler.updateResponse( docxml)
+	
+	//Remove from Autologin Object Autologin List first
+	var removeResponse=globalAutologinHandler.removeSite(autoLoginInfo)
+	
+	//Site removed , Update XML
+	if(removeResponse == true){
+	
+	  var oSerializer = new XMLSerializer();
+	rawxml = oSerializer.serializeToString(globalAutologinHandler.autologinXMLList);
+		console.log("After removal" + rawxml)					
+							
+	}
+	
+		
 	rawxml=rawxml.replace("</root>",autoLoginInfo + "</root>");
 		
 		
@@ -204,6 +223,53 @@ return false;
 
 
 
+removeSite:function(autologinRawXML){
+		
+   var parser = new DOMParser();
+   var autologinObject = parser.parseFromString(autologinRawXML, "text/xml");
+   
+   var currentURL= globalAutologinHandler.getXMLElementval(autologinObject,"loginurl")
+   
+
+
+	
+		try{
+
+
+var divs = globalAutologinHandler.autologinXMLList.getElementsByTagName("site"), i=divs.length;
+  
+  if(i == 0)
+	  return false;
+
+while (i--) {
+			
+		
+		iurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
+		
+		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl)){
+					//alert(divs[i].url)
+						 // return divs[i];
+						 
+						 //remove site
+						  divs[i].parentNode.removeChild(divs[i]);
+						   
+		
+						  return true;
+						  
+		}
+						  
+
+		}
+
+		 }catch(exception){
+			 
+			console.log("Issue" + exception) 
+
+		 }
+
+			return false;
+
+	},
 	
 	getXMLElementval:function(node,elemName){
 		
@@ -276,6 +342,7 @@ globalAutologinHandler.autologinList=dummyresp;
 	xhttp.open("GET",dname,false); 
 	xhttp.send(); 
 	
+	
 	localStorage["autologinxml"] =Helper.encrypt(xhttp.responseText);
 	globalAutologinHandler.loadDoc();
 	}, 
@@ -286,6 +353,7 @@ globalAutologinHandler.autologinList=dummyresp;
 	return;
 	
 			var rawxml= Helper.decrypt(localStorage["autologinxml"] );
+			
 			
 			  var parser = new DOMParser();
             var docxml = parser.parseFromString(rawxml, "text/xml");
@@ -304,6 +372,8 @@ globalAutologinHandler.autologinList=dummyresp;
 		globalAutologinHandler.loggedIn=true
 	else
 			globalAutologinHandler.loggedIn=false
+			
+			
 			
 			console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
