@@ -23,7 +23,7 @@ var globalAutologinHandler = {
 		rawxml=Helper.decrypt(localStorage["autologinxml"])
 	
 	
-	console.log("Start addAutoLoginInfo with XML " + rawxml)	
+	//console.log("Start addAutoLoginInfo with XML " + rawxml)	
 	
 	//Set Autologin List first
 	  var parser = new DOMParser();
@@ -38,7 +38,7 @@ var globalAutologinHandler = {
 	
 	  var oSerializer = new XMLSerializer();
 	rawxml = oSerializer.serializeToString(globalAutologinHandler.autologinXMLList);
-		console.log("After removal" + rawxml)					
+		// console.log("After removal" + rawxml)					
 							
 	}
 	

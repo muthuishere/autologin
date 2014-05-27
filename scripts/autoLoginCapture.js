@@ -87,6 +87,13 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 	}
 	
 	},
+	isVisible:function(elem){
+		if(elem.style.visibility == "hidden")
+			return false
+			
+			
+		return elem.offsetWidth > 0 || elem.offsetHeight > 0;
+	},
 	captureElementforForm:function(formelement){
 				
 		try{
@@ -101,8 +108,8 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 			if(inputtxtelems.length>1 && inputpwdelems.length==1  ){
 			//check visibility
 			
-			var isVisibleuserElement = inputtxtelems[0].offsetWidth > 0 || inputtxtelems[0].offsetHeight > 0;
-			var isVisiblepwdElement = inputpwdelems[0].offsetWidth > 0 || inputpwdelems[0].offsetHeight > 0;
+			var isVisibleuserElement =autoLoginCapture.isVisible(inputtxtelems[0])// .offsetWidth > 0 || inputtxtelems[0].offsetHeight > 0;
+			var isVisiblepwdElement = autoLoginCapture.isVisible(inputpwdelems[0]) //inputpwdelems[0].offsetWidth > 0 || inputpwdelems[0].offsetHeight > 0;
 
 			if(isVisiblepwdElement){
 			
@@ -209,16 +216,29 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 						autoLoginInfo.pwdelement=inputelement.name;
 						autoLoginInfo.password=inputelement.value;
 						
-					}else if(elemType.isEqual("submit")){
+					}else if(autoLoginCapture.isVisible(inputelement) == true && (elemType.isEqual("submit") || elemType.isEqual("button"))){
 					
+					
+					
+					
+					
+					
+					if(elemType.isEqual("submit")  || inputelement.value.ispartof("submit,log,enter,sign") ){
+					//console.log("getting for " + inputelement.value)
 						if(inputelement.getAttribute('name') != null )
 								autoLoginInfo.btnelement=inputelement.getAttribute('name')
 						else if(inputelement.getAttribute('id') != null )
 								autoLoginInfo.btnelement=inputelement.getAttribute('id')
 							
+							}
 					}else if(elemType.isEqual("text") || elemType.isEqual("email")){
+					
+					if(inputelement.value != ""){
+					
 						autoLoginInfo.userelement=inputelement.name;
 						autoLoginInfo.username=inputelement.value;
+						
+						}
 						
 					}
 			}
@@ -232,6 +252,7 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 			
 		var autoLoginXmlInfo=" <site> <url>"+autoLoginInfo.url+"</url> <loginurl>"+autoLoginInfo.loginurl+"</loginurl> <username>"+autoLoginInfo.username+"</username> <password>"+autoLoginInfo.password+"</password> <userelement>"+autoLoginInfo.userelement+"</userelement> <pwdelement>"+autoLoginInfo.pwdelement+"</pwdelement> <enabled>true</enabled><btnelement>"+autoLoginInfo.btnelement+"</btnelement> <formelement>"+autoLoginInfo.formelement+"</formelement> </site>"
 		 
+		 //console.log(autoLoginXmlInfo)
 		 
 			chrome.extension.sendMessage({action: "addAutoLoginInfo",info:autoLoginXmlInfo}, function(response) {
 						
@@ -259,22 +280,22 @@ addClickEvents:function(btnelems){
 	addClickEventHandler:function(btnelem){
 	
 	
-	if( null == btnelem || null == btnelem.outerHTML || btnelem.outerHTML.toLowerCase().indexOf("reset") >0 || btnelem.outerHTML.toLowerCase().indexOf("cancel") > 0 )
+	if( null == btnelem || null == btnelem.outerHTML || btnelem.outerHTML.ispartof("clear,cancel,reset") == true )
 		return;
 	
 	
 		var btnhandler=""
 		
 		//console.log(btnelem.outerHTML.toLowerCase())
-		console.log(btnelem.outerHTML.toLowerCase().indexOf("onclick"))
+	
 		if(btnelem.outerHTML.toLowerCase().indexOf("onclick") >0 ){
-		console.log(btnelem)
+		
 			btnhandler=btnelem.getAttributeNode('onclick').nodeValue
 			btnelem.getAttributeNode('onclick').nodeValue=""
 			
 		}
 		
-		console.log("Capturing for  " + btnelem.outerHTML)
+		
 		//verify onclick attribute exists
 		
 			btnelem.addEventListener("click", function(event){
@@ -293,7 +314,7 @@ addClickEvents:function(btnelems){
 
 function initAutoLoginCapture(){
 
-console.log("Starting listener" +  autoLoginCapture.captureForm)
+//console.log("Starting listener" +  autoLoginCapture.captureForm)
 
 		if(undefined != autoLoginCapture.captureForm){
 		//console.log("Starting listener" +  autoLoginCapture.captureForm)
@@ -378,6 +399,23 @@ if (typeof String.prototype.isEqual!= 'function') {
      };
 }
 
+if (typeof String.prototype.ispartof!= 'function') {
+    String.prototype.ispartof = function (str){
+		//Split comma delimeted strings and verify 
+		
+		   var lst=str.split(",")
+			
+
+			for(i=0;i<lst.length;i++){
+
+			if(this.toUpperCase().indexOf(lst[i].toUpperCase()) >= 0)
+				return true;
+			
+			}
+
+        return false ;
+     };
+}
 
 autoLoginCapture.init();
 
