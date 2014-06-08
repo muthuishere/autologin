@@ -1,0 +1,12 @@
+{
+  "name": "autologin",
+  "title": "Auto Login",
+  "icon":"images/autologin-32.png",
+  "icon64":"images/autologin-64.png",
+  "homepage":"https://www.facebook.com/pages/Auto-Login/433751853437039",  
+  "id": "jid1-YCnPzZGCF1VJDA",
+  "description": "Automatically login to your favourite websites without entering credentials",
+  "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
+  "license": "MPL 2.0",
+  "version": "0.1"
+}
