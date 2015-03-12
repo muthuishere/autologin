@@ -5,13 +5,27 @@ if (undefined == autoLoginCapture){
 
 var autoLoginCapture={
 	captureForm:null,	
+	elems:[],
 	startCapture:false,
 	disableIconURL:"",
 	enableIconURL:"",
 	hoverIconURL:"",
 	backgroundIconURL:"",
 	alreadySubmitted:false,
-		
+	getXPath:function ( element )
+	{
+		var xpath = '';
+		for ( ; element && element.nodeType == 1; element = element.parentNode )
+		{
+			var id = $(element.parentNode).children(element.tagName).index(element) + 1;
+			id > 1 ? (id = '[' + id + ']') : (id = '');
+			xpath = '/' + element.tagName.toLowerCase() + id + xpath;
+		}
+		return xpath;
+	},	
+	getElementByXpath:function  (path) {
+		return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+	},	
 		
 	init:function(){
 		
@@ -22,32 +36,93 @@ var autoLoginCapture={
 	// if form has one password field and one text field and both elements are visible
 	//call the autologin function to show
 
-			var forms = document.querySelectorAll('form');
+	
+	//set lostfocus for all elements
+	//set key press events for all input elements
+		//if keypress event is enter , save all values
+			//xpath & value
+			// elem				
+				// xpath
+				// value
+				// event
+			
+			
+	var flgCaptured=false
+			var forms = document.querySelectorAll("input,select,textarea button");
 
-			var flgCaptured=false
 			for (var i = 0, formelement; formelement = forms[i]; i++) {
-				//work with element
-				
-				var res=autoLoginCapture.captureElementforForm(formelement)
-						
-						if(res){
-						
-						flgCaptured=true
-						i=formelement.length+1;//to break
-						
-						break;
-						}
+			
+			
+			
+			if(isVisible(formelement) && formelement.getAttribute("type") !== "hidden"){
+			
+			flgCaptured=true
+					formelement.addEventListener('blur',function(e){
 					
-				
-				
+					
+					//send xpath & value to background page
+					
+							  e = e || window.event;
+							 if (e.returnValue === false || e.isDefaultPrevented)
+							 {
+								  
+								 //do stuff, like validation or something, then you could:
+								 e.cancelBubble = true;
+								 if (e.stopPropagation)
+								 {
+									 e.stopPropagation();
+								 }
+							 }
+					
+					
+					}, false)
+					
+					
+					formelement.addEventListener('keypress',function(e){
+					
+					//if keypress is enter
+					//send xpath & value to background page and enterkey
+					
+					// event is submit
+					
+					  e = e || window.event;
+							 if (e.returnValue === false || e.isDefaultPrevented)
+							 {
+								  
+								 //do stuff, like validation or something, then you could:
+								 e.cancelBubble = true;
+								 if (e.stopPropagation)
+								 {
+									 e.stopPropagation();
+								 }
+							 }
+							 
+					
+					}, false)
+					
+					formelement.addEventListener('click',function(e){
+					
+					//check element is button
+					
+					//send element
+					//event click
+					
+					}, false)
+					
+					
+					
+			
 			}
-
-			if(!flgCaptured){
-
-			//No Captured check for whole body
-				autoLoginCapture.captureElementforForm(document.querySelector('body'))
-
+			
 			}
+			
+		
+
+			
+			
+			
+
+			
 
 	},
 	onCaptureAutoLogin:function(){
