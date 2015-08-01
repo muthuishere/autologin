@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "Auto Login",
   "short_name": "Auto Login",
-  "version": "2.5.0",
+  "version": "2.6.0",
 
 
   "description": "Automatically login to your favourite websites without entering credentials ",
@@ -14,16 +14,22 @@
 	},
 
   
-  
+    "page_action": {
+		"default_title": "Page action"
+	  },
+	  
   "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
  "background": { "scripts": ["scripts/Helper.js","global.js"] },
  
   
  "web_accessible_resources": [
-    "images/*.png"  
+    "images/*.png",  
+	"images/*.jpg", 
+	"css/*.css" ,
+	"auth.html" 
   ],
   
   "options_page": "options.html",
-  "permissions": ["tabs", "http://*/*", "https://*/*"]
+  "permissions": ["tabs","declarativeContent","webRequest","webRequestBlocking", "http://*/*", "https://*/*"]
   
 }

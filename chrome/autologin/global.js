@@ -1,5 +1,6 @@
 
 
+
 var globalAutologinHandler = {
 	doc:null ,
 	initialized:false,
@@ -10,9 +11,191 @@ var globalAutologinHandler = {
 	
 	blacklistDomains:new Array(),
 	loggedIn:true,
+	test:function(){
+		
+		var rawxml='<root><site authtype="form"><url>http://localhost:9999/auto.html</url> <loginurl>http://localhost:9999/auto.html</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"Username") or contains(@name,"Username")]</xpath><value>example@gmail.com</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"Password") or contains(@name,"Password")]</xpath><value>123456</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"mybutton") or contains(@name,"mybutton")]</xpath><value></value><type>button</type></element><element><event>submit</event><xpath>//*[contains(@id,"_TCSLoginUserForm") or contains(@name,"_TCSLoginUserForm")]</xpath><value></value><type>form</type></element></elements></site><site authtype="form"><url>https://github.com/login</url> <loginurl>https://github.com/login</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"login") or contains(@name,"login")]</xpath><value>muthuishere@gmail.com</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"password") or contains(@name,"password")]</xpath><value>Gangster1</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"commit") or contains(@name,"commit")]</xpath><value></value><type>button</type></element></elements></site><site authtype="form"><url>http://127.0.0.1:9999/auto.html</url> <loginurl>http://127.0.0.1:9999/auto.html</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"Username") or contains(@name,"Username")]</xpath><value>user</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"Password") or contains(@name,"Password")]</xpath><value>password</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"mybutton") or contains(@name,"mybutton")]</xpath><value></value><type>button</type></element><element><event>submit</event><xpath>//*[contains(@id,"_TCSLoginUserForm") or contains(@name,"_TCSLoginUserForm")]</xpath><value></value><type>form</type></element></elements></site></root>'
+		
+		localStorage["autologinxml"]=Helper.encrypt(rawxml)
+		
+	},
+
+		migrate:function(){
+		
+		if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
+			return
+		
+		
+		var rawxml=Helper.decrypt(localStorage["autologinxml"])
+		
+			if(rawxml.indexOf("<elements>") > 0){
+				
+				console.log("XML already migrated")
+				return 
+			}
+			
+		
+	
+		  var parser = new DOMParser();
+            var docxml = parser.parseFromString(rawxml, "text/xml");
+			
+			var legacyjson = new Array();
+			var migratedXML = "<root>";
+			
+			var divs = docxml.getElementsByTagName("site"), i=divs.length;
+			  //globalAutologinHandler.logmessage("getResposnseasJSON" + i );
+			  if(i == 0)
+				  return null;
+	  
+
+			while (i--) {
+			
+				var partner={}
+				partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
+
+				  partner.loginurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
+				 partner.username=globalAutologinHandler.getXMLElementval(divs[i],"username");
+				
+					   partner.password=globalAutologinHandler.getXMLElementval(divs[i],"password");
+				  partner.userelement=globalAutologinHandler.getXMLElementval(divs[i],"userelement");
+				  partner.pwdelement=globalAutologinHandler.getXMLElementval(divs[i],"pwdelement");
+				  
+				  
+				  partner.btnelement=globalAutologinHandler.getXMLElementval(divs[i],"btnelement");
+				  partner.enabled=globalAutologinHandler.getXMLElementval(divs[i],"enabled");
+				  partner.formelement=globalAutologinHandler.getXMLElementval(divs[i],"formelement");
+				   
+				   	if(partner.url == "")
+					continue;
+				
+				
+				//migratedXML  += "<site authtype='form'>";
+				migratedXML  += '<site authtype="form">';
+				migratedXML  += "<url>"+partner.url+"</url> <loginurl>"+partner.loginurl+"</loginurl><enabled>"+ partner.enabled +"</enabled><elements>"
+				
+				
+				//Uselement
+				migratedXML  += "<element>"
+				
+				migratedXML  += "<event/>"
+				
+			migratedXML  += '<xpath>' + '//input[contains(@id,"'+  partner.userelement +'") or contains(@name,"'+  partner.userelement +'")]' +'</xpath>';
+			//migratedXML  += "<xpath>" + "//input[contains(@id,'"+  partner.userelement +"') or contains(@name,'"+  partner.userelement +"')]" +"</xpath>";
+				migratedXML  += "<value>" + partner.username  +"</value>"
+				migratedXML  += "<type>text</type>"
+				
+				migratedXML  += "</element>"
+				
+				//Password
+				migratedXML  += "<element>"				
+				migratedXML  += "<event/>"				
+				migratedXML  += '<xpath>' + '//input[contains(@id,"'+  partner.pwdelement +'") or contains(@name,"'+  partner.pwdelement +'")]' +'</xpath>';
+				migratedXML  += "<value>" + partner.password  +"</value>"
+				migratedXML  += "<type>password</type>"				
+				migratedXML  += "</element>"
+				
+				//Button
+				if(partner.btnelement !== ""){
+					migratedXML  += "<element>"	
+					
+					migratedXML  += "<event>click</event>"				
+					migratedXML  += '<xpath>' + '//*[contains(@id,"'+  partner.btnelement +'") or contains(@name,"'+  partner.btnelement +'")]' +'</xpath>';
+					migratedXML  += "<value></value>"
+					migratedXML  += "<type>button</type>"				
+					migratedXML  += "</element>"
+					
+				}
+				//form
+				if(partner.formelement !== ""){
+					migratedXML  += "<element>"	
+					
+					migratedXML  += "<event>submit</event>"				
+					migratedXML  += '<xpath>' + '//*[contains(@id,"'+  partner.formelement +'") or contains(@name,"'+  partner.formelement +'")]' +'</xpath>';
+					migratedXML  += "<value></value>"
+					migratedXML  += "<type>form</type>"				
+					migratedXML  += "</element>"
+					
+				}
+				
+			
+				
+				
+				migratedXML  += "</elements>"
+				migratedXML  += "</site>";
+			}
+			migratedXML  += "</root>";
+
+		//Change old raw xml
+		console.log(migratedXML)
+		localStorage["autologinxml"]=Helper.encrypt(migratedXML)
+	},
+	
+	printraw:function(){
+		
+		var rawxml=Helper.decrypt(localStorage["autologinxml"])
+		console.log(rawxml)
+	},
+	addAutoLoginElements:function(obj){
+	
+
+
+				
+		console.log(obj)
+		var autoLoginXmlInfo=" <site authtype='form'> <url>"+obj.url+"</url> <loginurl>"+obj.loginurl+"</loginurl><enabled>true</enabled><elements>"
+		
+	var elems=obj.elements
+			for (index = 0, len = elems.length; index < len; ++index) {
+				autoLoginXmlInfo += "<element>"
+				
+				 autoLoginXmlInfo += "<event>"+ elems[index].event +"</event>"
+				 autoLoginXmlInfo += "<xpath>"+ elems[index].xpath +"</xpath>"
+				 autoLoginXmlInfo += "<value>"+ elems[index].value +"</value>"
+				 autoLoginXmlInfo += "<type>"+ elems[index].type +"</type>"
+				 
+				 
+				autoLoginXmlInfo += "</element>"
+				
+			}
+			autoLoginXmlInfo += "</elements></site>"
+			
+
 	
 	
+	var autoLoginInfo=autoLoginXmlInfo
+	var rawxml=""
 	
+	if( localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
+		rawxml="<root></root>"
+	else
+		rawxml=Helper.decrypt(localStorage["autologinxml"])
+	
+	
+	//console.log("Start addAutoLoginInfo with XML " + rawxml)	
+	
+	//Set Autologin List first
+	  var parser = new DOMParser();
+     var docxml = parser.parseFromString(rawxml, "text/xml");
+	globalAutologinHandler.updateResponse( docxml)
+	
+	//Remove from Autologin Object Autologin List first
+	var removeResponse=globalAutologinHandler.removeSite(autoLoginInfo)
+	
+	//Site removed , Update XML
+	if(removeResponse == true){
+	
+	  var oSerializer = new XMLSerializer();
+	rawxml = oSerializer.serializeToString(globalAutologinHandler.autologinXMLList);
+		// console.log("After removal" + rawxml)					
+							
+	}
+	
+		
+	rawxml=rawxml.replace("</root>",autoLoginInfo + "</root>");
+		
+		
+		localStorage["autologinxml"]= Helper.encrypt(rawxml);
+		globalAutologinHandler.loadDoc();
+	
+	},
 	addAutoLoginInfo:function(autoLoginInfo){
 	
 	var rawxml=""
@@ -158,6 +341,64 @@ return false;
   
   },
   
+  
+  
+   retriveSiteInfo: function(curlocation) {
+   
+   var result={}
+   result.status=1;
+   result.info=null;
+   
+   if(globalAutologinHandler.autologinList == null){
+			
+			
+		  return result;
+	  }
+ 
+  
+    var curdomainName=Utils.getdomainName(curlocation)
+	var curXMLObject=globalAutologinHandler.getXmlObjectForPage(curlocation) 
+	
+	var flgAutologinEnabled=true;
+	
+	if(curXMLObject != false){
+	var enabledautologinValue =  globalAutologinHandler.getXMLElementval(curXMLObject,"enabled"); 
+	
+	if(null == enabledautologinValue || ""== enabledautologinValue || enabledautologinValue == "true")
+		flgAutologinEnabled=true
+	else
+		flgAutologinEnabled=false
+	}
+	if(curXMLObject != false &&  flgAutologinEnabled == true && globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
+	
+		result.status=0;
+		result.info=curXMLObject
+		return result;
+		
+		
+	
+	}
+	if(globalAutologinHandler.blacklistDomains.indexOf(curdomainName) != -1){
+		
+		console.log("Blacklisted domain" + curdomainName)	
+		result.status=-1;
+		//return result;
+		
+	
+	}
+	
+	if(flgAutologinEnabled == false){
+	
+		console.log("Disabled domain" + curdomainName)	
+		result.status=-1;
+		//return result;
+		
+	}
+	
+	return result;
+	
+	
+   },
   // returns 
   //0 - If Script can be injected
   //-1 - If URL is blacklisted
@@ -168,7 +409,7 @@ return false;
 			
 		  return 1;
 	  }
-  
+ 
   
     var curdomainName=Utils.getdomainName(curlocation)
 	var curXMLObject=globalAutologinHandler.getXmlObjectForPage(curlocation) 
@@ -291,6 +532,71 @@ globalAutologinHandler.autologinXMLList=docxml;
 		try{
 
   globalAutologinHandler.logmessage(docxml );
+  console.log(docxml.innerHTML)
+var divs = docxml.getElementsByTagName("site"), i=divs.length;
+console.log(i)
+  //globalAutologinHandler.logmessage("getResposnseasJSON" + i );
+  if(i == 0)
+	  return null;
+	  
+
+while (i--) {
+	
+	 var partner= {}; 
+partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
+
+	  partner.loginurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
+	   partner.enabled=globalAutologinHandler.getXMLElementval(divs[i],"enabled");
+	  partner.fields =[];
+	  
+	  var elems = divs[i].getElementsByTagName("element");
+	  
+	  for( k=0;k< elems.length ;k++){
+		  
+		  var field={}
+		 field.xpath= globalAutologinHandler.getXMLElementval(elems[k],"xpath");
+		 field.type= globalAutologinHandler.getXMLElementval(elems[k],"type");
+		 field.value= globalAutologinHandler.getXMLElementval(elems[k],"value");
+		 field.event= globalAutologinHandler.getXMLElementval(elems[k],"event");
+		 partner.fields.push(field)
+	  }
+	  
+	 
+	  
+	   
+		jsonresp.push(partner);
+
+}
+
+console.log(jsonresp)
+
+dummyresp=JSON.stringify(jsonresp);
+
+globalAutologinHandler.autologinList=dummyresp;
+
+    //globalAutologinHandler.logmessage(dummyresp);
+
+		return true;  
+		 }catch(exception){
+			 
+			console.log("decode issue" + exception) 
+			return null;
+		 }
+
+
+
+	},
+	updateResponseold:function(docxml){
+		
+var dummyresp='';
+
+globalAutologinHandler.autologinXMLList=docxml;
+		var jsonresp = new Array();
+
+
+		try{
+
+  globalAutologinHandler.logmessage(docxml );
 var divs = docxml.getElementsByTagName("site"), i=divs.length;
   //globalAutologinHandler.logmessage("getResposnseasJSON" + i );
   if(i == 0)
@@ -362,6 +668,86 @@ globalAutologinHandler.autologinList=dummyresp;
 	
 	
 	}, 
+	try_count : 0,
+	last_request_id:null,
+	last_tab_id:null,
+	retrieveCredentials : function (status) {
+		var url = status.url;
+		console.log("auth required")
+		console.log(status)
+		
+		//TODO check url has authorization credentials in storage or user has set authorization credentials
+		
+		 var  siteInfo = globalAutologinHandler.retriveSiteInfo(url)
+		var domainxml=siteInfo.info 
+		
+		var curdomainName=Utils.getdomainName(url)
+		
+		console.log(domainxml)
+		
+		if (domainxml && domainxml.getAttribute("authtype") == "basic") {
+
+		var credential = {};
+		
+		 var elems = divs[i].getElementsByTagName("element");
+				  
+				  for( k=0;k< elems.length ;k++){
+					  
+					  var field={}
+					 field.xpath= autoLoginOptions.getXMLElementval(elems[k],"xpath");
+					 field.type= autoLoginOptions.getXMLElementval(elems[k],"type");
+					
+					 field.value= autoLoginOptions.getXMLElementval(elems[k],"value");
+					
+					  if(field.type === "password"){
+						 credential.password= field.value
+						
+					 }
+					 
+					  if(field.type === "text"){
+						 credential.username= field.value
+						
+					 }
+					
+				  }
+		//domainxml get username password
+			
+			//credential.username = "mnavaneethakrishnan@corpuk.net"
+				//credential.password = "July#2015"
+
+				if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
+					++globalAutologinHandler.try_count;
+				} else {
+					globalAutologinHandler.try_count = 0;
+				}
+
+				if (globalAutologinHandler.try_count < 2) {
+
+					console.log("try_count" + globalAutologinHandler.try_count)
+					globalAutologinHandler.last_request_id = status.requestId;
+					globalAutologinHandler.last_tab_id = status.tabId;
+
+					//cb(" ", success_color, credential, status.tabId);
+					console.log("sent credentials" + url)
+					 globalAutologinHandler.lastloggedInDomain=curdomainName
+					return {
+						authCredentials : {
+							username : credential.username,
+							password : credential.password
+						}
+					};
+
+				} else {
+					globalAutologinHandler.lastloggedInDomain=""
+					console.log("try_count exceeded")
+				}
+		}
+
+		return {};
+	},
+	authcallback:null,
+	authretrycount:0,
+	
 	initExtension:function() { 
 	
 	//validate and set logged in
@@ -373,7 +759,85 @@ globalAutologinHandler.autologinList=dummyresp;
 	else
 			globalAutologinHandler.loggedIn=false
 			
+			chrome.webRequest.onAuthRequired.addListener(function(details, callback){
+				// Prompt the user to enter credentials. Call 
+
+					globalAutologinHandler.authcallback=callback;
+					/*
+						chrome.tabs.insertCSS(null, {file:"scripts/autoLoginCredentials.js"}, function() {
+									//script injected
+								});
+						*/
+						
+				chrome.tabs.executeScript(null, {file:"scripts/autoLoginAuth.js"}, function() {
+					
+				});
+					
+					
+
+
+				/* chrome.windows.create({'url': 'auth.html', 'type': 'popup'}, function(window) {
+					
+						//callback({authCredentials: {username: xxx, password: xxx}});		
+						});
+				*/
+				//
+				// when they are ready.
+			}, {urls : ["<all_urls>"]}, ['asyncBlocking']);
+
+
+		//	chrome.webRequest.onAuthRequired.addListener(globalAutologinHandler.retrieveCredentials, {
+//			urls : ["<all_urls>"]
+//		}, ["blocking","responseHeaders"]);
+		
+		// chrome.webRequest.onBeforeRequest.addListener(function(details){
+			// console.log("received onBeforeRequest")
+			// console.log(details)
 			
+		// }, {
+			// urls : ["<all_urls>"]
+		// }, ["blocking"]);
+		
+		// chrome.webRequest.onHeadersReceived.addListener(function(details){
+			// console.log("received onHeadersReceived")
+			// console.log(details)
+			
+		// },
+			// {"urls":["*://*/*"]},
+			// ["responseHeaders"]);
+		// chrome.webRequest.onSendHeaders.addListener(function(details) {
+			
+			// //check details.url is not stored already , 
+					// //if its stored validate user password
+					// console.log(" received onSendHeaders")
+			// console.log(details)
+					
+			// var headers=""
+			
+				// //console.log(details.url, details.requestHeaders);
+				// for(var i = 0; i < details.requestHeaders.length; ++i) {
+					// var header = details.requestHeaders[i];
+					// headers = headers +  "," + header.name 
+					// if(header.name == "Authorization") {
+						// // this is my quick effort for parsing the auth value
+						// // formatted like "Basic [base64 of 'user:pass']"
+						// var b64val = header.value.split(" ")[1];
+						// var credArray = atob(b64val).split(":");
+						// var user = credArray[0];
+						// var pass = credArray[1];
+
+						// console.log("Basic Auth")
+						// console.log(user)
+						// console.log(pass)
+						
+						
+						// // now do something with user/pass
+					// }
+				// }
+				// console.log(headers)
+			// },
+			// {"urls":["*://*/*"]},
+			// ["requestHeaders"]);
 			
 			console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
@@ -461,22 +925,37 @@ var Utils={
   };
 
 //globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
+
 globalAutologinHandler.initExtension()
+globalAutologinHandler.printraw()
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
  
     if(tab.url !== undefined && changeInfo.status == "complete" ){
 	
-	var status=globalAutologinHandler.canInjectURL(tab.url)
+	 if(tab.url.indexOf("chrome") == 0  ){
+	  
+			return;
+		}
+  
+  var  siteInfo = globalAutologinHandler.retriveSiteInfo(tab.url)
+	var status=siteInfo.status
 		if(  status == 0) {
 		
 			if(globalAutologinHandler.loggedIn==false){
-			
-					
-						
-					chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCredentials.js"}, function() {
+			/*
+			chrome.tabs.insertCSS(null, {file:"scripts/autoLoginCredentials.js"}, function() {
 						//script injected
 					});
+			*/
+	chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCredentials.js"}, function() {
+						//script injected
+					});
+					
+	
+					
+						
+					
 
 				
 				
@@ -646,6 +1125,15 @@ chrome.runtime.onMessage.addListener(
 	sendResponse({});
 	
 	
+	}else if (request.action == "addAutoLoginElements"){
+	
+	
+	globalAutologinHandler.addAutoLoginElements(request.info)
+	
+		
+	sendResponse({});
+	
+	
 	}else if (request.action == "success"){
 	
 	globalAutologinHandler.updateSuccessLogin(sender.tab.url)
@@ -655,12 +1143,12 @@ chrome.runtime.onMessage.addListener(
   });
   
   
-/*  
-// Called when the user clicks on the page action.
-chrome.pageAction.onClicked.addListener(function(tab) {
 
-	PageActionHandler.handleClick(tab);
-
+chrome.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install"){
+        console.log("This is a first install!");
+    }else if(details.reason == "update"){
+        var thisVersion = chrome.runtime.getManifest().version;
+       globalAutologinHandler.migrate()
+    }
 });
-
-*/

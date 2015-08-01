@@ -9,7 +9,6 @@ var autoLogin = {
     userelemName: null,
     pwdelemName: null,
 
-
     ismatchURL: function (currentURL, elemname) {
 
 
@@ -27,6 +26,10 @@ var autoLogin = {
             while (i--) {
 
 
+			if(divs[i].getAttribute("authtype") && divs[i].getAttribute("authtype") != "form")
+					 return false;
+				 
+			
                 iurl = autoLogin.getXMLElementval(divs[i], elemname);
                 if (autoLogin.isDomainValid(currentURL, iurl)) {
 
@@ -177,8 +180,294 @@ var autoLogin = {
         event.initMouseEvent(type, true, true, doc.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
         return node.dispatchEvent(event);
     },
+ getElementByXpath:function  (path) {
+		
+		 var evaluator = new XPathEvaluator(); 
+    var result = evaluator.evaluate(path, document.documentElement, null,XPathResult.FIRST_ORDERED_NODE_TYPE, null); 
+    return  result.singleNodeValue; 
+	
+		/*return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; */
+	},	
+	raiseClickEvent:function(elem){
+		try{
+			
+			
+		 var evt = document.createEvent("MouseEvents");
+		  evt.initMouseEvent("click", true, true, window,
+			0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		  
+		  var canceled = !elem.dispatchEvent(evt);
+		  if(canceled) {
+			// A handler called preventDefault
+			//alert("canceled");
+			return false
+		  } else {
+			// None of the handlers called preventDefault
+			//alert("not canceled");
+			return true
+		  }
+		  
+		}catch(Exception){
+			
+			return false;
+		}
+  
+	},
+	raiseKeyEvent:function(elem,keycode){
+		
+		var keyboardEvent = document.createEvent("KeyboardEvent");
+		var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
+		console.log(keycode)
 
-    handlePageLoad: function () {
+		keyboardEvent[initMethod](
+						   "keydown", // event type : keydown, keyup, keypress
+							true, // bubbles
+							true, // cancelable
+							window, // viewArg: should be window
+							false, // ctrlKeyArg
+							false, // altKeyArg
+							false, // shiftKeyArg
+							false, // metaKeyArg
+							13, // keyCodeArg : unsigned long the virtual key code, else 0
+							0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
+		);
+		var event = document.createEvent('KeyboardEvent');
+		Object.defineProperty(event, 'keyCode', {     
+							get : function(){
+								return this.keyCodeVal;
+							}
+						})
+						elem.dispatchEvent(keyboardEvent);
+		//var res = document.body.dispatchEvent(keyboardEvent);
+		
+	},
+ handlePageLoad: function () {
+
+
+
+        try {
+
+
+
+            if (autoLogin.autologinList == null) {
+                autoLogin.logmessage("Data not Loaded")
+                return;
+            }
+
+            var curlocation = document.location.toString();
+
+            xmlObj = autoLogin.isLoginPage(curlocation)
+
+
+
+            if (xmlObj == false) {
+                autoLogin.logmessage("Not login Page")
+                return
+
+            } else {
+                autoLogin.logmessage("Is Login Page");
+
+
+
+            }
+
+
+            if (xmlObj != false) {
+
+                autoLogin.logmessage("Attempting to Insert");
+
+				var haspassword =false
+
+                var jsonObj = {};
+                jsonObj.url = autoLogin.getXMLElementval(xmlObj, "url");
+
+                jsonObj.loginurl = autoLogin.getXMLElementval(xmlObj, "loginurl");
+				
+			
+				 jsonObj.fields =[];
+	  
+	  
+				  var elems = xmlObj.getElementsByTagName("element");
+				  
+				  for( k=0;k< elems.length ;k++){
+					  
+					  var field={}
+					 field.xpath= autoLogin.getXMLElementval(elems[k],"xpath");
+					 field.type= autoLogin.getXMLElementval(elems[k],"type");
+					 field.value= autoLogin.getXMLElementval(elems[k],"value");
+					 field.event= autoLogin.getXMLElementval(elems[k],"event");
+					 if( field.type  === "password"){
+						 var elem =autoLogin.getElementByXpath(field.xpath)
+								if(elem)
+										haspassword=true;
+					 }
+					 jsonObj.fields.push(field)
+				  }
+	  
+	 
+				
+				/*
+                jsonObj.username = autoLogin.getXMLElementval(xmlObj, "username");
+
+                jsonObj.password = autoLogin.getXMLElementval(xmlObj, "password");
+                jsonObj.userelement = autoLogin.getXMLElementval(xmlObj, "userelement");
+                jsonObj.pwdelement = autoLogin.getXMLElementval(xmlObj, "pwdelement");
+
+
+                jsonObj.btnelement = autoLogin.getXMLElementval(xmlObj, "btnelement");
+                jsonObj.formelement = autoLogin.getXMLElementval(xmlObj, "formelement");
+
+
+                autoLogin.userelemName = jsonObj.userelement
+                autoLogin.pwdelemName = jsonObj.pwdelement
+
+                autoLogin.initFormObject(jsonObj.formelement)
+				
+				*/
+                var doc = document;
+               
+                
+
+                if (haspassword) {
+
+                    
+
+                    chrome.runtime.sendMessage({
+                        action: "cansubmit"
+                    }, function (response) {
+
+                        if (response.actionresponse == false) {
+                            console.log("Cannot submit the form")
+                            return
+                        }
+						
+						//TODO Use JSONObj
+						
+                        console.log("Submitting form")
+						
+						var enterelement=null
+						var formelement =null
+						var clickelement =null
+						
+						//event priority , if 
+						for( k=0;k< jsonObj.fields.length ;k++){
+							var field =  jsonObj.fields[k] 
+							
+							if( field.type  === "form" && field.event  !== ""){
+								
+								formelement=field
+							}
+							if( (field.type  !== "text" && field.type  !== "form" ) && field.event  !== ""){
+								
+								clickelement=field
+							}
+							if( (field.type  === "text"  ) && field.event  !== ""){
+								
+								enterelement=field
+							}
+							
+							if( field.value  !== "" && (field.type  !== "button" && field.type  !== "submit"  ) ){
+								
+								var elem =autoLogin.getElementByXpath(field.xpath)
+								if(elem){
+									
+									elem.value=field.value
+									console.log(elem.value)
+								}
+								
+							}
+						 }
+						 console.log("=======================")
+						 //
+						 if(enterelement){
+							 console.log("Enter key event ")
+							 
+							 
+							 var elem =autoLogin.getElementByXpath(enterelement.xpath)
+							 
+							 elem.addEventListener('keydown',function(e){
+											
+											//if keypress is enter
+											//send xpath & value to background page and enterkey
+											
+											// event is submit
+													
+											  e = e || window.event;
+											  console.log("Enter element event handler")
+											  console.log(e)
+											   if (e.returnValue === false || e.isDefaultPrevented)
+							 {
+								  
+								 //do stuff, like validation or something, then you could:
+								 e.cancelBubble = true;
+								 if (e.stopPropagation)
+								 {
+									 e.stopPropagation();
+								 }
+							 }
+								return true;			
+					  
+						},false);
+						
+							 if (elem) elem.focus();
+							 autoLogin.raiseKeyEvent(elem ,13)
+							
+						 }
+						 if(clickelement){
+							 
+							  console.log("click key event ")
+							  console.log(clickelement.xpath)
+							 var elem =autoLogin.getElementByXpath(clickelement.xpath)
+							 console.log(elem)
+							 var result = autoLogin.raiseClickEvent(elem)
+							 
+							 //if result was true return or try to submit via form 
+							 if(result)
+								return;
+						 }
+						  if(formelement){
+							  console.log("Form submit  event ")
+							 var elem =autoLogin.getElementByXpath(formelement.xpath)
+							 elem.submit();
+							 //raise submit event
+							 return;
+						 }
+	  
+						/*
+                        if (jsonObj.btnelement == "") {
+                            //Submit form	
+
+                            //alert("submitting" + autoLogin.dump(formelem));
+                            autoLogin.formObject.submit();
+
+                        } else {
+                            btnelem = autoLogin.getinputelem(jsonObj.btnelement);
+                            autoLogin.fireMouseEvent("click", btnelem);
+                            //	sleep(5);
+                        }
+						*/
+
+
+                    });
+
+
+                    return;
+                }
+
+                autoLogin.logmessage("Invalid Page");
+
+
+
+
+            }
+
+        } catch (exception) {
+            console.log("process exception " + exception);
+        }
+
+    },
+    
+    handlePageLoadOld: function () {
 
 
 
@@ -219,6 +508,8 @@ var autoLogin = {
                 jsonObj.url = autoLogin.getXMLElementval(xmlObj, "url");
 
                 jsonObj.loginurl = autoLogin.getXMLElementval(xmlObj, "loginurl");
+				
+				
                 jsonObj.username = autoLogin.getXMLElementval(xmlObj, "username");
 
                 jsonObj.password = autoLogin.getXMLElementval(xmlObj, "password");
@@ -375,7 +666,78 @@ var autoLogin = {
 
 
     },
-    loadDocument: function (rawxml) {
+	loadDocument: function (rawxml) {
+
+
+
+
+        var parser = new DOMParser();
+        var docxml = parser.parseFromString(rawxml, "text/xml");
+
+
+        var dummyresp = '';
+
+        autoLogin.autologinXMLList = docxml;
+        var jsonresp = new Array();
+
+
+        try {
+
+           // autoLogin.logmessage(docxml);
+            var divs = docxml.getElementsByTagName("site"),
+                i = divs.length;
+            autoLogin.logmessage("getResposnseasJSON" + i);
+            if (i == 0)
+                return null;
+
+
+            while (i--) {
+
+                var partner = {};
+                partner.url = autoLogin.getXMLElementval(divs[i], "url");
+
+                partner.loginurl = autoLogin.getXMLElementval(divs[i], "loginurl");
+				
+							 partner.fields =[];
+				  
+				  var elems = divs[i].getElementsByTagName("element");
+				  
+				  for( k=0;k< elems.length ;k++){
+					  
+					  var field={}
+					 field.xpath= autoLogin.getXMLElementval(elems[k],"xpath");
+					 field.type= autoLogin.getXMLElementval(elems[k],"type");
+					 field.value= autoLogin.getXMLElementval(elems[k],"value");
+					 field.event= autoLogin.getXMLElementval(elems[k],"event");
+					 partner.fields.push(field)
+				  }
+				  
+	 
+	  
+	  
+              
+
+                jsonresp.push(partner);
+                //alert(autoLogin.dump(partner) );
+            }
+
+            dummyresp = JSON.stringify(jsonresp);
+
+            autoLogin.autologinList = dummyresp;
+
+            //  autoLogin.logmessage(dummyresp);
+
+            //return true;  
+        } catch (exception) {
+
+            console.log("decode issue" + exception)
+            //return null;
+        }
+
+
+    },
+
+    loadDocumentold: function (rawxml) {
 
 
 

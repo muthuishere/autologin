@@ -34,6 +34,32 @@ var autoLoginOptions = {
 				
 		}
 	},
+	setXMLPathval : function (node, xpath, val) {
+
+		try {
+
+			if (node.getElementsByTagName("element") == null)
+				return false;
+
+			var elems = node.getElementsByTagName("element");
+
+			for (k = 0; k < elems.length; k++) {
+
+				if (autoLoginOptions.getXMLElementval(elems[k], "xpath") == xpath) {
+
+					autoLoginOptions.setXMLElementval(elems[k], "value", val)
+					return true;
+					
+				}
+
+			}
+
+		} catch (exception) {
+			
+			console.log(exception)
+		}
+		return false;
+	},	
 	validateViewOptions:function(event){
 	 
 	 document.querySelector("#validatepwdstatus").innerHTML=""
@@ -68,12 +94,14 @@ var autoLoginOptions = {
 		
 	
 	},
+
 	infoChanged:function(event){
 	
 	document.querySelector("#sitechangedstatus").innerHTML="";
 	
 	document.querySelector("a#btnUpdate").setAttribute("class","button") ;
-			
+	
+		var xpath=event.target.getAttribute("xpath") 	
 			
 	 var domainrow=event.target.parentNode.parentNode;
 	  autoLoginOptions.changedDomains.push(domainrow.getAttribute("domainname"));
@@ -82,12 +110,13 @@ var autoLoginOptions = {
 	event.target.className += ' inputChanged';
 	if(event.target.getAttribute("type")=="text"){
 	
-		autoLoginOptions.setXMLElementval(autoLoginObject,"username",event.target.value)
+		autoLoginOptions.setXMLPathval(autoLoginObject,xpath,event.target.value)
 	
 	}else if(event.target.getAttribute("type")=="password"){
+		
+		autoLoginOptions.setXMLPathval(autoLoginObject,xpath,event.target.value)
 	
-	
-	autoLoginOptions.setXMLElementval(autoLoginObject,"password",event.target.value)
+	//autoLoginOptions.setXMLElementval(autoLoginObject,"password",event.target.value)
 	
 	}else if(event.target.getAttribute("type")=="checkbox"){
 	
@@ -350,11 +379,22 @@ var autoLoginOptions = {
             //work with element
 			
             inputElement.addEventListener('change', autoLoginOptions.infoChanged, false);
-
+			 
+		
         }
 		
 		 document.querySelector("input.inp").addEventListener('keypress', function(event){
+		
+			 
+			 
+			 if(event.target.className.indexOf("inputChanged") <0){
+				document.querySelector("a#btnUpdate").setAttribute("class","button") ;
+				event.target.className += ' inputChanged';
+				}
+	
+	
 		 if (event.which == 13 || event.keyCode == 13) {
+			 autoLoginOptions.infoChanged(event)
            autoLoginOptions.updateAutologin()
             return false;
         }
@@ -388,12 +428,12 @@ var autoLoginOptions = {
 	 var docxml=autoLoginOptions.autologinXMLList ;
 	 
 	 var domainrow=event.target.parentNode.parentNode.parentNode;
-	 //console.log(domainrow)
+	
 	 var domainname=domainrow.getAttribute("domainname");
 	 
 	 
 	 var autoLoginObject=autoLoginOptions.searchdomain(domainname)
-	 
+	
 	 
 	 if(null != autoLoginObject)
 		autoLoginObject.parentNode.removeChild(autoLoginObject);
@@ -456,6 +496,9 @@ searchdomain:function(domainname){
 	
 	   var oSerializer = new XMLSerializer();
         var rawxml = oSerializer.serializeToString(autoLoginOptions.autologinXMLList);
+		console.log("=================")
+		console.log(rawxml)
+		console.log("=================")
         localStorage["autologinxml"] = Helper.encrypt(rawxml);
 	
 		
@@ -513,15 +556,33 @@ searchdomain:function(domainname){
                 autoLoginInfo.url = autoLoginOptions.getXMLElementval(divs[i], "url");
 
                 autoLoginInfo.loginurl = autoLoginOptions.getXMLElementval(divs[i], "loginurl");
-                 autoLoginInfo.username=autoLoginOptions.getXMLElementval(divs[i],"username");
-
-                autoLoginInfo.password = autoLoginOptions.getXMLElementval(divs[i], "password");
-                autoLoginInfo.userelement = autoLoginOptions.getXMLElementval(divs[i], "userelement");
-                autoLoginInfo.pwdelement = autoLoginOptions.getXMLElementval(divs[i], "pwdelement");
-
-
-                autoLoginInfo.btnelement = autoLoginOptions.getXMLElementval(divs[i], "btnelement");
-                autoLoginInfo.formelement = autoLoginOptions.getXMLElementval(divs[i], "formelement");
+				
+				
+					autoLoginInfo.fields=[]
+				  
+				  var elems = divs[i].getElementsByTagName("element");
+				  
+				  for( k=0;k< elems.length ;k++){
+					  
+					  var field={}
+					 field.xpath= autoLoginOptions.getXMLElementval(elems[k],"xpath");
+					 field.type= autoLoginOptions.getXMLElementval(elems[k],"type");
+					
+					 field.value= autoLoginOptions.getXMLElementval(elems[k],"value");
+					 field.event= autoLoginOptions.getXMLElementval(elems[k],"event");
+					  if(field.type === "password"){
+						 autoLoginInfo.password= field.value
+						  autoLoginInfo.pwdxpath= field.xpath
+					 }
+					 
+					  if(field.type === "text"){
+						 autoLoginInfo.username= field.value
+						  autoLoginInfo.userxpath= field.xpath
+					 }
+					autoLoginInfo.fields.push(field)
+				  }
+				  
+				 
                 autoLoginInfo.enabled = autoLoginOptions.getXMLElementval(divs[i], "enabled");
 				autoLoginInfo.domain=autoLoginOptions.getdomainName( autoLoginInfo.url)
                 if (null == autoLoginInfo.enabled || "" == autoLoginInfo.enabled)
@@ -581,8 +642,8 @@ searchdomain:function(domainname){
 			 var row = document.querySelector("#tblOptions").insertRow(-1);
 row.setAttribute("domainname",autoLoginInfo.domain)
 row.innerHTML =	 "<td style='text-align:left'>"+ autoLoginInfo.domain+"</td>"+
-        "<td><input class='inp' type='text' value='"+autoLoginInfo.username +"'/></td>"+
-		"<td><input class='inp' type='password' value='"+autoLoginInfo.password +"'/></td>"+
+        "<td><input class='inp' type='text' xpath='"+autoLoginInfo.userxpath  +"' value='"+autoLoginInfo.username +"'/></td>"+
+		"<td><input class='inp' type='password' xpath='"+autoLoginInfo.pwdxpath  +"'  value='"+autoLoginInfo.password +"'/></td>"+
 		"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
         "<td> <a  class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
 	

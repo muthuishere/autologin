@@ -3,6 +3,7 @@ if (undefined == autoLoginCapture){
 
 
 
+
 var autoLoginCapture={
 	captureForm:null,	
 	elems:[],
@@ -12,7 +13,35 @@ var autoLoginCapture={
 	hoverIconURL:"",
 	backgroundIconURL:"",
 	alreadySubmitted:false,
-	getXPath:function ( element )
+	getXPath:function(elm){
+		
+		 var allNodes = document.getElementsByTagName('*'); 
+    for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) 
+    { 
+        if (elm.hasAttribute('id')) { 
+                var uniqueIdCount = 0; 
+                for (var n=0;n < allNodes.length;n++) { 
+                    if (allNodes[n].hasAttribute('id') && allNodes[n].id == elm.id) uniqueIdCount++; 
+                    if (uniqueIdCount > 1) break; 
+                }; 
+                if ( uniqueIdCount == 1) { 
+                    segs.unshift('id("' + elm.getAttribute('id') + '")'); 
+                    return segs.join('/'); 
+                } else { 
+                    segs.unshift(elm.localName.toLowerCase() + '[@id="' + elm.getAttribute('id') + '"]'); 
+                } 
+        } else if (elm.hasAttribute('class')) { 
+            segs.unshift(elm.localName.toLowerCase() + '[@class="' + elm.getAttribute('class') + '"]'); 
+        } else { 
+            for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) { 
+                if (sib.localName == elm.localName)  i++; }; 
+                segs.unshift(elm.localName.toLowerCase() + '[' + i + ']'); 
+        }; 
+    }; 
+    return segs.length ? '/' + segs.join('/') : null; 
+		
+	},
+	getXPathold:function ( element )
 	{
 		var xpath = '';
 		for ( ; element && element.nodeType == 1; element = element.parentNode )
@@ -24,9 +53,65 @@ var autoLoginCapture={
 		return xpath;
 	},	
 	getElementByXpath:function  (path) {
-		return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-	},	
 		
+		 var evaluator = new XPathEvaluator(); 
+    var result = evaluator.evaluate(path, document.documentElement, null,XPathResult.FIRST_ORDERED_NODE_TYPE, null); 
+    return  result.singleNodeValue; 
+	
+		/*return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; */
+	},	
+	setelemvalue:function(element,value){
+		
+		for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
+				var elem= autoLoginCapture.elems[index];
+				if(autoLoginCapture.elems[index].xpath == autoLoginCapture.getXPath(element)){
+					if( undefined !== value)
+						autoLoginCapture.elems[index].value=value
+					
+					return;
+				}
+				
+			}
+	},		
+	checkpasswordhasvalue:function(){
+		
+		for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
+				var elem= autoLoginCapture.elems[index];
+				if(autoLoginCapture.elems[index].type == "password" && autoLoginCapture.elems[index].value != ""){
+					
+					
+					return true;
+				}
+				
+			}
+			return false;
+			
+	},	
+	updateElements:function(){
+		
+		for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
+				
+				
+					var elem= autoLoginCapture.getElementByXpath(autoLoginCapture.elems[index].xpath )
+					if(elem.value)
+					autoLoginCapture.elems[index].value=elem.value
+					
+				}
+				
+			
+	},
+	setelemevent:function(element,evt){
+		
+		for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
+				var elem= autoLoginCapture.elems[index];
+				if(autoLoginCapture.elems[index].xpath == autoLoginCapture.getXPath(element)){
+					
+					autoLoginCapture.elems[index].event=evt
+					return;
+				}
+				
+			}
+	},	
 	init:function(){
 		
 	autoLoginCapture.disableIconURL=extnid +"images/capture_disable.png"
@@ -54,13 +139,73 @@ var autoLoginCapture={
 			
 			
 			
-			if(isVisible(formelement) && formelement.getAttribute("type") !== "hidden"){
+			if(autoLoginCapture.isVisible(formelement) && formelement.getAttribute("type") !== "hidden"){
 			
-			flgCaptured=true
+			
+				var elem={}
+
+					elem.xpath=autoLoginCapture.getXPath(formelement)
+					val=""
+					if(formelement.value && undefined != formelement.value)
+						val=formelement.value
+					
+					elem.type="text"
+					elem.value=val
+					elem.event=""
+					
+					if(formelement.getAttribute("type")){
+						elem.type=formelement.getAttribute("type").toLowerCase()		
+						
+							if( formelement.getAttribute("type").toLowerCase()  === "password"){
+								flgCaptured=true
+								
+								if(formelement.form){
+									var parentform=formelement.form
+									var parentformelem={}
+									parentformelem.xpath=autoLoginCapture.getXPath(parentform)
+									parentformelem.type="form"
+									parentformelem.event=""
+									parentformelem.value=""
+									
+									
+									autoLoginCapture.elems.push(parentformelem)
+									parentform.addEventListener('submit', function(e){
+										
+										console.log("Form submit validation")
+										//if password element has value dont do anything or capture all input and send it to background
+										if(autoLoginCapture.checkpasswordhasvalue() == false )
+												autoLoginCapture.updateElements();
+										
+										if( autoLoginCapture.alreadySubmitted == false){
+											 
+											console.log("Updating through form submit")
+												
+												autoLoginCapture.setelemevent(e.target,"submit")
+												autoLoginCapture.sendtoBackground()
+										}
+										
+				
+									}, false);
+									
+								}
+									
+								}
+				
+				
+						
+					}
+			
+			
+				
+					autoLoginCapture.elems.push(elem)
+					
 					formelement.addEventListener('blur',function(e){
 					
 					
 					//send xpath & value to background page
+					
+					
+								autoLoginCapture.setelemvalue(e.target,e.target.value)
 					
 							  e = e || window.event;
 							 if (e.returnValue === false || e.isDefaultPrevented)
@@ -84,8 +229,17 @@ var autoLoginCapture={
 					//send xpath & value to background page and enterkey
 					
 					// event is submit
-					
+							
 					  e = e || window.event;
+					  
+					  if (e.keyCode == 13) {
+						  autoLoginCapture.setelemevent(e.target,"enter")
+						  autoLoginCapture.sendtoBackground()
+							  
+					  }else					  
+						autoLoginCapture.setelemvalue(e.target,e.target.value)
+					
+					
 							 if (e.returnValue === false || e.isDefaultPrevented)
 							 {
 								  
@@ -101,7 +255,8 @@ var autoLoginCapture={
 					}, false)
 					
 					formelement.addEventListener('click',function(e){
-					
+					autoLoginCapture.setelemevent(e.target,"click")
+					autoLoginCapture.sendtoBackground()
 					//check element is button
 					
 					//send element
@@ -116,7 +271,31 @@ var autoLoginCapture={
 			
 			}
 			
-		
+		if(flgCaptured){
+			
+			var css='\n div#autologincapture.disable{ \n background:url("'+ autoLoginCapture.disableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n div#autologincapture.enable{ \n background:url("'+ autoLoginCapture.enableIconURL +'") no-repeat center; \n opacity:1.0; \n  }  \n div#autologincapture.enable:hover{ \n /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center; */ \n opacity:0.9; \n }\n  div#autologincapture.disable:hover{ \n  /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center;*/  opacity:1.0; \n}';
+					style=document.createElement('style');
+					if (style.styleSheet)
+						style.styleSheet.cssText=css;
+					else 
+						style.appendChild(document.createTextNode(css));
+					document.getElementsByTagName('head')[0].appendChild(style);
+					
+				//console.log("img urls :" + extnid +"images/capture_disable.png")
+					//Create a floating div and show
+					//var elemhtml='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:64px;width:64px;" class="disable" title="Click to Capture Auto Login Information" href="#"> &nbsp;</div></div>'
+					
+					var divelem=document.createElement("div");
+						//divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;height:186px;width:191px;" class="disable" title="Click to Capture Auto Login Information" > &nbsp;</div></div>'
+						
+						divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autologincapture" style="cursor:pointer;padding-top:186px;width:191px;font-face:Verdana;font-weight:bolder;font-size:11px;text-align:center" class="disable" title="Click to Capture Auto Login Information" > Click to Capture Auto Login Information</div></div>'
+						
+						
+						
+						
+						document.body.appendChild(divelem);
+						document.querySelector("div#autologincapture").addEventListener('click', autoLoginCapture.onCaptureAutoLogin, false);
+		}
 
 			
 			
@@ -140,7 +319,7 @@ var autoLoginCapture={
 		document.querySelector("div#autologincapture").innerHTML="Click to Disable Capturing Auto Login Information";
 	//	document.querySelector("a#autologincapturelink").setAttribute("Title","Click to Disable Capturing Auto Login Information");
 	
-	initAutoLoginCapture()
+	//initAutoLoginCapture()
 	
 	
 		
@@ -162,6 +341,14 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 	}
 	
 	},
+	removeAutoLoginCapture:function(){
+
+
+//			autoLoginCapture.captureForm.removeEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
+			
+
+	
+},
 	isVisible:function(elem){
 		if(elem.style.visibility == "hidden")
 			return false
@@ -183,12 +370,14 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 			if(inputtxtelems.length>1 && inputpwdelems.length==1  ){
 			//check visibility
 			
-			var isVisibleuserElement =autoLoginCapture.isVisible(inputtxtelems[0])// .offsetWidth > 0 || inputtxtelems[0].offsetHeight > 0;
-			var isVisiblepwdElement = autoLoginCapture.isVisible(inputpwdelems[0]) //inputpwdelems[0].offsetWidth > 0 || inputpwdelems[0].offsetHeight > 0;
+			console.log("Elements available")
+			var isVisibleuserElement =autoLoginCapture.autoLoginCapture.isVisible(inputtxtelems[0])// .offsetWidth > 0 || inputtxtelems[0].offsetHeight > 0;
+			var isVisiblepwdElement = autoLoginCapture.autoLoginCapture.isVisible(inputpwdelems[0]) //inputpwdelems[0].offsetWidth > 0 || inputpwdelems[0].offsetHeight > 0;
 
 			if(isVisiblepwdElement){
 			
 					autoLoginCapture.captureForm=formelement
+					
 					
 					
 					var css='\n div#autologincapture.disable{ \n background:url("'+ autoLoginCapture.disableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n div#autologincapture.enable{ \n background:url("'+ autoLoginCapture.enableIconURL +'") no-repeat center; \n opacity:1.0; \n  }  \n div#autologincapture.enable:hover{ \n /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center; */ \n opacity:0.9; \n }\n  div#autologincapture.disable:hover{ \n  /* background:url("'+ autoLoginCapture.hoverIconURL +'") no-repeat center;*/  opacity:1.0; \n}';
@@ -245,7 +434,34 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 			}
 
 	},
-	onBeforeAutoLoginSubmit:function(event){
+	sendtoBackground:function(){
+		
+		
+	if(autoLoginCapture.startCapture == true){
+		 
+		 //console.log(autoLoginXmlInfo)
+		 
+		 var data={}
+		  data.url=document.location.toString().split('?')[0]
+		  data.loginurl = document.location.toString().split('?')[0]
+		  data.elements = autoLoginCapture.elems
+		  
+		  
+			chrome.extension.sendMessage({action: "addAutoLoginElements",info:data}, function(response) {
+						
+						console.log("Updated data ")
+						
+						});
+			}else{
+				
+					console.log("Not required");
+				}
+			
+			autoLoginCapture.alreadySubmitted=true;
+			return true;
+	},
+
+	onBeforeAutoLoginSubmitold:function(event){
 		
 		//if(autoLoginCapture.alreadySubmitted == true)
 		//	return
@@ -291,7 +507,7 @@ document.querySelector("div#autologincapture").innerHTML="Click to Capture Auto 
 						autoLoginInfo.pwdelement=inputelement.name;
 						autoLoginInfo.password=inputelement.value;
 						
-					}else if(autoLoginCapture.isVisible(inputelement) == true && (elemType.isEqual("submit") || elemType.isEqual("button"))){
+					}else if(autoLoginCapture.autoLoginCapture.isVisible(inputelement) == true && (elemType.isEqual("submit") || elemType.isEqual("button"))){
 					
 					
 					
@@ -454,14 +670,7 @@ function initAutoLoginCapture(){
 
 }
 
-function removeAutoLoginCapture(){
 
-if(undefined != autoLoginCapture.captureForm){
-			autoLoginCapture.captureForm.removeEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
-			
-			}
-	
-}
 
 
 
