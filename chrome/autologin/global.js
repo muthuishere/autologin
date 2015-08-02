@@ -356,7 +356,7 @@ return false;
   
   
   
-   retriveSiteInfo: function(curlocation) {
+   retrieveSiteInfo: function(curlocation) {
    
    var result={}
    result.status=1;
@@ -873,55 +873,6 @@ globalAutologinHandler.autologinList=dummyresp;
 			urls : ["http://*/*","https://*/*"]
 		}, ['asyncBlocking']);
 		
-		// chrome.webRequest.onBeforeRequest.addListener(function(details){
-			// console.log("received onBeforeRequest")
-			// console.log(details)
-			
-		// }, {
-			// urls : ["<all_urls>"]
-		// }, ["blocking"]);
-		
-		// chrome.webRequest.onHeadersReceived.addListener(function(details){
-			// console.log("received onHeadersReceived")
-			// console.log(details)
-			
-		// },
-			// {"urls":["*://*/*"]},
-			// ["responseHeaders"]);
-		// chrome.webRequest.onSendHeaders.addListener(function(details) {
-			
-			// //check details.url is not stored already , 
-					// //if its stored validate user password
-					// console.log(" received onSendHeaders")
-			// console.log(details)
-					
-			// var headers=""
-			
-				// //console.log(details.url, details.requestHeaders);
-				// for(var i = 0; i < details.requestHeaders.length; ++i) {
-					// var header = details.requestHeaders[i];
-					// headers = headers +  "," + header.name 
-					// if(header.name == "Authorization") {
-						// // this is my quick effort for parsing the auth value
-						// // formatted like "Basic [base64 of 'user:pass']"
-						// var b64val = header.value.split(" ")[1];
-						// var credArray = atob(b64val).split(":");
-						// var user = credArray[0];
-						// var pass = credArray[1];
-
-						// console.log("Basic Auth")
-						// console.log(user)
-						// console.log(pass)
-						
-						
-						// // now do something with user/pass
-					// }
-				// }
-				// console.log(headers)
-			// },
-			// {"urls":["*://*/*"]},
-			// ["requestHeaders"]);
-			
 			console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
 	globalAutologinHandler.loadDoc( )
@@ -1043,8 +994,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			return;
 		}
   
-  var  siteInfo = globalAutologinHandler.retriveSiteInfo(tab.url)
+  var  siteInfo = globalAutologinHandler.retrieveSiteInfo(tab.url)
 	var status=siteInfo.status
+	
+	console.log("tab check",siteInfo,globalAutologinHandler.loggedIn)
+	
 		if(  status == 0) {
 		
 			if(globalAutologinHandler.loggedIn==false){
@@ -1053,8 +1007,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 						//script injected
 					});
 			*/
-	chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCredentials.js"}, function() {
+	chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCredentials.js"}, function(details) {
 						//script injected
+						console.log("Inserted autoLoginCredentials")
 					});
 					
 	
@@ -1067,6 +1022,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			}else{
 				chrome.tabs.executeScript(tabId, {file:"scripts/autoLogin.js"}, function() {
 					//script injected
+					console.log("Inserted autoLogin")
 				});
 			}
 		}else if( status == 1) {
@@ -1078,20 +1034,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
 						//script injected
 						
-				/*	
-		var data={}
-		data.tabId=tabId
-		data.scripts=["scripts/autoLoginCaptureIcon.js","scripts/autoLoginCapture.js"]
-		data.callback=function(){
 			
-			console.log("completed all scripts")
-		}
-		
-		
-		PageActionHandler.injectscripts(data,0)
-		
-						
-						*/
 						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCaptureIcon.js"}, function() {
 								
 								chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {

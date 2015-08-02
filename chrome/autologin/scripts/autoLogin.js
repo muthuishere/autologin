@@ -9,7 +9,7 @@ var autoLogin = {
     userelemName: null,
     pwdelemName: null,
 
-    ismatchURL: function (currentURL, elemname) {
+    ismatchURL: function (currentURL, elemname,authtype) {
 
 
         docxml = autoLogin.autologinXMLList;
@@ -26,12 +26,11 @@ var autoLogin = {
             while (i--) {
 
 
-			if(divs[i].getAttribute("authtype") && divs[i].getAttribute("authtype") != "form")
-					 return false;
+		
 				 
 			
                 iurl = autoLogin.getXMLElementval(divs[i], elemname);
-                if (autoLogin.isDomainValid(currentURL, iurl)) {
+                if (autoLogin.isDomainValid(currentURL, iurl) && divs[i].getAttribute("authtype") == "form") {
 
                     return divs[i];
                 }
@@ -58,7 +57,7 @@ var autoLogin = {
             return false;
         }
 
-        var flgReturn = autoLogin.ismatchURL(currentURL, "loginurl");
+        var flgReturn = autoLogin.ismatchURL(currentURL, "loginurl","form");
         return flgReturn;
 
     },
@@ -72,7 +71,7 @@ var autoLogin = {
         }
 
 
-        var flgReturn = autoLogin.ismatchURL(currentURL, "url");
+        var flgReturn = autoLogin.ismatchURL(currentURL, "url","form");
         return flgReturn;
 
     },
@@ -256,10 +255,11 @@ var autoLogin = {
 
             var curlocation = document.location.toString();
 
+			console.log(curlocation)
             xmlObj = autoLogin.isLoginPage(curlocation)
 
 
-
+console.log(xmlObj)
             if (xmlObj == false) {
                 autoLogin.logmessage("Not login Page")
                 return
