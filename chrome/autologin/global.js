@@ -134,13 +134,13 @@ var globalAutologinHandler = {
 		var rawxml=Helper.decrypt(localStorage["autologinxml"])
 		console.log(rawxml)
 	},
-	addAutoLoginElements:function(obj){
+	addAutoLoginElements:function(obj,authtype){
 	
 
 
 				
 		console.log(obj)
-		var autoLoginXmlInfo=" <site authtype='form'> <url>"+obj.url+"</url> <loginurl>"+obj.loginurl+"</loginurl><enabled>true</enabled><elements>"
+		var autoLoginXmlInfo=" <site authtype='"+authtype+"'> <url>"+obj.url+"</url> <loginurl>"+obj.loginurl+"</loginurl><enabled>true</enabled><elements>"
 		
 	var elems=obj.elements
 			for (index = 0, len = elems.length; index < len; ++index) {
@@ -159,7 +159,7 @@ var globalAutologinHandler = {
 			
 
 	
-	
+	console.log(autoLoginXmlInfo)
 	var autoLoginInfo=autoLoginXmlInfo
 	var rawxml=""
 	
@@ -233,7 +233,7 @@ var globalAutologinHandler = {
 		globalAutologinHandler.loadDoc();
 	
 	},
-ismatchURL:function(currentURL,elemname){
+ismatchURL:function(currentURL,elemname,authtype){
 		
 
 docxml=globalAutologinHandler.autologinXMLList;
@@ -251,7 +251,8 @@ while (i--) {
 		
 		iurl=globalAutologinHandler.getXMLElementval(divs[i],elemname);
 		
-		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl)){
+			
+		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl) &&   authtype ==  divs[i].getAttribute("authtype")){
 					//alert(divs[i].url)
 						  return divs[i];
 		}
@@ -269,7 +270,7 @@ while (i--) {
 
 	},
 
-getXmlObjectForPage: function(currentURL) {
+getXmlObjectForBasic: function(currentURL) {
 	  
 	  
 	 
@@ -278,11 +279,23 @@ getXmlObjectForPage: function(currentURL) {
 		  return false;
 	  }
 
-	var flgReturn=globalAutologinHandler.ismatchURL(currentURL,"loginurl");
+	var flgReturn=globalAutologinHandler.ismatchURL(currentURL,"loginurl","basic");
 	  return flgReturn;
 	  
   },
-  
+  getXmlObjectForForm: function(currentURL) {
+	  
+	  
+	 
+	  if(globalAutologinHandler.autologinList == null){
+	  	globalAutologinHandler.logmessage("autologinList null");
+		  return false;
+	  }
+
+	var flgReturn=globalAutologinHandler.ismatchURL(currentURL,"loginurl","form");
+	  return flgReturn;
+	  
+  },
  
    startsWith:function (data,str) {
         return !data.indexOf(str);
@@ -357,7 +370,7 @@ return false;
  
   
     var curdomainName=Utils.getdomainName(curlocation)
-	var curXMLObject=globalAutologinHandler.getXmlObjectForPage(curlocation) 
+	var curXMLObject=globalAutologinHandler.getXmlObjectForForm(curlocation) 
 	
 	var flgAutologinEnabled=true;
 	
@@ -412,7 +425,7 @@ return false;
  
   
     var curdomainName=Utils.getdomainName(curlocation)
-	var curXMLObject=globalAutologinHandler.getXmlObjectForPage(curlocation) 
+	var curXMLObject=globalAutologinHandler.getXmlObjectForForm(curlocation) 
 	
 	var flgAutologinEnabled=true;
 	
@@ -469,8 +482,18 @@ removeSite:function(autologinRawXML){
    var parser = new DOMParser();
    var autologinObject = parser.parseFromString(autologinRawXML, "text/xml");
    
+	return globalAutologinHandler.removeSiteObject(autologinObject)
+},
+
+removeSiteObject:function(autologinObject){
+	
+	console.log("=====================")
+	console.log(autologinObject)
    var currentURL= globalAutologinHandler.getXMLElementval(autologinObject,"loginurl")
-   
+
+   authtype=autologinObject.getElementsByTagName("site")[0].getAttribute("authtype")
+		//authtype= autologinObject.firstChild.getAttribute("authtype")
+   console.log("==== END  =================")
 
 
 	
@@ -487,7 +510,7 @@ while (i--) {
 		
 		iurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
 		
-		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl)){
+		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl)  && authtype ==  divs[i].getAttribute("authtype") ){
 					//alert(divs[i].url)
 						 // return divs[i];
 						 
@@ -521,6 +544,13 @@ while (i--) {
 			return "";	
 		}
 	},
+	
+	/*
+	  
+	  set autologinXMLList
+	  genrate  jsonlist
+	  
+	*/
 	updateResponse:function(docxml){
 		
 var dummyresp='';
@@ -531,10 +561,10 @@ globalAutologinHandler.autologinXMLList=docxml;
 
 		try{
 
-  globalAutologinHandler.logmessage(docxml );
-  console.log(docxml.innerHTML)
+ // globalAutologinHandler.logmessage(docxml );
+  //console.log(docxml.innerHTML)
 var divs = docxml.getElementsByTagName("site"), i=divs.length;
-console.log(i)
+
   //globalAutologinHandler.logmessage("getResposnseasJSON" + i );
   if(i == 0)
 	  return null;
@@ -543,7 +573,8 @@ console.log(i)
 while (i--) {
 	
 	 var partner= {}; 
-partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
+	partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
+	partner.authtype=divs[i].getAttribute("authtype");
 
 	  partner.loginurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
 	   partner.enabled=globalAutologinHandler.getXMLElementval(divs[i],"enabled");
@@ -568,61 +599,7 @@ partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
 
 }
 
-console.log(jsonresp)
-
-dummyresp=JSON.stringify(jsonresp);
-
-globalAutologinHandler.autologinList=dummyresp;
-
-    //globalAutologinHandler.logmessage(dummyresp);
-
-		return true;  
-		 }catch(exception){
-			 
-			console.log("decode issue" + exception) 
-			return null;
-		 }
-
-
-
-	},
-	updateResponseold:function(docxml){
-		
-var dummyresp='';
-
-globalAutologinHandler.autologinXMLList=docxml;
-		var jsonresp = new Array();
-
-
-		try{
-
-  globalAutologinHandler.logmessage(docxml );
-var divs = docxml.getElementsByTagName("site"), i=divs.length;
-  //globalAutologinHandler.logmessage("getResposnseasJSON" + i );
-  if(i == 0)
-	  return null;
-	  
-
-while (i--) {
-	
-	 var partner= {}; 
-partner.url=globalAutologinHandler.getXMLElementval(divs[i],"url");
-
-	  partner.loginurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
-	 partner.username=globalAutologinHandler.getXMLElementval(divs[i],"username");
-	
-		   partner.password=globalAutologinHandler.getXMLElementval(divs[i],"password");
-	  partner.userelement=globalAutologinHandler.getXMLElementval(divs[i],"userelement");
-	  partner.pwdelement=globalAutologinHandler.getXMLElementval(divs[i],"pwdelement");
-	  
-	  
-	  partner.btnelement=globalAutologinHandler.getXMLElementval(divs[i],"btnelement");
-	  partner.enabled=globalAutologinHandler.getXMLElementval(divs[i],"enabled");
-	  partner.formelement=globalAutologinHandler.getXMLElementval(divs[i],"formelement");
-	   
-		jsonresp.push(partner);
-
-}
+//console.log(jsonresp)
 
 dummyresp=JSON.stringify(jsonresp);
 
@@ -652,6 +629,9 @@ globalAutologinHandler.autologinList=dummyresp;
 	localStorage["autologinxml"] =Helper.encrypt(xhttp.responseText);
 	globalAutologinHandler.loadDoc();
 	}, 
+	/*
+	  Load details from storage  to xml
+	*/
 	loadDoc:function() { 
 	
 	
@@ -671,33 +651,104 @@ globalAutologinHandler.autologinList=dummyresp;
 	try_count : 0,
 	last_request_id:null,
 	last_tab_id:null,
-	retrieveCredentials : function (status) {
+	authcallback:null,	
+	authdetails:null,
+	authretrycount:0,
+	sendauthcredentials:function(status,credential,callback){
+		
+		
+		console.log("sendauthcredentials",status,credential)
+	
+		
+		if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
+					++globalAutologinHandler.try_count;
+					console.log("increment try count")
+						//globalAutologinHandler.retrieveCredentials(status,callback)
+					
+				} else {
+					globalAutologinHandler.try_count = 0;
+					console.log("increment try count again")
+				}
+
+				if (globalAutologinHandler.try_count < 3) {
+
+					console.log("try_count" + globalAutologinHandler.try_count)
+					globalAutologinHandler.last_request_id = status.requestId;
+					globalAutologinHandler.last_tab_id = status.tabId;
+					
+					
+					callback({authCredentials: {username: credential.username, password: credential.password}});	
+					
+				}else{
+					if(credential.input ==="autologin"){
+						
+						//One more 
+						globalAutologinHandler.try_count--;
+						console.log(credential)
+						globalAutologinHandler.deleteauth(credential.sitedata)
+						globalAutologinHandler.retrieveCredentials(status,callback)
+						
+					}else
+						globalAutologinHandler.cancelauth(status,callback)
+					
+					
+				}
+		
+					
+	},
+	deleteauth:function(sitedata){
+		
+		removeResponse=globalAutologinHandler.removeSite(sitedata)
+		
+				//Site removed , Update XML & update all 
+		if(removeResponse == true){
+		
+			var oSerializer = new XMLSerializer();
+			rawxml = oSerializer.serializeToString(globalAutologinHandler.autologinXMLList);
+			localStorage["autologinxml"]= Helper.encrypt(rawxml);
+			globalAutologinHandler.loadDoc();		
+		}
+	
+	
+	},
+	cancelauth:function(details,callback){
+		callback({cancel: true});
+		globalAutologinHandler.try_count = 0;
+		
+	},
+	authclientcallback:null,	
+	retrieveCredentials : function (details, callback) {
+		
+		var status=details
 		var url = status.url;
 		console.log("auth required")
 		console.log(status)
 		
 		//TODO check url has authorization credentials in storage or user has set authorization credentials
 		
-		 var  siteInfo = globalAutologinHandler.retriveSiteInfo(url)
-		var domainxml=siteInfo.info 
+		 
+		var domainxml=globalAutologinHandler.getXmlObjectForBasic(url)
 		
 		var curdomainName=Utils.getdomainName(url)
 		
 		console.log(domainxml)
 		
+				
 		if (domainxml && domainxml.getAttribute("authtype") == "basic") {
 
 		var credential = {};
 		
-		 var elems = divs[i].getElementsByTagName("element");
+		 var elems = domainxml.getElementsByTagName("element");
+				  
+				  credential.sitedata= new XMLSerializer().serializeToString(domainxml);
 				  
 				  for( k=0;k< elems.length ;k++){
 					  
 					  var field={}
-					 field.xpath= autoLoginOptions.getXMLElementval(elems[k],"xpath");
-					 field.type= autoLoginOptions.getXMLElementval(elems[k],"type");
+					 field.xpath= globalAutologinHandler.getXMLElementval(elems[k],"xpath");
+					 field.type= globalAutologinHandler.getXMLElementval(elems[k],"type");
 					
-					 field.value= autoLoginOptions.getXMLElementval(elems[k],"value");
+					 field.value= globalAutologinHandler.getXMLElementval(elems[k],"value");
 					
 					  if(field.type === "password"){
 						 credential.password= field.value
@@ -709,44 +760,100 @@ globalAutologinHandler.autologinList=dummyresp;
 						
 					 }
 					
+					credential.input="autologin"
+					
 				  }
 		//domainxml get username password
 			
 			//credential.username = "mnavaneethakrishnan@corpuk.net"
 				//credential.password = "July#2015"
-
-				if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
-					++globalAutologinHandler.try_count;
-				} else {
-					globalAutologinHandler.try_count = 0;
-				}
-
-				if (globalAutologinHandler.try_count < 2) {
-
-					console.log("try_count" + globalAutologinHandler.try_count)
-					globalAutologinHandler.last_request_id = status.requestId;
-					globalAutologinHandler.last_tab_id = status.tabId;
-
-					//cb(" ", success_color, credential, status.tabId);
-					console.log("sent credentials" + url)
-					 globalAutologinHandler.lastloggedInDomain=curdomainName
-					return {
-						authCredentials : {
-							username : credential.username,
-							password : credential.password
-						}
-					};
-
-				} else {
-					globalAutologinHandler.lastloggedInDomain=""
-					console.log("try_count exceeded")
-				}
+				if(credential.username !== "" && credential.password !== "" ){
+					globalAutologinHandler.authcallback=null;
+					globalAutologinHandler.authdetails=null
+					globalAutologinHandler.sendauthcredentials(status,credential,callback)
+					
+					return;
+					}
+			
 		}
+		
+		console.log("setting status ")
+		globalAutologinHandler.authcallback=callback;
+		globalAutologinHandler.authdetails=status
+		
+		
+				
+				
+				console.log("creating popup")
+				
+				
+				globalAutologinHandler.authdetails.sitedata={}
+				globalAutologinHandler.authdetails.sitedata.url=url
+				globalAutologinHandler.authdetails.sitedata.loginurl=url
+				globalAutologinHandler.authdetails.sitedata.elements=[]
+				
+				var elem={}
+					elem.type="text"
+					elem.value=""
+					elem.event=""
+					elem.xpath="username"
+					
+				globalAutologinHandler.authdetails.sitedata.elements.push(elem)
+				elem={}
+					elem.type="password"
+					elem.value=""
+					elem.event=""
+					elem.xpath="password"
+					globalAutologinHandler.authdetails.sitedata.elements.push(elem)
+					
+					
+				/*
+				chrome.windows.create({
+					type: 'popup',
+					 focused: true
+				url: chrome.extension.getURL('auth.html'),
+				
+				
+				}, function(win) {
+					
+					
+					
+					
+				});
+				
+				*/
+				
+				chrome.tabs.getSelected(null,function(tab) {
+					var tablink = tab.url;
+					
+						if(tab.url.indexOf("chrome") >=0){
+							if(null != globalAutologinHandler.authclientcallback)
+								globalAutologinHandler.authclientcallback({"valid":false,"message":"Invalid Credentials"});	
+							else{
+								
+								alert("Invalid page")
+								
+							}
+							
+							
+						}else{
+								chrome.tabs.executeScript(null, {file:"scripts/autoLoginAuth.js"}, function() {
+									
+								});
+						}		
+					});
+			
+			
+			
+					
+			
+				
+					
+				
+		
 
-		return {};
+		
 	},
-	authcallback:null,
-	authretrycount:0,
 	
 	initExtension:function() { 
 	
@@ -759,36 +866,12 @@ globalAutologinHandler.autologinList=dummyresp;
 	else
 			globalAutologinHandler.loggedIn=false
 			
-			chrome.webRequest.onAuthRequired.addListener(function(details, callback){
-				// Prompt the user to enter credentials. Call 
-
-					globalAutologinHandler.authcallback=callback;
-					/*
-						chrome.tabs.insertCSS(null, {file:"scripts/autoLoginCredentials.js"}, function() {
-									//script injected
-								});
-						*/
-						
-				chrome.tabs.executeScript(null, {file:"scripts/autoLoginAuth.js"}, function() {
-					
-				});
-					
-					
+		
 
 
-				/* chrome.windows.create({'url': 'auth.html', 'type': 'popup'}, function(window) {
-					
-						//callback({authCredentials: {username: xxx, password: xxx}});		
-						});
-				*/
-				//
-				// when they are ready.
-			}, {urls : ["<all_urls>"]}, ['asyncBlocking']);
-
-
-		//	chrome.webRequest.onAuthRequired.addListener(globalAutologinHandler.retrieveCredentials, {
-//			urls : ["<all_urls>"]
-//		}, ["blocking","responseHeaders"]);
+			chrome.webRequest.onAuthRequired.addListener(globalAutologinHandler.retrieveCredentials, {
+			urls : ["http://*/*","https://*/*"]
+		}, ['asyncBlocking']);
 		
 		// chrome.webRequest.onBeforeRequest.addListener(function(details){
 			// console.log("received onBeforeRequest")
@@ -920,6 +1003,28 @@ var Utils={
 	
 
 	
+	},
+	injectscripts:function(obj,index){
+		
+		var tabId=obj.tabId
+		var scripts=obj.scripts
+		var callback=obj.callback
+		
+		
+		
+		
+		if(index >= scripts.length){
+			obj.callback()
+			
+			}
+		
+		chrome.tabs.executeScript(tabId, {file:scripts[index]}, function() {
+						//script injected
+						index++
+						PageActionHandler.injectscripts(obj,index)
+					});
+					
+					
 	}
   
   };
@@ -972,10 +1077,31 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 		
 			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
 						//script injected
-						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
-							//script injected
-						//	console.log("got autoLoginCapture" +tabId)
-						});
+						
+				/*	
+		var data={}
+		data.tabId=tabId
+		data.scripts=["scripts/autoLoginCaptureIcon.js","scripts/autoLoginCapture.js"]
+		data.callback=function(){
+			
+			console.log("completed all scripts")
+		}
+		
+		
+		PageActionHandler.injectscripts(data,0)
+		
+						
+						*/
+						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCaptureIcon.js"}, function() {
+								
+								chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
+									//script injected
+								//	console.log("got autoLoginCapture" +tabId)
+								});
+						
+						}); 
+						
+						
 			
 				});
 				
@@ -1018,6 +1144,66 @@ chrome.runtime.onMessage.addListener(
 				});
 			
 		sendResponse({"valid":true});
+	
+	
+	}else if (request.action == "basicauth"){
+	
+			var data=request.info;
+			console.log("Basic auth details received",data)
+			if(data.cancel){
+				
+				//remove iframe on current tab
+				//send cancel event 
+				
+				globalAutologinHandler.cancelauth(globalAutologinHandler.authdetails,globalAutologinHandler.authcallback)
+				sendResponse({"valid":true});	
+				globalAutologinHandler.authclientcallback=null;
+			}else{
+				
+				
+				data.input="dialog"
+				
+				
+				
+					//globalAutologinHandler.addAutoLoginElements(request.info,"form")
+					
+	
+				globalAutologinHandler.authclientcallback=sendResponse
+				
+				if(data.useAutologin){
+				
+					console.log("saving autologin")
+					console.log(globalAutologinHandler.authdetails)
+						for(k=0;k<globalAutologinHandler.authdetails.sitedata.elements.length;k++){
+							
+							var elem=globalAutologinHandler.authdetails.sitedata.elements[k]
+							if(elem.type=="text"){
+								
+								globalAutologinHandler.authdetails.sitedata.elements[k].value=data.username
+							}
+							if(elem.type=="password"){
+								
+								globalAutologinHandler.authdetails.sitedata.elements[k].value=data.password
+							}
+							
+						}
+					globalAutologinHandler.addAutoLoginElements(globalAutologinHandler.authdetails.sitedata,"basic")
+				}
+				
+				
+				globalAutologinHandler.sendauthcredentials(globalAutologinHandler.authdetails,data,globalAutologinHandler.authcallback)
+				
+					
+				//sendResponse({"valid":true});	
+				
+				
+				
+				
+				
+			}
+			
+			
+			
 	
 	
 	}else if (request.action == "validateCredential"){
@@ -1125,10 +1311,10 @@ chrome.runtime.onMessage.addListener(
 	sendResponse({});
 	
 	
-	}else if (request.action == "addAutoLoginElements"){
+	}else if (request.action == "addAutoLoginFormElements"){
 	
 	
-	globalAutologinHandler.addAutoLoginElements(request.info)
+	globalAutologinHandler.addAutoLoginElements(request.info,"form")
 	
 		
 	sendResponse({});

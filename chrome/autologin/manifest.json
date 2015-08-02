@@ -25,11 +25,12 @@
  "web_accessible_resources": [
     "images/*.png",  
 	"images/*.jpg", 
-	"css/*.css" ,
-	"auth.html" 
+	"css/*.css",
+	"auth.html",
+	"scripts/*.js"
   ],
   
   "options_page": "options.html",
-  "permissions": ["tabs","declarativeContent","webRequest","webRequestBlocking", "http://*/*", "https://*/*"]
+  "permissions": ["tabs", "notifications","declarativeContent","webRequest","webRequestBlocking", "http://*/*", "https://*/*"]
   
 }

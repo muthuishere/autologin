@@ -1,44 +1,83 @@
-<!--Author: W3layouts
-Author URL: http://w3layouts.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
--->
-<!DOCTYPE HTML>
-<html>
-<head>
-<title>Basic Auth Login</title>
-<!-- Custom Theme files -->
-<link href="css/style.css" rel="stylesheet" type="text/css" media="all"/>
-<!-- Custom Theme files -->
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-<!--Google Fonts-->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-<script type="text/javascript" src="scripts/authhelper.js"></script>
-<!--Google Fonts-->
-</head>
-<body style="background-color:black">
-<!--header start here-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-			<div class="login-top">
-				<h1>Basic Auth</h1>
-					<input type="text" id="username" placeholder="User name" />
-					<input type="password"  id="password"  placeholder="Password" />
-				<label class="checkbox"><input type="checkbox" id="useautologin" name="useautologin" checked><i> </i> Use AutoLogin</label>
-				
-				<div class="log-bwn">
-					<a href="#">Log in</a>
-				</div>
-				
-				<div class="clear"> </div>
-				
-				<div class="log-bwn">
-					<a href="#">Cancel</a>
-				</div>
-				
-			</div>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Basic Auth Login</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+<link href="css/auth.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/options.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="scripts/Helper.js"></script>
+<script type="text/javascript" src="scripts/autoLoginCaptureIcon.js"></script>
+<script type="text/javascript" src="scripts/authHandler.js"></script>
+
+</head>
+
+
+<body >
+
+
+<div  style="background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));">
+<div id="header" class="container">
+	<table width="100%"><tbody><tr><td valign="middle">
+	
+	<div style="float:left"><img src="images/autologin-128.png"></div>
+	<div id="logo" style="float:left;padding-top:48px;">
+		<h1 >
+		
+		<a href="#">Basic Authentication</a></h1>
+		
+      </div></td>
+	  </tr></table>
+	  </div>
+</div>
+<hr/>
+<div class="container">
+
+  <div id="login">
+
+        <h2><span class="fontawesome-lock"></span>Sign In</h2>
+
+        <form action="#" method="POST">
+
+          <fieldset>
+
+            <p><label for="username">User</label></p>
+            <p><input type="text" id="username" placeholder="User name"></p>
+
+            <p><label for="password">Password</label></p>
+            <p><input type="password" id="password" placeholder="password"></p>
+
+			<p>
+			<span> <input style="float:left" type="reset" value="Cancel" id="btncancel"> <input style="float:right" type="submit" value="Sign In" id="btnlogin"></span>
+</p>
+          </fieldset>
+
+		  	
+	<table  style="width:680px;" >
+			<tbody>
+			<tr>
 			
-<!--header start here-->
+			<th align="right">
+			
+			
+			
+			<span id="statusError" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				<span id="statusSuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				</th>			
+				</tr></tbody></table>
+				
+        </form>
+
+      </div> <!-- end login -->
+	  
+
+</div>
+<div id="copyright">
+	&nbsp;
+</div>
 </body>
 </html>

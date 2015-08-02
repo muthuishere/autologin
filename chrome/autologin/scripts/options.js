@@ -105,7 +105,7 @@ var autoLoginOptions = {
 			
 	 var domainrow=event.target.parentNode.parentNode;
 	  autoLoginOptions.changedDomains.push(domainrow.getAttribute("domainname"));
-	  var autoLoginObject=autoLoginOptions.searchdomain(domainrow.getAttribute("domainname"))
+	  var autoLoginObject=autoLoginOptions.searchdomain(domainrow.getAttribute("domainname"),domainrow.getAttribute("authtype"))
 	  
 	event.target.className += ' inputChanged';
 	if(event.target.getAttribute("type")=="text"){
@@ -432,7 +432,7 @@ var autoLoginOptions = {
 	 var domainname=domainrow.getAttribute("domainname");
 	 
 	 
-	 var autoLoginObject=autoLoginOptions.searchdomain(domainname)
+	 var autoLoginObject=autoLoginOptions.searchdomain(domainname,domainrow.getAttribute("authtype"))
 	
 	 
 	 if(null != autoLoginObject)
@@ -446,7 +446,7 @@ var autoLoginOptions = {
 		
     },
 	
-searchdomain:function(domainname){
+searchdomain:function(domainname,authtype){
 		
 
 		var docxml=autoLoginOptions.autologinXMLList;
@@ -463,7 +463,7 @@ searchdomain:function(domainname){
 					
 				
 				iurl=autoLoginOptions.getXMLElementval(sites[i],"url");
-				if(autoLoginOptions.getdomainName(iurl)  == domainname  ){
+				if(autoLoginOptions.getdomainName(iurl)  == domainname &&  authtype == sites[i].getAttribute("authtype")  ){
 							
 							return sites[i];
 							
@@ -496,9 +496,7 @@ searchdomain:function(domainname){
 	
 	   var oSerializer = new XMLSerializer();
         var rawxml = oSerializer.serializeToString(autoLoginOptions.autologinXMLList);
-		console.log("=================")
-		console.log(rawxml)
-		console.log("=================")
+	
         localStorage["autologinxml"] = Helper.encrypt(rawxml);
 	
 		
@@ -554,6 +552,7 @@ searchdomain:function(domainname){
 
                 var autoLoginInfo = {};
                 autoLoginInfo.url = autoLoginOptions.getXMLElementval(divs[i], "url");
+				autoLoginInfo.authtype=divs[i].getAttribute("authtype")
 
                 autoLoginInfo.loginurl = autoLoginOptions.getXMLElementval(divs[i], "loginurl");
 				
@@ -641,7 +640,17 @@ searchdomain:function(domainname){
 			
 			 var row = document.querySelector("#tblOptions").insertRow(-1);
 row.setAttribute("domainname",autoLoginInfo.domain)
+row.setAttribute("authtype",autoLoginInfo.authtype)
+
+var authtype="WebPage Authentication"
+var imagename="lock.png"
+if(autoLoginInfo.authtype == "basic"){
+	authtype="Basic Authentication"
+	imagename="shield.png"
+}
+	
 row.innerHTML =	 "<td style='text-align:left'>"+ autoLoginInfo.domain+"</td>"+
+	"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+
         "<td><input class='inp' type='text' xpath='"+autoLoginInfo.userxpath  +"' value='"+autoLoginInfo.username +"'/></td>"+
 		"<td><input class='inp' type='password' xpath='"+autoLoginInfo.pwdxpath  +"'  value='"+autoLoginInfo.password +"'/></td>"+
 		"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+

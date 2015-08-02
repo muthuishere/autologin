@@ -1,0 +1,94 @@
+/* ---------- FONTAWESOME ---------- */
+/* ---------- http://fortawesome.github.com/Font-Awesome/ ---------- */
+/* ---------- http://weloveiconfonts.com/ ---------- */
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* ---------- FONTAWESOME ---------- */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+
+
+input {
+  background-image: none;
+  border: none;
+  font: 100%/1.5em "Varela Round", sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-transition: all .3s;
+          transition: all .3s;
+}
+
+
+
+/* ---------- LOGIN ---------- */
+#login {
+  width: 400px;
+}
+
+#login h2 {
+  background: #5F4E4E;
+  border-radius: 20px 20px 0 0;
+  color: #fff;
+  font-size: 28px;
+  padding: 20px 26px;
+}
+
+#login h2 span[class*="fontawesome-"] {
+  margin-right: 14px;
+}
+
+#login fieldset {
+  background: #fff;
+  border-radius: 0 0 20px 20px;
+  padding: 20px 26px;
+}
+
+#login fieldset p {
+  color: #777;
+  margin-bottom: 14px;
+}
+
+#login fieldset p:last-child {
+  margin-bottom: 0;
+}
+
+#login fieldset input {
+  border-radius: 3px;
+}
+
+#login fieldset input[type="text"], #login fieldset input[type="password"] {
+  background: #eee;
+  color: #777;
+  padding: 4px 10px;
+  width: 100%;
+}
+
+#login fieldset input[type="submit"] {
+  background: #82A8BF;
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+  padding: 4px 0;
+  width: 100px;
+}
+
+#login fieldset input[type="submit"]:hover {
+  background: ##374E5;
+}
+
+#login fieldset input[type="reset"] {
+
+      background: #CC3333;
+
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+  padding: 4px 0;
+  width: 100px;
+}
+
+#login fieldset input[type="reset"]:hover {
+  background: #B70000;
+}
