@@ -602,7 +602,9 @@ searchdomain:function(domainname,authtype){
 				  
 				 
                 autoLoginInfo.enabled = autoLoginOptions.getXMLElementval(divs[i], "enabled");
-				autoLoginInfo.domain=autoLoginOptions.getdomainName( autoLoginInfo.url)
+				
+					autoLoginInfo.domain=autoLoginOptions.getdomainName( autoLoginInfo.url)
+					
                 if (null == autoLoginInfo.enabled || "" == autoLoginInfo.enabled)
                     autoLoginInfo.enabled = "true"
 				
@@ -630,6 +632,10 @@ searchdomain:function(domainname,authtype){
 
    
 	getdomainName:function(str){
+		
+		if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+			return str
+		
 			var    a      = document.createElement('a');
 			 a.href = str;
 			return a.hostname
@@ -668,7 +674,7 @@ if(autoLoginInfo.authtype == "basic"){
 	imagename="shield.png"
 }
 	
-row.innerHTML =	 "<td style='text-align:left'>"+ autoLoginInfo.domain+"</td>"+
+row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
 	"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+
         "<td><input class='inp' type='text' xpath='"+autoLoginInfo.userxpath  +"' value='"+autoLoginInfo.username +"'/></td>"+
 		"<td><input class='inp' type='password' xpath='"+autoLoginInfo.pwdxpath  +"'  value='"+autoLoginInfo.password +"'/></td>"+

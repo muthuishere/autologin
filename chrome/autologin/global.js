@@ -139,7 +139,7 @@ var globalAutologinHandler = {
 
 
 				
-		console.log(obj)
+		//console.log(obj)
 		var autoLoginXmlInfo=" <site authtype='"+authtype+"'> <url>"+obj.url+"</url> <loginurl>"+obj.loginurl+"</loginurl><enabled>true</enabled><elements>"
 		
 	var elems=obj.elements
@@ -159,7 +159,7 @@ var globalAutologinHandler = {
 			
 
 	
-	console.log(autoLoginXmlInfo)
+	//console.log(autoLoginXmlInfo)
 	var autoLoginInfo=autoLoginXmlInfo
 	var rawxml=""
 	
@@ -179,18 +179,21 @@ var globalAutologinHandler = {
 	//Remove from Autologin Object Autologin List first
 	var removeResponse=globalAutologinHandler.removeSite(autoLoginInfo)
 	
+	//console.log("autoLoginInfo adding",autoLoginInfo)
 	//Site removed , Update XML
 	if(removeResponse == true){
 	
 	  var oSerializer = new XMLSerializer();
 	rawxml = oSerializer.serializeToString(globalAutologinHandler.autologinXMLList);
 		// console.log("After removal" + rawxml)					
+		//console.log("autoLoginInfo removeResponse true ",rawxml)
 							
 	}
 	
 		
 	rawxml=rawxml.replace("</root>",autoLoginInfo + "</root>");
 		
+		//console.log("autoLoginInfo final response after adding ",rawxml)
 		
 		localStorage["autologinxml"]= Helper.encrypt(rawxml);
 		globalAutologinHandler.loadDoc();
@@ -748,6 +751,7 @@ globalAutologinHandler.autologinList=dummyresp;
 			
 			
 			
+			
 		var status=details
 		var url = status.challenger.host;
 		console.log("auth required")
@@ -817,8 +821,8 @@ globalAutologinHandler.autologinList=dummyresp;
 				
 				
 				globalAutologinHandler.authdetails.sitedata={}
-				globalAutologinHandler.authdetails.sitedata.url=url
-				globalAutologinHandler.authdetails.sitedata.loginurl=url
+				globalAutologinHandler.authdetails.sitedata.url=curdomainName
+				globalAutologinHandler.authdetails.sitedata.loginurl=curdomainName
 				globalAutologinHandler.authdetails.sitedata.elements=[]
 				
 				var elem={}
@@ -1024,7 +1028,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   var  siteInfo = globalAutologinHandler.retrieveSiteInfo(tab.url)
 	var status=siteInfo.status
 	
-	console.log("tab check",siteInfo,globalAutologinHandler.loggedIn)
+	//console.log("tab check",siteInfo,globalAutologinHandler.loggedIn)
 	
 		if(  status == 0) {
 		
@@ -1140,7 +1144,7 @@ chrome.runtime.onMessage.addListener(
 	
 				globalAutologinHandler.authclientcallback=sendResponse
 				
-				if(data.useAutologin){
+				if(data.useAutologin &&  globalAutologinHandler.authdetails && globalAutologinHandler.authdetails.sitedata){
 				
 					console.log("saving autologin")
 					console.log(globalAutologinHandler.authdetails)
@@ -1157,6 +1161,9 @@ chrome.runtime.onMessage.addListener(
 							}
 							
 						}
+						
+						console.log("Adding data")
+						console.log(globalAutologinHandler.authdetails.sitedata)
 					globalAutologinHandler.addAutoLoginElements(globalAutologinHandler.authdetails.sitedata,"basic")
 				}
 				
