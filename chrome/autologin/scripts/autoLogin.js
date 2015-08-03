@@ -240,6 +240,60 @@ var autoLogin = {
 		//var res = document.body.dispatchEvent(keyboardEvent);
 		
 	},
+	triggerkeyevent:function(obj){
+	
+	 //
+						 if(obj.enterelement){
+							 console.log("Enter key event ")
+							 
+							 
+							 var elem =autoLogin.getElementByXpath(obj.enterelement.xpath)
+							 
+						
+							 if (elem) elem.focus();
+								autoLogin.raiseKeyEvent(elem ,13)
+								
+							 setTimeout(function() {	
+										autoLogin.triggerclick(obj)
+									}, 1000);
+									
+									
+							
+						 }
+						 else
+							autoLogin.triggerclick(obj)
+						 
+						
+						 
+	},
+	triggerclick:function(obj){
+	
+		if(obj.clickelement){
+							 
+							  console.log("click key event ")
+							  console.log(obj.clickelement.xpath)
+							 var elem =autoLogin.getElementByXpath(obj.clickelement.xpath)
+							
+							 var result = autoLogin.raiseClickEvent(elem)
+							 	 setTimeout(function() {	
+										autoLogin.triggersubmit(obj)
+									}, 5000);
+							
+						 } else
+							autoLogin.triggersubmit(obj)
+						 
+	},
+	triggersubmit:function(obj){
+	
+	
+						  if(obj.formelement){
+							  console.log("Form submit  event ")
+							 var elem =autoLogin.getElementByXpath(obj.formelement.xpath)
+							 elem.submit();
+							 //raise submit event
+							
+						 }
+	},
  handlePageLoad: function () {
 
 
@@ -258,8 +312,6 @@ var autoLogin = {
 			console.log(curlocation)
             xmlObj = autoLogin.isLoginPage(curlocation)
 
-
-console.log(xmlObj)
             if (xmlObj == false) {
                 autoLogin.logmessage("Not login Page")
                 return
@@ -306,24 +358,7 @@ console.log(xmlObj)
 	  
 	 
 				
-				/*
-                jsonObj.username = autoLogin.getXMLElementval(xmlObj, "username");
-
-                jsonObj.password = autoLogin.getXMLElementval(xmlObj, "password");
-                jsonObj.userelement = autoLogin.getXMLElementval(xmlObj, "userelement");
-                jsonObj.pwdelement = autoLogin.getXMLElementval(xmlObj, "pwdelement");
-
-
-                jsonObj.btnelement = autoLogin.getXMLElementval(xmlObj, "btnelement");
-                jsonObj.formelement = autoLogin.getXMLElementval(xmlObj, "formelement");
-
-
-                autoLogin.userelemName = jsonObj.userelement
-                autoLogin.pwdelemName = jsonObj.pwdelement
-
-                autoLogin.initFormObject(jsonObj.formelement)
 				
-				*/
                 var doc = document;
                
                 
@@ -353,7 +388,7 @@ console.log(xmlObj)
 						for( k=0;k< jsonObj.fields.length ;k++){
 							var field =  jsonObj.fields[k] 
 							
-							if( field.type  === "form" && field.event  !== ""){
+							if( field.type  === "form" ){
 								
 								formelement=field
 							}
@@ -377,75 +412,16 @@ console.log(xmlObj)
 								
 							}
 						 }
-						 console.log("=======================")
-						 //
-						 if(enterelement){
-							 console.log("Enter key event ")
-							 
-							 
-							 var elem =autoLogin.getElementByXpath(enterelement.xpath)
-							 
-							 elem.addEventListener('keydown',function(e){
-											
-											//if keypress is enter
-											//send xpath & value to background page and enterkey
-											
-											// event is submit
-													
-											  e = e || window.event;
-											  console.log("Enter element event handler")
-											  console.log(e)
-											   if (e.returnValue === false || e.isDefaultPrevented)
-							 {
-								  
-								 //do stuff, like validation or something, then you could:
-								 e.cancelBubble = true;
-								 if (e.stopPropagation)
-								 {
-									 e.stopPropagation();
-								 }
-							 }
-								return true;			
-					  
-						},false);
+						 
+						 var obj={}
+						 obj.enterelement=enterelement
+						 obj.clickelement=formelement
+						 obj.formelement=formelement
+						 
+						 
+						 autoLogin.triggerkeyevent(obj)
 						
-							 if (elem) elem.focus();
-							 autoLogin.raiseKeyEvent(elem ,13)
-							
-						 }
-						 if(clickelement){
-							 
-							  console.log("click key event ")
-							  console.log(clickelement.xpath)
-							 var elem =autoLogin.getElementByXpath(clickelement.xpath)
-							 console.log(elem)
-							 var result = autoLogin.raiseClickEvent(elem)
-							 
-							 //if result was true return or try to submit via form 
-							 if(result)
-								return;
-						 }
-						  if(formelement){
-							  console.log("Form submit  event ")
-							 var elem =autoLogin.getElementByXpath(formelement.xpath)
-							 elem.submit();
-							 //raise submit event
-							 return;
-						 }
 	  
-						/*
-                        if (jsonObj.btnelement == "") {
-                            //Submit form	
-
-                            //alert("submitting" + autoLogin.dump(formelem));
-                            autoLogin.formObject.submit();
-
-                        } else {
-                            btnelem = autoLogin.getinputelem(jsonObj.btnelement);
-                            autoLogin.fireMouseEvent("click", btnelem);
-                            //	sleep(5);
-                        }
-						*/
 
 
                     });

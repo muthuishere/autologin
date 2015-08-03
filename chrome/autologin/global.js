@@ -196,6 +196,25 @@ var globalAutologinHandler = {
 		globalAutologinHandler.loadDoc();
 	
 	},
+	
+		
+			
+	updateBasicAuthSetting:function(){
+	
+		
+		var usebasicauth= (localStorage["usebasicauth"] === 'true')
+			if(usebasicauth){
+			
+			
+				chrome.webRequest.onAuthRequired.addListener(globalAutologinHandler.retrieveCredentials, {
+						urls : ["http://*/*","https://*/*"]
+						}, ['asyncBlocking']);
+		
+			}else{
+					chrome.webRequest.onAuthRequired.removeListener(globalAutologinHandler.retrieveCredentials)
+			}
+	
+	},	
 	addAutoLoginInfo:function(autoLoginInfo){
 	
 	var rawxml=""
@@ -654,6 +673,7 @@ globalAutologinHandler.autologinList=dummyresp;
 	authcallback:null,	
 	authdetails:null,
 	authretrycount:0,
+	popupopened:false,
 	sendauthcredentials:function(status,credential,callback){
 		
 		
@@ -676,25 +696,29 @@ globalAutologinHandler.autologinList=dummyresp;
 					globalAutologinHandler.last_request_id = status.requestId;
 					globalAutologinHandler.last_tab_id = status.tabId;
 					
-					
+						console.log("Sending data to page " ,globalAutologinHandler.try_count,credential )
 					callback({authCredentials: {username: credential.username, password: credential.password}});	
 					
 				}else{
+				
+				//remove autologin credential and send cancel status
 					if(credential.input ==="autologin"){
 						
 						//One more 
-						globalAutologinHandler.try_count--;
-						console.log(credential)
-						globalAutologinHandler.deleteauth(credential.sitedata)
-						globalAutologinHandler.retrieveCredentials(status,callback)
 						
-					}else
+					//	globalAutologinHandler.try_count--;
+						//console.log(credential)
+						globalAutologinHandler.deleteauth(credential.sitedata)
+						//globalAutologinHandler.retrieveCredentials(status,callback)
+						
+					}
+					
 						globalAutologinHandler.cancelauth(status,callback)
 					
 					
 				}
 		
-					
+				globalAutologinHandler.popupopened=false	
 	},
 	deleteauth:function(sitedata){
 		
@@ -719,8 +743,13 @@ globalAutologinHandler.autologinList=dummyresp;
 	authclientcallback:null,	
 	retrieveCredentials : function (details, callback) {
 		
+		if(globalAutologinHandler.popupopened)
+			return;
+			
+			
+			
 		var status=details
-		var url = status.url;
+		var url = status.challenger.host;
 		console.log("auth required")
 		console.log(status)
 		
@@ -729,7 +758,7 @@ globalAutologinHandler.autologinList=dummyresp;
 		 
 		var domainxml=globalAutologinHandler.getXmlObjectForBasic(url)
 		
-		var curdomainName=Utils.getdomainName(url)
+		var curdomainName=status.challenger.host
 		
 		console.log(domainxml)
 		
@@ -807,22 +836,22 @@ globalAutologinHandler.autologinList=dummyresp;
 					globalAutologinHandler.authdetails.sitedata.elements.push(elem)
 					
 					
-				/*
+				
 				chrome.windows.create({
 					type: 'popup',
-					 focused: true
-				url: chrome.extension.getURL('auth.html'),
+					 focused: true,
+				url: chrome.extension.getURL('auth.html')
 				
 				
 				}, function(win) {
 					
 					
-					
+					globalAutologinHandler.popupopened=true
 					
 				});
 				
-				*/
 				
+				/*
 				chrome.tabs.getSelected(null,function(tab) {
 					var tablink = tab.url;
 					
@@ -842,7 +871,7 @@ globalAutologinHandler.autologinList=dummyresp;
 								});
 						}		
 					});
-			
+			*/
 			
 			
 					
@@ -868,10 +897,8 @@ globalAutologinHandler.autologinList=dummyresp;
 			
 		
 
-
-			chrome.webRequest.onAuthRequired.addListener(globalAutologinHandler.retrieveCredentials, {
-			urls : ["http://*/*","https://*/*"]
-		}, ['asyncBlocking']);
+		
+		globalAutologinHandler.updateBasicAuthSetting()
 		
 			console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
@@ -1135,7 +1162,7 @@ chrome.runtime.onMessage.addListener(
 				
 				
 				globalAutologinHandler.sendauthcredentials(globalAutologinHandler.authdetails,data,globalAutologinHandler.authcallback)
-				
+				sendResponse({"valid":true});	
 					
 				//sendResponse({"valid":true});	
 				
@@ -1212,6 +1239,17 @@ chrome.runtime.onMessage.addListener(
 			
 			localStorage["promptrequired"]= request.promptrequired;
 			
+			
+			
+				sendResponse({"valid":true });
+			
+	
+	
+	}else if (request.action == "updateBasicAuthSetting"){
+	
+		
+			localStorage["usebasicauth"]= request.usebasicAuth;
+			globalAutologinHandler.updateBasicAuthSetting()
 				sendResponse({"valid":true });
 			
 	

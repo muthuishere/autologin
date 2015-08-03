@@ -335,7 +335,26 @@ var autoLoginOptions = {
 				
 						});
 						
-						
+			var usebasicauth= (localStorage["usebasicauth"] === 'true')
+			
+			if(usebasicauth)
+				document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
+			else
+				document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
+							
+
+			document.querySelector('#chkpromptBasicAuth').addEventListener('click', function(event){
+					
+					
+					chrome.extension.sendMessage({action: "updateBasicAuthSetting",usebasicAuth:event.target.checked}, function(response) {
+				
+				
+				
+						});
+					
+			}, false);
+			
+				
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
 					

@@ -7,6 +7,7 @@ var authHandler={
 		authHandler.startCapture=startCapture
 		
 	},
+	
 	init:function(){
 		
 		
@@ -22,7 +23,43 @@ var authHandler={
 				data.username= document.querySelector("input#username").value
 				data.password=document.querySelector("input#password").value
 				data.useAutologin=authHandler.startCapture
-				console.log("sending auth info ")
+				
+				chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {
+						window.close()
+				 });
+		
+		 }, false);
+		 document.querySelector("#btncancel").addEventListener('click', function(event){
+		
+		console.log("sending auth info cancel ")
+		var data ={}
+		data.cancel =true
+		
+		
+		chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {});
+		
+				window.close()
+		
+		 }, false);
+
+	},
+	
+	initsame:function(){
+		
+		
+		document.querySelector("input#username").focus()
+		var extnid=chrome.extension.getURL("/") 
+		
+		autoLoginCaptureIcon.init(extnid,authHandler.onCaptureAutoLogin)
+	
+		 document.querySelector("#btnlogin").addEventListener('click', function(event){
+		
+				var data ={}
+				data.cancel =false
+				data.username= document.querySelector("input#username").value
+				data.password=document.querySelector("input#password").value
+				data.useAutologin=authHandler.startCapture
+				
 				chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {
 						
 							if(!response.valid){

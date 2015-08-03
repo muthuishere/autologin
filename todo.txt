@@ -1,0 +1,14 @@
+Autologin
+
+	SetTimeout , 3 secs , if form still available , submit it -completed
+	
+	Basic auth in open popup -completed
+	Use Basic auth in options -completed
+	
+	Icon change 
+	context menu
+	
+	
+	
+	
+	

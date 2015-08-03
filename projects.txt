@@ -1,0 +1,67 @@
+Meme Generate
+			Learn Image manipulation modules across mobiles
+			
+			Create an updated entry for meme list
+			
+					name
+					category
+					image
+						list of 
+							portion co-ordinates , text size , default text
+							
+			Hire people
+					Maximum budget 25 meme - 500
+					
+					an image
+						list of cordinates , in sql
+					category	
+						
+			
+			categorize 			
+			
+			
+
+
+Gallery builder , Sponsor or Hire
+
+	a context menu on image
+	
+	
+	open a container
+	
+			show image & link
+			extract digit make it as a parameter
+				
+			On click submit
+			
+			on top fixed div	, download all images & close
+			
+		get list of urls
+
+			create 50 urls at a time , on load after 50 urls create next 50 urls
+				on error , remove image
+				
+		
+		
+	
+Auto Login
+		
+			migrate old xml to new data
+			
+			create new xml format
+			
+			save form data , lookup for  key press enter or submit , save click events
+			
+				If autologin site is opened with different credentials , save the data (if password different update or else ,create new entry)
+					
+				if site has multiple values use the default
+				
+
+			Settings
+				
+					Select default credentials
+
+			
+			
+			
+			
