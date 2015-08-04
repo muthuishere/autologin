@@ -128,7 +128,9 @@ if (undefined == autoLoginCapture) {
 
 
 			var flgCaptured = false
-				var forms = document.querySelectorAll("input,select,textarea button");
+			var pwdelem=null
+			var parentform =null
+			var forms = document.querySelectorAll("input,select,textarea button");
 
 			for (var i = 0, formelement; formelement = forms[i]; i++) {
 
@@ -144,17 +146,29 @@ if (undefined == autoLoginCapture) {
 								elem.type = "text"
 								elem.value = val
 								elem.event = ""
+								
 
 								if (formelement.getAttribute("type")) {
 									elem.type = formelement.getAttribute("type").toLowerCase()
 
-										if (formelement.getAttribute("type").toLowerCase() === "password") {
-											flgCaptured = true
+										if (formelement.getAttribute("type").toLowerCase() === "password" ) {
+												
+												
+													
+													flgCaptured = true
+												
+											
 
 												if (formelement.form) {
-													var parentform = formelement.form
+													 parentform = formelement.form
+											
+														
+														if(document.querySelectorAll("form").length == 1  )
+																pwdelem=formelement
+													
+														
 														var parentformelem = {}
-													parentformelem.xpath = autoLoginCapture.getXPath(parentform)
+														parentformelem.xpath = autoLoginCapture.getXPath(parentform)
 														parentformelem.type = "form"
 														parentformelem.event = ""
 														parentformelem.value = ""
@@ -245,9 +259,29 @@ if (undefined == autoLoginCapture) {
 				}
 
 			}
+			
+			if(null !=pwdelem && null != parentform ){
+			
+				var inpelems=parentform.querySelectorAll("input[type^=text]")
+				for(l=0;l<inpelems.length;inpelems++){
+					var curelem=inpelems[l]
+					if(curelem.getBoundingClientRect().top >= pwdelem.getBoundingClientRect().top && curelem.getBoundingClientRect().top <= (pwdelem.getBoundingClientRect().top+25)	){
+						pwdelem=null
+						break;
+						}
+					
+				}
+			}
 
 			if (flgCaptured) {
+			
+			if(null !=pwdelem)
+				autoLoginCaptureIconCheck.init(extnid,autoLoginCapture.onCaptureAutoLogin,pwdelem)
+			else	
 				autoLoginCaptureIcon.init(extnid,autoLoginCapture.onCaptureAutoLogin)
+				//
+				
+				
 
 			}
 

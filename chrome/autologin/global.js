@@ -1067,6 +1067,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 						
 			
 						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCaptureIcon.js"}, function() {
+					//	chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCaptureCheck.js"}, function() {
 								
 								chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
 									//script injected
