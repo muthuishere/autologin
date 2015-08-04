@@ -1121,6 +1121,27 @@ chrome.runtime.onMessage.addListener(
 		sendResponse({"valid":true});
 	
 	
+	
+	}else if (request.action == "getauthinfo"){
+	
+	
+	var data={}
+	data.valid=false;
+	
+		if( globalAutologinHandler.authdetails){
+				data.valid=true;
+			data.realm=globalAutologinHandler.authdetails.realm;
+			
+			if(globalAutologinHandler.authdetails.isProxy){
+				data.url=globalAutologinHandler.authdetails.challenger.host + ":" + globalAutologinHandler.authdetails.challenger.port 
+			}else
+				data.url=globalAutologinHandler.authdetails.url
+		}
+			
+		sendResponse(data);
+	
+	
+	
 	}else if (request.action == "basicauth"){
 	
 			var data=request.info;

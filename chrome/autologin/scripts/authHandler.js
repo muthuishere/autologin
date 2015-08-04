@@ -7,14 +7,34 @@ var authHandler={
 		authHandler.startCapture=startCapture
 		
 	},
-	
 	init:function(){
+	
+	document.querySelector("input#username").focus()
+	
+	  chrome.runtime.sendMessage({
+            action: "getauthinfo"
+        }, function (response) {
+		
+		if(!response.valid){
+			alert("Corrupt data")
+			window.close();
+			return
+		}
+			authHandler.initauth(response)
+        });
+
+		
+	
+	},
+	initauth:function(response){
 		
 		
-		document.querySelector("input#username").focus()
+		 document.querySelector("#pagetitle").innerHTML="The Page "+response.url+" requires username & password"
+		 document.querySelector("#realm").innerHTML="Sign In , The realm says " + response.realm
+		 
 		var extnid=chrome.extension.getURL("/") 
 		
-		autoLoginCaptureIcon.init(extnid,authHandler.onCaptureAutoLogin)
+		//autoLoginCaptureIcon.init(extnid,authHandler.onCaptureAutoLogin)
 	
 		 document.querySelector("#btnlogin").addEventListener('click', function(event){
 		
@@ -22,7 +42,8 @@ var authHandler={
 				data.cancel =false
 				data.username= document.querySelector("input#username").value
 				data.password=document.querySelector("input#password").value
-				data.useAutologin=authHandler.startCapture
+				data.useAutologin=document.querySelector("input#chkuseautologin").checked
+				
 				
 				chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {
 						window.close()
