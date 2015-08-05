@@ -1026,7 +1026,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
  
     if(tab.url !== undefined && changeInfo.status == "complete" ){
 	
-	 if(tab.url.indexOf("chrome") == 0 || tab.url.indexOf("file") == 0  ){
+	 if(tab.url.indexOf("chrome") == 0 || tab.url.indexOf("data") == 0 || tab.url.indexOf("file") == 0  ){
 	  
 			return;
 		}
