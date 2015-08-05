@@ -786,9 +786,14 @@ var autoLogin = {
     },
 
     getdomainName: function (str) {
-        var a = document.createElement('a');
-        a.href = str;
-        return a.hostname
+	
+	if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+			return str
+		
+			var    a      = document.createElement('a');
+			 a.href = str;
+			return a.hostname
+	
 
         //return str.replace(/\/+$/, '');
     },

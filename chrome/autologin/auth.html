@@ -18,7 +18,7 @@
 
 
 <body >
-
+<!--
 
 <div  style="background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));">
 <div id="header" class="container">
@@ -35,11 +35,14 @@
 	  </div>
 </div>
 <hr/>
-<div class="container">
+-->
+<div class="container" style="margin-top:10px;margin-left:10px">
 
   <div id="login">
 
-        <h2><span class="fontawesome-lock"></span><span id="realm">Sign In</span></h2>
+        <h2>
+		<span style="float:left;background:url('images/bg5.png');margin-right:20px;height:48px;width:48px">&nbsp;</span>
+		<span id="realm">Sign In</span> <span id="pagetitle" >The Page host:port requires username & password</span></h2>
 
         <form action="#" method="POST">
 
@@ -49,7 +52,7 @@
             <p><input type="text" id="username" placeholder="User name"></p>
 
             <p><label for="password">Password</label></p>
-            <p><input type="password" id="password" placeholder="password"></p>
+            <p><input type="password" id="password" placeholder="Password"></p>
 
 			
             <p><input type="checkbox" id="chkuseautologin" value="1" checked> Use AutoLogin</p>

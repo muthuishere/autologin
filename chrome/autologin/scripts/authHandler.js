@@ -30,7 +30,11 @@ var authHandler={
 		
 		
 		 document.querySelector("#pagetitle").innerHTML="The Page "+response.url+" requires username & password"
-		 document.querySelector("#realm").innerHTML="Sign In , The realm says " + response.realm
+		 
+		 if(response.realm)
+			document.querySelector("#realm").innerHTML="Sign In , The realm says " + response.realm
+		else
+			document.querySelector("#realm").innerHTML="Sign In "
 		 
 		var extnid=chrome.extension.getURL("/") 
 		

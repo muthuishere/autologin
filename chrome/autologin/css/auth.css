@@ -28,11 +28,11 @@ input {
 }
 
 #login h2 {
-  background: #5F4E4E;
+  background: #B2C7D7;
   border-radius: 20px 20px 0 0;
-  color: #fff;
-  font-size: 28px;
-  padding: 20px 26px;
+  color: #000;
+  font-size: 14px;
+  padding: 34px 26px;
 }
 
 #login h2 span[class*="fontawesome-"] {
@@ -66,7 +66,8 @@ input {
 }
 
 #login fieldset input[type="submit"] {
-  background: #82A8BF;
+	cursor:pointer;
+  background: #254061;
   color: #fff;
   display: block;
   margin: 0 auto;
@@ -74,13 +75,14 @@ input {
   width: 100px;
 }
 
+
 #login fieldset input[type="submit"]:hover {
-  background: ##374E5;
+  background: #0F1A27;
 }
 
 #login fieldset input[type="reset"] {
-
-      background: #CC3333;
+cursor:pointer;
+      background: #84878A;
 
   color: #fff;
   display: block;
@@ -90,5 +92,5 @@ input {
 }
 
 #login fieldset input[type="reset"]:hover {
-  background: #B70000;
+  background: #6C6D6F;
 }

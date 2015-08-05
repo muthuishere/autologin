@@ -275,7 +275,7 @@ while (i--) {
 		
 			
 		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl) &&   authtype ==  divs[i].getAttribute("authtype")){
-					//alert(divs[i].url)
+					console.log(divs[i].url)
 						  return divs[i];
 		}
 						  
@@ -770,7 +770,8 @@ globalAutologinHandler.autologinList=dummyresp;
 		if (domainxml && domainxml.getAttribute("authtype") == "basic") {
 
 		var credential = {};
-		
+		credential.username = ""
+		credential.passwords = ""
 		 var elems = domainxml.getElementsByTagName("element");
 				  
 				  credential.sitedata= new XMLSerializer().serializeToString(domainxml);
@@ -803,6 +804,7 @@ globalAutologinHandler.autologinList=dummyresp;
 				if(credential.username !== "" && credential.password !== "" ){
 					globalAutologinHandler.authcallback=null;
 					globalAutologinHandler.authdetails=null
+					console.log("authentication sent from storage ",credential,status,domainxml)
 					globalAutologinHandler.sendauthcredentials(status,credential,callback)
 					
 					return;
@@ -844,7 +846,8 @@ globalAutologinHandler.autologinList=dummyresp;
 				chrome.windows.create({
 					type: 'popup',
 					 focused: true,
-				url: chrome.extension.getURL('auth.html')
+				url: chrome.extension.getURL('auth.html'),
+				height: 450, width:450
 				
 				
 				}, function(win) {
@@ -925,6 +928,9 @@ globalAutologinHandler.autologinList=dummyresp;
 var Utils={
 
 	getdomainName:function(str){
+		if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+			return str
+		
 			var    a      = document.createElement('a');
 			 a.href = str;
 			return a.hostname
@@ -1020,7 +1026,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
  
     if(tab.url !== undefined && changeInfo.status == "complete" ){
 	
-	 if(tab.url.indexOf("chrome") == 0  ){
+	 if(tab.url.indexOf("chrome") == 0 || tab.url.indexOf("file") == 0  ){
 	  
 			return;
 		}
