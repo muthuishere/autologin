@@ -291,6 +291,10 @@ if (undefined == autoLoginCapture) {
 			console.log("on capture autologin" + 	autoLoginCapture.startCapture)
 		
 		autoLoginCapture.startCapture = startCapture
+		
+		if (startCapture && autoLoginCapture.checkpasswordhasvalue() == false)
+					autoLoginCapture.updateElements();
+																
 
 		},
 		
