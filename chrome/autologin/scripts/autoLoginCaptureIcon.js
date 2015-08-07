@@ -160,7 +160,7 @@ var autoLoginCaptureIconCheck={
 						/*divelem.innerHTML='<div style="position:fixed;top:0px;right:0;"><div id="autoLoginCaptureIconCheck" style="cursor:pointer;padding-top:186px;width:191px;font-face:Verdana;font-weight:bolder;font-size:11px;text-align:center" class="disable" title="Click to Capture Auto Login Information" > Click to Capture Auto Login Information</div></div>'
 						*/
 						
-						divelem.innerHTML='<div style="display:block;width:250px;color:black"><input type="checkbox" id="autoLoginCaptureIconCheck" value="1" checked> Use Autologin</div>'
+						divelem.innerHTML='<div style="display:block;width:250px;color:black"><input type="checkbox" id="autoLoginCaptureIconCheck" value="1" > Use Autologin</div>'
 						
 						pwdelem.parentNode.appendChild(divelem);
 						

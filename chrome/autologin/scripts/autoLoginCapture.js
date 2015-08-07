@@ -288,7 +288,7 @@ if (undefined == autoLoginCapture) {
 		},
 		onCaptureAutoLogin : function (startCapture ) {
 
-			//console.log("on capture autologin")
+			console.log("on capture autologin" + 	autoLoginCapture.startCapture)
 		
 		autoLoginCapture.startCapture = startCapture
 
