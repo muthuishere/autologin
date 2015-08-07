@@ -574,7 +574,7 @@ searchdomain:function(domainname,authtype){
 				autoLoginInfo.authtype=divs[i].getAttribute("authtype")
 
                 autoLoginInfo.loginurl = autoLoginOptions.getXMLElementval(divs[i], "loginurl");
-				
+				autoLoginInfo.username="";
 				
 					autoLoginInfo.fields=[]
 				  
@@ -593,9 +593,20 @@ searchdomain:function(domainname,authtype){
 						  autoLoginInfo.pwdxpath= field.xpath
 					 }
 					 
-					  if(field.type === "text"){
+					  if(field.type === "text"  ){
+					  
+						if( autoLoginInfo.username !== ""){
+						
+								if(field.value != "" && (field.xpath.indexOf("user") >=0 ||  field.xpath.indexOf("email") >=0 || field.xpath.indexOf("login") >=0 )){
+									autoLoginInfo.username= field.value
+									autoLoginInfo.userxpath= field.xpath
+								
+								}
+								
+						}else{
 						 autoLoginInfo.username= field.value
 						  autoLoginInfo.userxpath= field.xpath
+						  }
 					 }
 					autoLoginInfo.fields.push(field)
 				  }
