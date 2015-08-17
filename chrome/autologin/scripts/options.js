@@ -597,7 +597,7 @@ searchdomain:function(domainname,authtype){
 					  
 						if( autoLoginInfo.username !== ""){
 						
-								if(field.value != "" && (field.xpath.indexOf("user") >=0 ||  field.xpath.indexOf("email") >=0 || field.xpath.indexOf("login") >=0 )){
+								if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 )){
 									autoLoginInfo.username= field.value
 									autoLoginInfo.userxpath= field.xpath
 								

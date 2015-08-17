@@ -322,33 +322,6 @@ getXmlObjectForBasic: function(currentURL) {
    startsWith:function (data,str) {
         return !data.indexOf(str);
     },
-
-
-   jq: function(formulae) {
-	    $mb = jQuery.noConflict();		
-	   return $mb(formulae, document);
-   },
-     hasalreadyloggedin: function(formulae) {
-	   
-	   if(formulae == "")
-	   		return false;
-	   
-
-try{	  
-	  var elemhtml=globalAutologinHandler.jq(formulae);
-	  
-	  if (null != elemhtml.html())
-	  	return true;
-	  
-}catch(exception){
-	
-}
-
-return false;
-	
- 
-  
-  },
   canSubmit:function(curlocation) {
   
 
@@ -804,6 +777,8 @@ globalAutologinHandler.autologinList=dummyresp;
 				if(credential.username !== "" && credential.password !== "" ){
 					globalAutologinHandler.authcallback=null;
 					globalAutologinHandler.authdetails=null
+					
+					//TODO show popup to retrieve autologin credential
 					console.log("authentication sent from storage ",credential,status,domainxml)
 					globalAutologinHandler.sendauthcredentials(status,credential,callback)
 					
@@ -846,8 +821,8 @@ globalAutologinHandler.autologinList=dummyresp;
 				chrome.windows.create({
 					type: 'popup',
 					 focused: true,
-				url: chrome.extension.getURL('auth.html'),
-				height: 450, width:450
+					url: chrome.extension.getURL('auth.html'),
+					height: 450, width:450
 				
 				
 				}, function(win) {

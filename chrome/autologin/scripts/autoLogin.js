@@ -255,7 +255,7 @@ var autoLogin = {
 								
 							 setTimeout(function() {	
 										autoLogin.triggerclick(obj)
-									}, 1000);
+									}, 200);
 									
 									
 							
@@ -277,7 +277,7 @@ var autoLogin = {
 							 var result = autoLogin.raiseClickEvent(elem)
 							 	 setTimeout(function() {	
 										autoLogin.triggersubmit(obj)
-									}, 5000);
+									}, 400);
 							
 						 } else
 							autoLogin.triggersubmit(obj)
