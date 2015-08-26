@@ -431,6 +431,20 @@ var autoLoginOptions = {
 		
         }
 		
+		//todo update
+			var inputElements = document.querySelectorAll('select.selectbox');
+        for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
+            //work with element
+			
+            inputElement.addEventListener('change', function(evt){
+			
+			//autoLoginOptions.infoChanged
+			}, false);
+			 
+		
+        }
+		
+		
 		 document.querySelector("input.inp").addEventListener('keypress', function(event){
 		
 			 
@@ -611,7 +625,7 @@ searchdomain:function(domainname,authtype){
                 autoLoginInfo.enabled = cursite.enabled;				
 					autoLoginInfo.domain=cursite.url;
 					
-					var selectbox="<select id='select"+ autoLoginInfo.domain+"'>"
+					var selectbox="<select class='selectbox' id='select"+ autoLoginInfo.domain+"'>"
 					
 					for(k=0;k<samesites.length;k++){
 						
@@ -666,6 +680,13 @@ searchdomain:function(domainname,authtype){
 				
             }
 			
+			
+		
+		
+			
+			
+			
+			}, false);
            
 
 	return flgTblCreated;
@@ -722,6 +743,8 @@ searchdomain:function(domainname,authtype){
 					"<td><input class='inp' type='password'   value=''/></td>"+
 					"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
 					"<td> <a  class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
+					
+					
 	
 	}
 
