@@ -342,8 +342,11 @@ var autoLoginOptions = {
 			else
 				document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
 							
-
+			
+			
+							
 			document.querySelector('#chkpromptBasicAuth').addEventListener('click', function(event){
+					
 					
 					
 					chrome.extension.sendMessage({action: "updateBasicAuthSetting",usebasicAuth:event.target.checked}, function(response) {
@@ -353,6 +356,32 @@ var autoLoginOptions = {
 						});
 					
 			}, false);
+			
+			
+			var usemultiplecreds= (localStorage["usemultiplecreds"] === 'true')
+			
+			if(usemultiplecreds)
+				document.querySelector('#chkpromptMultiplecreds').setAttribute("CHECKED","CHECKED")
+			else
+				document.querySelector('#chkpromptMultiplecreds').removeAttribute("CHECKED")
+				
+				
+			document.querySelector('#chkpromptMultiplecreds').addEventListener('click', function(event){
+					
+					if(!event.target.checked){
+						
+						if(confirm("All existing Multiple credentials will be removed , Do you want to continue ?")){
+						
+						
+						localStorage["usemultiplecreds"] =event.target.checked
+						}
+					}
+					else
+						localStorage["usemultiplecreds"] =event.target.checked
+					
+					
+			}, false);
+			
 			
 				
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
@@ -377,10 +406,10 @@ var autoLoginOptions = {
 	
 	document.querySelector('#tblOptions').style.display="";
 			document.querySelector('#btnUpdate').style.display="";
-        var rawxml = Helper.decrypt(localStorage["autologinxml"]);
+        var sites = storage.autologinsites
 		
 		document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
-       var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(rawxml);
+       var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(sites);
         //tblOptions
 		//Add
 		if(tblCreated){
@@ -542,103 +571,104 @@ searchdomain:function(domainname,authtype){
             return "";
         }
     },
-    loadDocumentAndCreateTable: function (rawxml) {
+    loadDocumentAndCreateTable: function (sites) {
 
 		flgTblCreated=false;
 
 
-        var parser = new DOMParser();
-        var docxml = parser.parseFromString(rawxml, "text/xml");
 
 
         var dummyresp = '';
 
-        autoLoginOptions.autologinXMLList = docxml;
+
         var jsonresp = new Array();
+		var urls=[];
 		autoLoginOptions.cleanTable();
 
      //   try {
 
             //autoLoginOptions.logmessage(docxml );
-            var divs = docxml.getElementsByTagName("site"),
-                i = divs.length;
+         
+                i = sites.length;
            
             if (i == 0)
                 return flgTblCreated;
 
 
             while (i--) {
-
-                var autoLoginInfo = {};
-                autoLoginInfo.url = autoLoginOptions.getXMLElementval(divs[i], "url");
-				autoLoginInfo.authtype=divs[i].getAttribute("authtype")
-
-                autoLoginInfo.loginurl = autoLoginOptions.getXMLElementval(divs[i], "loginurl");
-				autoLoginInfo.username="";
-				
-					autoLoginInfo.fields=[]
-				  
-				  var elems = divs[i].getElementsByTagName("element");
-				  
-				  for( k=0;k< elems.length ;k++){
-					  
-					  var field={}
-					 field.xpath= autoLoginOptions.getXMLElementval(elems[k],"xpath");
-					 field.type= autoLoginOptions.getXMLElementval(elems[k],"type");
 					
-					 field.value= autoLoginOptions.getXMLElementval(elems[k],"value");
-					 field.event= autoLoginOptions.getXMLElementval(elems[k],"event");
+					var cursite=sites[i]
+					if(urls.indexOf(cursite.url) >=0){
+						continue
+					}
+					urls.push(cursite.url)
+                var autoLoginInfo = {};
+                autoLoginInfo.url = cursite.url;
+				autoLoginInfo.authtype=cursite.authtype
+                autoLoginInfo.loginurl =  cursite.loginurl; 
+				var samesites=storage.get(cursite.authtype,cursite.url)
+				autoLoginInfo.sites=samesites
+                autoLoginInfo.enabled = cursite.enabled;				
+					autoLoginInfo.domain=cursite.url;
+					
+					var selectbox="<select id='select"+ autoLoginInfo.domain+"'>"
+					
+					for(k=0;k<samesites.length;k++){
+						
+						
+						
+						var datainfo={}
+						
+						
+						var elems = samesites[k].elements
+				  
+				  
+				  for( l=0;l< elems.length ;l++){
+					  
+					  var field=elems[l]
+					 
 					  if(field.type === "password"){
-						 autoLoginInfo.password= field.value
-						  autoLoginInfo.pwdxpath= field.xpath
+					  
+						 datainfo.password= field.value
+						  datainfo.pwdxpath= field.xpath
 					 }
 					 
 					  if(field.type === "text"  ){
 					  
-						if( autoLoginInfo.username !== ""){
+						if( datainfo.username !== ""){
 						
 								if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 )){
-									autoLoginInfo.username= field.value
-									autoLoginInfo.userxpath= field.xpath
+									datainfo.username= field.value
+									datainfo.userxpath= field.xpath
 								
 								}
 								
 						}else{
-						 autoLoginInfo.username= field.value
-						  autoLoginInfo.userxpath= field.xpath
+						 datainfo.username= field.value
+						  datainfo.userxpath= field.xpath
 						  }
 					 }
-					autoLoginInfo.fields.push(field)
-				  }
-				  
-				 
-                autoLoginInfo.enabled = autoLoginOptions.getXMLElementval(divs[i], "enabled");
+					 
+						
+					}
 				
-					autoLoginInfo.domain=autoLoginOptions.getdomainName( autoLoginInfo.url)
+
+				selectbox += "<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  ></option>"
 					
-                if (null == autoLoginInfo.enabled || "" == autoLoginInfo.enabled)
-                    autoLoginInfo.enabled = "true"
-				
+					}
+					
+					selectbox +="</select>"
+					autoLoginInfo.selectbox=selectbox
+					
 					autoLoginOptions.createRow(autoLoginInfo)				
 					flgTblCreated=true;
-                jsonresp.push(autoLoginInfo);
+					jsonresp.push(autoLoginInfo);
 				
             }
+			
+           
 
-            //dummyresp = JSON.stringify(jsonresp);
-
-            
-
-            //autoLoginOptions.logmessage(dummyresp);
-
-            
-       /* } catch (exception) {
-
-            console.log("decode issue" + exception)
-            
-        } */
-
-   return flgTblCreated;
+	return flgTblCreated;
     },
 
    
@@ -675,22 +705,23 @@ searchdomain:function(domainname,authtype){
 			}
 			
 			 var row = document.querySelector("#tblOptions").insertRow(-1);
-row.setAttribute("domainname",autoLoginInfo.domain)
-row.setAttribute("authtype",autoLoginInfo.authtype)
+			row.setAttribute("domainname",autoLoginInfo.domain)
+			row.setAttribute("authtype",autoLoginInfo.authtype)
 
-var authtype="WebPage Authentication"
-var imagename="lock.png"
-if(autoLoginInfo.authtype == "basic"){
-	authtype="Basic Authentication"
-	imagename="shield.png"
-}
+			var authtype="WebPage Authentication"
+			var imagename="lock.png"
+			if(autoLoginInfo.authtype == "basic"){
+				authtype="Basic Authentication"
+				imagename="shield.png"
+			}
 	
-row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
-	"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+
-        "<td><input class='inp' type='text' xpath='"+autoLoginInfo.userxpath  +"' value='"+autoLoginInfo.username +"'/></td>"+
-		"<td><input class='inp' type='password' xpath='"+autoLoginInfo.pwdxpath  +"'  value='"+autoLoginInfo.password +"'/></td>"+
-		"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
-        "<td> <a  class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
+			row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
+				"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+	
+					"<td>"+autoLoginInfo.selectbox +"  /></td>"+
+					"<td><input class='inp' type='text'  value=''/></td>"+
+					"<td><input class='inp' type='password'   value=''/></td>"+
+					"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
+					"<td> <a  class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
 	
 	}
 

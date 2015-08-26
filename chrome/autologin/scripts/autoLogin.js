@@ -8,6 +8,7 @@ var autoLogin = {
     formObject: null,
     userelemName: null,
     pwdelemName: null,
+	sites:[],
 
     ismatchURL: function (currentURL, elemname,authtype) {
 
@@ -294,60 +295,32 @@ var autoLogin = {
 							
 						 }
 	},
- handlePageLoad: function () {
-
-
-
-        try {
-
-
-
-            if (autoLogin.autologinList == null) {
-                autoLogin.logmessage("Data not Loaded")
-                return;
-            }
-
-            var curlocation = document.location.toString();
-
-			console.log(curlocation)
-            xmlObj = autoLogin.isLoginPage(curlocation)
-
-            if (xmlObj == false) {
-                autoLogin.logmessage("Not login Page")
-                return
-
-            } else {
-                autoLogin.logmessage("Is Login Page");
-
-
-
-            }
-
-
-            if (xmlObj != false) {
+ 
+	initiate:function(site){
+	try{
+	
+	
 
                 autoLogin.logmessage("Attempting to Insert");
 
 				var haspassword =false
 
                 var jsonObj = {};
-                jsonObj.url = autoLogin.getXMLElementval(xmlObj, "url");
+                jsonObj.url = site.url;
 
-                jsonObj.loginurl = autoLogin.getXMLElementval(xmlObj, "loginurl");
+                jsonObj.loginurl = site.loginurl
 				
 			
 				 jsonObj.fields =[];
 	  
 	  
-				  var elems = xmlObj.getElementsByTagName("element");
+				  var elems = site.elements;
 				  
 				  for( k=0;k< elems.length ;k++){
 					  
-					  var field={}
-					 field.xpath= autoLogin.getXMLElementval(elems[k],"xpath");
-					 field.type= autoLogin.getXMLElementval(elems[k],"type");
-					 field.value= autoLogin.getXMLElementval(elems[k],"value");
-					 field.event= autoLogin.getXMLElementval(elems[k],"event");
+					  
+					  var field=elems[k]
+					  
 					 if( field.type  === "password"){
 						 var elem =autoLogin.getElementByXpath(field.xpath)
 								if(elem)
@@ -434,16 +407,12 @@ var autoLogin = {
 
 
 
-
-            }
-
         } catch (exception) {
             console.log("process exception " + exception);
         }
-
-    },
-    
-    handlePageLoadOld: function () {
+	
+	},
+	handlePageLoad: function () {
 
 
 
@@ -451,106 +420,62 @@ var autoLogin = {
 
 
 
-            if (autoLogin.autologinList == null) {
+            if (null == autoLogin.sites || autoLogin.sites.length == 0) {
                 autoLogin.logmessage("Data not Loaded")
                 return;
             }
 
-            var curlocation = document.location.toString();
 
-            xmlObj = autoLogin.isLoginPage(curlocation)
-
-
-
-            if (xmlObj == false) {
-                autoLogin.logmessage("Not login Page")
-                return
-
-            } else {
-                autoLogin.logmessage("Is Login Page");
-
-
-
-            }
-
-
-            if (xmlObj != false) {
-
-                autoLogin.logmessage("Attempting to Insert");
-
-
-
-                var jsonObj = {};
-                jsonObj.url = autoLogin.getXMLElementval(xmlObj, "url");
-
-                jsonObj.loginurl = autoLogin.getXMLElementval(xmlObj, "loginurl");
+			 if ( autoLogin.sites.length == 1) {
+				autoLogin.logmessage("Single login")
+					autoLogin.initiate(autoLogin.sites[0])
+				return
+			 }
+			 
+			 if ( autoLogin.sites.length > 1) {
+			 
+					//show autlogin info with list of users
+					
+					var validsites=[]
+					//reiterate sites ensure all xpaths are available
+				autoLogin.logmessage("Single login")
+				
+				for(i=0;i<autoLogin.sites.length ;i++){
+				
+					var cursite=autoLogin.sites[i]
+					var canadd=true
+					 var elems = cursite.elements;
+					  for( k=0;k< elems.length ;k++){
+					  
+						  var elem =autoLogin.getElementByXpath(elems[k].xpath)
+						  
+							if(elem)	
+								continue
+							else
+								canadd=false
+										
+						
+					  }
+						  if(canadd)
+							validsites.push(cursite)
+				  
+					
+				}
 				
 				
-                jsonObj.username = autoLogin.getXMLElementval(xmlObj, "username");
-
-                jsonObj.password = autoLogin.getXMLElementval(xmlObj, "password");
-                jsonObj.userelement = autoLogin.getXMLElementval(xmlObj, "userelement");
-                jsonObj.pwdelement = autoLogin.getXMLElementval(xmlObj, "pwdelement");
-
-
-                jsonObj.btnelement = autoLogin.getXMLElementval(xmlObj, "btnelement");
-                jsonObj.formelement = autoLogin.getXMLElementval(xmlObj, "formelement");
-
-
-                autoLogin.userelemName = jsonObj.userelement
-                autoLogin.pwdelemName = jsonObj.pwdelement
-
-                autoLogin.initFormObject(jsonObj.formelement)
-                var doc = document;
-                userelem = autoLogin.getinputelem(jsonObj.userelement)
-                pwdelem = autoLogin.getinputelem(jsonObj.pwdelement)
-
-                if (userelem != null && pwdelem != null) {
-
-                    userelem.value = jsonObj.username;
-                    pwdelem.value = jsonObj.password;
-
-                    chrome.runtime.sendMessage({
-                        action: "cansubmit"
-                    }, function (response) {
-
-                        if (response.actionresponse == false) {
-                            console.log("Cannot submit the form")
-                            return
-                        }
-                        console.log("Submitting form")
-                        if (jsonObj.btnelement == "") {
-                            //Submit form	
-
-                            //alert("submitting" + autoLogin.dump(formelem));
-                            autoLogin.formObject.submit();
-
-                        } else {
-                            btnelem = autoLogin.getinputelem(jsonObj.btnelement);
-                            autoLogin.fireMouseEvent("click", btnelem);
-                            //	sleep(5);
-                        }
-
-
-                    });
-
-
-                    return;
-                }
-
-                autoLogin.logmessage("Invalid Page");
-
-
-
-
-            }
-
-        } catch (exception) {
-            console.log("process exception " + exception);
-        }
+				
+				userselect.init(extnid,validsites,function(site){
+						
+							autoLogin.initiate(site)
+				})
+				
+				
+			 }
+			 
 
     },
-    logmessage: function (aMessage) {
+    
+     logmessage: function (aMessage) {
 
 
         //  alert(aMessage)
@@ -559,60 +484,7 @@ var autoLogin = {
 
 
     },
-    dump: function (arr, level) {
-        var dumped_text = "";
-        if (!level) level = 0;
 
-        //The padding given at the beginning of the line.
-        var level_padding = "";
-        for (var j = 0; j < level + 1; j++) level_padding += "    ";
-
-        if (typeof (arr) == 'object') { //Array/Hashes/Objects 
-            for (var item in arr) {
-                var value = arr[item];
-
-                if (typeof (value) == 'object') { //If it is an array,
-                    dumped_text += level_padding + "'" + item + "' ...\n";
-                    dumped_text += dump(value, level + 1);
-                } else {
-                    dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-                }
-            }
-        } else { //Stings/Chars/Numbers etc.
-            dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
-        }
-        return dumped_text;
-    },
-
-
-
-    setprefs: function (_user, _pwd, _earnings) {
-        autoLogin.user = _user;
-        autoLogin.pwd = _pwd;
-        var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-            .getService(Components.interfaces.nsIPrefService).getBranch("accessibility.");
-
-
-
-
-    },
-
-    geturlResult: function (url) {
-        var resp = "";
-        var req = new XMLHttpRequest();
-
-        req.open('GET', url, false);
-        autoLogin.logmessage(url);
-        req.send(null);
-        if (req.status == 200) {
-            //autoLogin.logmessage(req.responseText);  
-            resp = req.responseText;
-        } else {
-            autoLogin.logmessage(req.status);
-        }
-
-        return resp;
-    },
 
 
 
@@ -629,12 +501,13 @@ var autoLogin = {
 
 
         chrome.runtime.sendMessage({
-            action: "getData"
+            action: "getData",
+			domain:this.getdomainName(document.location.toString())
         }, function (response) {
 		
-			var rawxml=response.xml
 
-            autoLogin.loadDocument(rawxml)
+			
+            autoLogin.sites=response.sites
             autoLogin.handlePageLoad();
         });
 
@@ -642,138 +515,6 @@ var autoLogin = {
 
 
     },
-	loadDocument: function (rawxml) {
-
-
-
-
-        var parser = new DOMParser();
-        var docxml = parser.parseFromString(rawxml, "text/xml");
-
-
-        var dummyresp = '';
-
-        autoLogin.autologinXMLList = docxml;
-        var jsonresp = new Array();
-
-
-        try {
-
-           // autoLogin.logmessage(docxml);
-            var divs = docxml.getElementsByTagName("site"),
-                i = divs.length;
-            autoLogin.logmessage("getResposnseasJSON" + i);
-            if (i == 0)
-                return null;
-
-
-            while (i--) {
-
-                var partner = {};
-                partner.url = autoLogin.getXMLElementval(divs[i], "url");
-
-                partner.loginurl = autoLogin.getXMLElementval(divs[i], "loginurl");
-				
-							 partner.fields =[];
-				  
-				  var elems = divs[i].getElementsByTagName("element");
-				  
-				  for( k=0;k< elems.length ;k++){
-					  
-					  var field={}
-					 field.xpath= autoLogin.getXMLElementval(elems[k],"xpath");
-					 field.type= autoLogin.getXMLElementval(elems[k],"type");
-					 field.value= autoLogin.getXMLElementval(elems[k],"value");
-					 field.event= autoLogin.getXMLElementval(elems[k],"event");
-					 partner.fields.push(field)
-				  }
-				  
-	 
-	  
-	  
-              
-
-                jsonresp.push(partner);
-                //alert(autoLogin.dump(partner) );
-            }
-
-            dummyresp = JSON.stringify(jsonresp);
-
-            autoLogin.autologinList = dummyresp;
-
-            //  autoLogin.logmessage(dummyresp);
-
-            //return true;  
-        } catch (exception) {
-
-            console.log("decode issue" + exception)
-            //return null;
-        }
-
-
-    },
-
-    loadDocumentold: function (rawxml) {
-
-
-
-
-        var parser = new DOMParser();
-        var docxml = parser.parseFromString(rawxml, "text/xml");
-
-
-        var dummyresp = '';
-
-        autoLogin.autologinXMLList = docxml;
-        var jsonresp = new Array();
-
-
-        try {
-
-           // autoLogin.logmessage(docxml);
-            var divs = docxml.getElementsByTagName("site"),
-                i = divs.length;
-            autoLogin.logmessage("getResposnseasJSON" + i);
-            if (i == 0)
-                return null;
-
-
-            while (i--) {
-
-                var partner = {};
-                partner.url = autoLogin.getXMLElementval(divs[i], "url");
-
-                partner.loginurl = autoLogin.getXMLElementval(divs[i], "loginurl");
-                partner.username = autoLogin.getXMLElementval(divs[i], "username");
-
-                partner.password = autoLogin.getXMLElementval(divs[i], "password");
-                partner.userelement = autoLogin.getXMLElementval(divs[i], "userelement");
-                partner.pwdelement = autoLogin.getXMLElementval(divs[i], "pwdelement");
-
-
-                partner.btnelement = autoLogin.getXMLElementval(divs[i], "btnelement");
-                partner.formelement = autoLogin.getXMLElementval(divs[i], "formelement");
-
-                jsonresp.push(partner);
-                //alert(autoLogin.dump(partner) );
-            }
-
-            dummyresp = JSON.stringify(jsonresp);
-
-            autoLogin.autologinList = dummyresp;
-
-            //  autoLogin.logmessage(dummyresp);
-
-            //return true;  
-        } catch (exception) {
-
-            console.log("decode issue" + exception)
-            //return null;
-        }
-
-
-    },
-
     isDomainValid: function (longStr, searchstr) {
 
 

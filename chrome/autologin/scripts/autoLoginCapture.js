@@ -311,9 +311,12 @@ if (undefined == autoLoginCapture) {
 				//console.log(autoLoginXmlInfo)
 
 				var data = {}
-				data.url = document.location.toString().split('?')[0]
+					data.url = this.getdomainName(document.location.toString().split('?')[0])
 					data.loginurl = document.location.toString().split('?')[0]
 					data.elements = autoLoginCapture.elems
+					data.enabled="true"					
+					data.authtype='form'
+				
 
 					chrome.extension.sendMessage({
 						action : "addAutoLoginFormElements",
@@ -330,6 +333,18 @@ if (undefined == autoLoginCapture) {
 
 			autoLoginCapture.alreadySubmitted = true;
 			return true;
+		},
+		 getdomainName: function (str) {
+	
+			if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+					return str
+				
+					var    a      = document.createElement('a');
+					 a.href = str;
+					return a.hostname
+	
+
+        //return str.replace(/\/+$/, '');
 		},
 
 		addClickEvents : function (btnelems) {
