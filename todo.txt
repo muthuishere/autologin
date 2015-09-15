@@ -1,7 +1,4 @@
 Autologin
-
-
-
 	
 	Icon change 
 	context menu
