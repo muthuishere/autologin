@@ -8,7 +8,7 @@ var autoLogin = {
     formObject: null,
     userelemName: null,
     pwdelemName: null,
-	sites:[],
+	site:null,
 
     ismatchURL: function (currentURL, elemname,authtype) {
 
@@ -412,6 +412,29 @@ var autoLogin = {
         }
 	
 	},
+	generateSite:function(user,site){
+		
+	
+		var currentsite={}
+				currentsite.authtype=site.authtype
+				currentsite.url=site.url
+				currentsite.loginurl=site.loginurl
+				currentsite.enabled=true
+				
+				
+				for (k=0;k<site.credentials.length;k++) {
+								
+								
+								var curcredential=site.credentials[k]
+								
+								if(curcredential.user == site.user ){
+									currentsite.user=site.user
+									currentsite.elements=curcredential.elements
+								}
+				}
+			return currentsite
+		
+	},
 	handlePageLoad: function () {
 
 
@@ -420,19 +443,21 @@ var autoLogin = {
 
 
 
-            if (null == autoLogin.sites || autoLogin.sites.length == 0) {
+            if (null == autoLogin.site ) {
                 autoLogin.logmessage("Data not Loaded")
                 return;
             }
 
 
-			 if ( autoLogin.sites.length == 1) {
+			 if ( autoLogin.site.credentials.length == 1) {
+				 
+				 
 				autoLogin.logmessage("Single login")
-					autoLogin.initiate(autoLogin.sites[0])
+					autoLogin.initiate(autoLogin.site)
 				return
 			 }
 			 
-			 if ( autoLogin.sites.length > 1) {
+			 if ( autoLogin.site.credentials.length > 1) {
 			 
 					//show autlogin info with list of users
 					
@@ -440,11 +465,11 @@ var autoLogin = {
 					//reiterate sites ensure all xpaths are available
 				autoLogin.logmessage("Single login")
 				
-				for(i=0;i<autoLogin.sites.length ;i++){
+				for(i=0;i<autoLogin.site.credentials.length ;i++){
 				
-					var cursite=autoLogin.sites[i]
+					var curcredential=autoLogin.site.credentials[i]
 					var canadd=true
-					 var elems = cursite.elements;
+					 var elems = curcredential.elements;
 					  for( k=0;k< elems.length ;k++){
 					  
 						  var elem =autoLogin.getElementByXpath(elems[k].xpath)
@@ -457,7 +482,7 @@ var autoLogin = {
 						
 					  }
 						  if(canadd)
-							validsites.push(cursite)
+							validsites.push(curcredential)
 				  
 					
 				}
@@ -507,7 +532,7 @@ var autoLogin = {
 		
 
 			
-            autoLogin.sites=response.sites
+            autoLogin.site=response.site
             autoLogin.handlePageLoad();
         });
 

@@ -70,15 +70,13 @@ var globalAutologinHandler = {
 			
 			
 			obj.user=username
+			obj.authtype=authtype
 	
 			//checkuser already exists , if yes update
-				if(storage.credentialExistsForUser(obj)){
-						
-					storage.update(obj)
-				}else{
+			
 						storage.add(obj)
 				
-				}
+			
 				//else
 				
 				//add
@@ -145,15 +143,15 @@ var globalAutologinHandler = {
    
    
    var curdomainName=Utils.getdomainName(curlocation)
-	var sites=storage.get("form",curdomainName)
+	var site=storage.get("form",curdomainName)
  
-		if(sites.length == 0){
+		if(site== null){
 		
 			return result;
 		}
     
-	var flgAutologinEnabled=(sites[0].enabled.toLowercase() == "true");
-	result.info=sites;
+	var flgAutologinEnabled=site.enabled;
+	result.info=site;
 	
 	if( flgAutologinEnabled == true && globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
 	
@@ -368,11 +366,9 @@ while (i--) {
 		
 		//TODO check url has authorization autologinsites in storage or user has set authorization autologinsites
 		
-		 var sites=storage.get("basic",url)
+		 var site=storage.get("basic",url)
 		 
-			var site=sites.length >0?sites[0]:null
-			
-			
+		
 		
 		var curdomainName=status.challenger.host
 		
@@ -737,9 +733,9 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "getData"){
 	
 	
-			var sites= storage.get("form",request.domain)
+			var site= storage.get("form",request.domain)
 			
-			sendResponse({"sites": sites});
+			sendResponse({"site": site});
 	
 	
 	}else if (request.action == "injectAutoLogin"){

@@ -51,7 +51,7 @@
 				site.authtype='form'
 				site.url=partner.url
 				site.loginurl=partner.loginurl
-				site.enabled=partner.enabled
+				site.enabled= (partner.enabled == "true")
 				
 				var credentials=[]
 				
@@ -121,19 +121,7 @@
 			return null
 			
 		},
-		removeCredentialAt:function(index){
-		
-		
-			
-			 storage.autologinsites.splice(index,1);
-			 
-			
-			storage.updatestorage();
-			
-			
-				
-			
-		},
+	
 		add:function(site){
 		
 			var isPushed=false;
@@ -146,6 +134,35 @@
 					if(cursite.authtype == site.authtype && cursite.url == site.url ){
 							
 							//Iterate credentials
+							isPushed=true;
+							var isUserModfied=false;
+							for (k=0;k<storage.autologinsites[i].credentials.length;k++) {
+								
+								
+								var curcredential=storage.autologinsites[i].credentials[k]
+								
+								if(curcredential.user == site.user && storage.autologinsites[i].credentials[k].elements.length == site.elements.length ){
+									
+									isUserModfied=true
+									delete storage.autologinsites[i].credentials[k].elements
+									storage.autologinsites[i].credentials[k].elements=site.elements
+									console.log("modifying credentials" ,site)
+									break
+								}
+									
+								
+							}
+							if(!isUserModfied){
+								
+								var credential={}
+								credential.user=site.user
+								credential.defaultsite=false
+								credential.elements=site.elements
+								storage.autologinsites[i].credentials.push(credential)
+								console.log("Adding credentials" ,site)
+								
+							}
+							
 							
 							//check user already exists
 								//if already exists update
@@ -158,8 +175,28 @@
 			}
 			
 			
-			if(!isPushed)
-				storage.autologinsites.push(site)
+			if(!isPushed){
+			
+				var currentsite={}
+				currentsite.authtype=site.authtype
+				currentsite.url=site.url
+				currentsite.loginurl=site.loginurl
+				currentsite.enabled=true
+				currentsite.credentials=[]
+				
+				var credential={}
+					credential.user=site.user
+					credential.defaultsite=true
+					credential.elements=site.elements
+					
+					currentsite.credentials.push(credential)
+					console.log("Adding site" ,currentsite)
+
+				storage.autologinsites.push(currentsite)
+				
+								
+			}
+				
 				
 				
 			storage.updatestorage();
@@ -173,9 +210,24 @@
 			for (i=0;i<storage.autologinsites.length;i++) {
 			
 					cursite=storage.autologinsites[i]
-					if(cursite.authtype == site.authtype && cursite.url == site.url &&  cursite.user == site.user){
+					if(cursite.authtype == site.authtype && cursite.url == site.url ){
+						
+							for (k=0;k<storage.autologinsites[i].credentials.length;k++) {
+								
+								
+								var curcredential=storage.autologinsites[i].credentials[k]
+								
+								if(curcredential.user == site.user){
+									
+									return true
+									
+								}
+									
+								
+							}
 							
-							return true;
+							break;
+							
 						}
 			}
 			
@@ -183,21 +235,21 @@
 		},
 		get:function(authtype,url){
 		
-		var sites=[]
+		var resultsite=null
 		
 			for (i=0;i<storage.autologinsites.length;i++) {
 			
 					cursite=storage.autologinsites[i]
 					if(cursite.authtype == authtype && cursite.url == url){
 							
-							sites.push(cursite)
+							resultsite=cursite
 						}
 			}
 			
 			
 			
 			
-			return sites
+			return resultsite
 			
 		},
 		changeflag:function(authtype,url,flgenabled){
@@ -217,24 +269,108 @@
 			
 		},
 	
-		update:function(site){
+		updatecredential:function(site){
 		
 		
 			for (i=0;i<storage.autologinsites.length;i++) {
 			
 					cursite=storage.autologinsites[i]
 					
-					if(cursite.authtype == site.authtype && cursite.url == site.url &&  cursite.user == site.user){
-						storage.autologinsites[i]=site
-						//sync local storage
-							storage.updatestorage()
+					if(cursite.authtype == site.authtype && cursite.url == site.url ){
+						
+						
+						
+							var isUserModfied=false;
+							for (k=0;k<storage.autologinsites[i].credentials.length;k++) {
+								
+								
+								var curcredential=storage.autologinsites[i].credentials[k]
+								
+								
+									
+								
+								if(curcredential.user == site.user){
+									
+									isUserModfied=true
+									
+									
+									
+									if(undefined != site.defaultsite){
+										//delete storage.autologinsites[i].credentials[k].defaultsite
+									storage.autologinsites[i].credentials[k].defaultsite=site.defaultsite
+									console.log("Changing default site")
+									}
+									delete storage.autologinsites[i].credentials[k].elements
+									storage.autologinsites[i].credentials[k].elements=site.elements
+									
+									storage.updatestorage();
+									
+									
+								}else{
+									
+									//change default site info , if default site is set to true 
+									if(undefined != site.defaultsite && site.defaultsite == true){
+										
+										storage.autologinsites[i].credentials[k].defaultsite=false
+									
+									}
+									
+								}
+									
+								
+							}
 							
-							return;
+							
+							//updated all 
+						
+							return ;
+							
 						}
 			}
 			
 		},
-		remove:function(site){
+		removeCredential:function(site){
+		
+			var isCredentialRemoved=false;
+			
+			for (i=0;i<storage.autologinsites.length;i++) {
+			
+					cursite=storage.autologinsites[i]
+					
+					if(cursite.authtype == site.authtype && cursite.url == site.url ){
+						
+						
+						
+							for (k=0;k<storage.autologinsites[i].credentials.length;k++) {
+								
+								
+								var curcredential=storage.autologinsites[i].credentials[k]
+								
+								if(curcredential.user == site.user){
+									
+									isCredentialRemoved=true
+									storage.autologinsites[i].credentials.splice(k,1);//  [k].elements
+									break;
+									
+								}
+									
+								
+							}
+							
+							
+							break;						
+						}
+			}
+			
+			if(isCredentialRemoved ){
+				
+				// storage.autologinsites.splice(removeIndex,1);
+				storage.updatestorage();
+			}
+				
+			
+		},
+		removeSite:function(site){
 		
 			var removeIndex=-1
 			
@@ -242,51 +378,22 @@
 			
 					cursite=storage.autologinsites[i]
 					
-					if(cursite.authtype == site.authtype && cursite.url == site.url &&  cursite.user == site.user){
+					if(cursite.authtype == site.authtype && cursite.url == site.url ){
 							removeIndex=i
 							break;						
 						}
 			}
 			
-			if(removeIndex >=0 )
-				storage.removeCredentialAt(removeIndex)
+			if(removeIndex >=0 ){
+				
+				
+				 storage.autologinsites.splice(removeIndex,1);
+				storage.updatestorage();
+			}
+				
 			
 		},
 		
-		removemultlogin:function(){
-		
-		
-		var urls=[]
-		var removables=[]
-		
-			for (i=0;i<storage.autologinsites.length;i++) {
-			
-					cursite=storage.autologinsites[i]
-					
-					if(urls.indexOf(cursite.url) == -1){
-						var sites=storage.get(cursite.authtype,cursite.url)
-						
-						var k=sites.length
-						
-						while(k>0){
-							removables.push(sites[k])
-							k--
-						}
-						
-						urls.push(cursite.url)
-					}
-					
-			}
-			
-			for (i=0;i<removables.length;i++) {
-					storage.remove(removables[i])
-			}
-			
-			
-			return sites
-			
-		
-		},
 		init : function () {
 
 			if (localStorage["autologinsites"] == undefined || localStorage["autologinsites"] == "" ) {
