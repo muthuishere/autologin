@@ -136,8 +136,32 @@
 		},
 		add:function(site){
 		
+			var isPushed=false;
 			
-			storage.autologinsites.push(site)
+			
+				for (i=0;i<storage.autologinsites.length;i++) {
+			
+					cursite=storage.autologinsites[i]
+					
+					if(cursite.authtype == site.authtype && cursite.url == site.url ){
+							
+							//Iterate credentials
+							
+							//check user already exists
+								//if already exists update
+								//else
+								//create new element entry	
+							
+							
+							break;						
+						}
+			}
+			
+			
+			if(!isPushed)
+				storage.autologinsites.push(site)
+				
+				
 			storage.updatestorage();
 			
 				
