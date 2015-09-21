@@ -10,7 +10,7 @@ var autoLoginCaptureIcon={
 	backgroundIconURL:"",
 	callback:null,	
 	startCapture:false,
-	init:function(appextnid,callback){
+	init:function(appextnid,isSelected,callback){
 		autoLoginCaptureIcon.callback=callback
 	autoLoginCaptureIcon.disableIconURL=appextnid +"images/capture_disable.png"
 	autoLoginCaptureIcon.enableIconURL=appextnid +"images/capture_enable.png"
@@ -51,7 +51,11 @@ var autoLoginCaptureIcon={
 						document.body.appendChild(divelem);
 						document.querySelector("div#autoLoginCaptureIcon").addEventListener('click', autoLoginCaptureIcon.onCaptureAutoLogin, false);
 		
-			
+					
+						if(isSelected){
+							//Select by default
+							autoLoginCaptureIcon.onCaptureAutoLogin();
+						}
 			
 			
 
@@ -124,7 +128,7 @@ var autoLoginCaptureIconCheck={
 	backgroundIconURL:"",
 	callback:null,	
 	startCapture:false,
-	init:function(appextnid,callback,pwdelem){
+	init:function(appextnid,isSelected,callback,pwdelem){
 		autoLoginCaptureIconCheck.callback=callback
 	
 	// if form has one password field and one text field and both elements are visible
@@ -145,11 +149,18 @@ var autoLoginCaptureIconCheck={
 					
 					var divelem=document.createElement("div");
 						
-						divelem.innerHTML='<div style="display:block;width:250px;color:black;font-weight:bold;"><input type="checkbox" id="autoLoginCaptureIconCheckbox" value="1" > Use Autologin</div>'
+						if(isSelected){
+							divelem.innerHTML='<div style="display:block;width:250px;color:black;font-weight:bold;"><input type="checkbox" id="autoLoginCaptureIconCheckbox" selected="selected" value="1" > Use Autologin</div>'
+							autoLoginCaptureIconCheck.callback(true)
+						}							
+						else
+							divelem.innerHTML='<div style="display:block;width:250px;color:black;font-weight:bold;"><input type="checkbox" id="autoLoginCaptureIconCheckbox" value="1" > Use Autologin</div>'
 						
 						pwdelem.parentNode.appendChild(divelem);
 						
 						document.querySelector("#autoLoginCaptureIconCheckbox").addEventListener('change', autoLoginCaptureIconCheck.onCaptureAutoLogin, false);
+						
+						
 		
 			
 	},

@@ -275,9 +275,10 @@ if (undefined == autoLoginCapture) {
 
 			if (flgCaptured) {
 			
-			if(null !=pwdelem)
-				autoLoginCaptureIconCheck.init(extnid,autoLoginCapture.onCaptureAutoLogin,pwdelem)
-			else	
+			//todo Default is only icon
+			//if(null !=pwdelem)
+				//autoLoginCaptureIconCheck.init(extnid,autoLoginCapture.onCaptureAutoLogin,pwdelem)
+		//	else	
 				autoLoginCaptureIcon.init(extnid,autoLoginCapture.onCaptureAutoLogin)
 				//
 				

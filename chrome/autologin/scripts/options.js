@@ -288,7 +288,7 @@ var autoLoginOptions = {
 	document.querySelector('a#mnusites').addEventListener('click', autoLoginOptions.menuSitesClicked, false);
 	document.querySelector('a#mnuchangepassword').addEventListener('click', autoLoginOptions.menuChangePasswordClicked, false);
 	
-		 
+		 storage.init()
 		 
 	},
 	 loadChangePassword: function () {
@@ -343,6 +343,14 @@ var autoLoginOptions = {
 				document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
 							
 			
+			var usedefaultautologin= (localStorage["usedefaultautologin"] === 'true')
+			
+			if(usedefaultautologin)
+				document.querySelector('#chkdefaultAutoLogin').setAttribute("CHECKED","CHECKED")
+			else
+				document.querySelector('#chkdefaultAutoLogin').removeAttribute("CHECKED")
+				
+			
 			
 							
 			document.querySelector('#chkpromptBasicAuth').addEventListener('click', function(event){
@@ -357,7 +365,7 @@ var autoLoginOptions = {
 					
 			}, false);
 			
-			
+			/*
 			var usemultiplecreds= (localStorage["usemultiplecreds"] === 'true')
 			
 			if(usemultiplecreds)
@@ -381,8 +389,15 @@ var autoLoginOptions = {
 					
 					
 			}, false);
-			
-			
+			*/
+			document.querySelector('#chkdefaultAutoLogin').addEventListener('click', function(event){
+					
+						
+						localStorage["usedefaultautologin"] =event.target.checked
+						
+					
+					
+			}, false);
 				
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
@@ -588,7 +603,7 @@ searchdomain:function(domainname,authtype){
     loadDocumentAndCreateTable: function (sites) {
 
 		flgTblCreated=false;
-
+		console.log(sites)
 
 
 
@@ -686,7 +701,7 @@ searchdomain:function(domainname,authtype){
 			
 			
 			
-			}, false);
+			//}, false);
            
 
 	return flgTblCreated;

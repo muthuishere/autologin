@@ -6,7 +6,7 @@
 		
 		migrateautologinsites:function(){
 		
-		if( localStorage["autologinsites"] != undefined || localStorage["autologinsites"] != "" ||  localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
+		if(  localStorage["autologinxml"] == undefined  ||  localStorage["autologinxml"] == "")
 			return
 		
 		localStorage["autologinsites"] =[]
@@ -53,12 +53,17 @@
 				site.loginurl=partner.loginurl
 				site.enabled=partner.enabled
 				
+				var credentials=[]
+				
+				var credential={}
+				credential.user=partner.username 
+				credential.defaultsite=true
+				
 				var elements=[]
 				
 				
 				
 				
-				site.user=partner.username 
 				elements.push({"event":"","xpath":'//input[contains(@id,"'+  partner.userelement +'") or contains(@name,"'+  partner.userelement +'")]' ,"value":partner.username ,"type":"text"})
 				
 			
@@ -83,14 +88,16 @@
 				}
 				
 			
-				
-				
-				site.elements=elements
+				credential.elements=elements
+				credentials.push(credential)
+				site.credentials=credentials
 				autologinsites.push(site)
 			}
 			
+			//delete localStorage["autologinxml"]
 			storage.autologinsites=autologinsites
-
+			storage.updatestorage();
+			localStorage["autologinxml"]=""
 		
 		
 	},	
@@ -205,7 +212,7 @@
 		},
 		remove:function(site){
 		
-			int removeIndex=-1
+			var removeIndex=-1
 			
 			for (i=0;i<storage.autologinsites.length;i++) {
 			

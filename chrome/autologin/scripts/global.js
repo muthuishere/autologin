@@ -12,6 +12,15 @@ var globalAutologinHandler = {
 	
 	blacklistDomains:new Array(),
 	loggedIn:true,
+	
+	testmigrate:function(){
+	
+	var rawxml='<root> <site> <url>https://mail.three.co.uk/owa/auth/logon.aspx</url> <loginurl>https://mail.three.co.uk/owa/auth/logon.aspx</loginurl> <username>hutchison3g\mnavaneethakrishnan</username> <password>June#2015</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>logonForm</formelement> </site> <site> <url>https://webmail.tcs.com/</url> <loginurl>https://webmail.tcs.com/</loginurl> <username>muthukumaran n</username> <password>Yluj31#2015</password> <userelement>Username</userelement> <pwdelement>Password</pwdelement> <enabled>true</enabled><btnelement>mybutton</btnelement> <formelement>_TCSLoginUserForm</formelement> </site> <site> <url>https://inchnm04.tcs.com/mail/mail2/152656.nsf</url> <loginurl>https://inchnm04.tcs.com/mail/mail2/152656.nsf</loginurl> <username>muthukumaran n</username> <password>Yluj31#2015</password> <userelement>Username</userelement> <pwdelement>Password</pwdelement> <enabled>true</enabled><btnelement>mybutton</btnelement> <formelement>_TCSLoginUserForm</formelement> </site> <site> <url>https://github.com/login</url> <loginurl>https://github.com/login</loginurl> <username>muthuishere@gmail.com</username> <password>Gangster1</password> <userelement>login</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement>commit</btnelement> <formelement/> </site> <site> <url>http://idmssop01.at.three.com/sso/pages/login.jsp</url> <loginurl>http://idmssop01.at.three.com/sso/pages/login.jsp</loginurl> <username>mnavaneethakrishnan@corpuk.net</username> <password>April#2015</password> <userelement>ssousername</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement/> </site> <site> <url>https://www.odesk.com/login</url> <loginurl>https://www.odesk.com/login</loginurl> <username>muthukumaran</username> <password>Gangster1</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement>submit</btnelement> <formelement>login</formelement> </site>  <site> <url>https://dev.intently.com/login.html</url> <loginurl>https://dev.intently.com/login.html</loginurl> <username>muthuishere@gmail.com</username> <password>Gangster1</password> <userelement>email</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>login-form</formelement> </site>  <site> <url>https://bitbucket.org/account/signin/</url> <loginurl>https://bitbucket.org/account/signin/</loginurl> <username>muthuishere</username> <password>Gangster1</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>login-form</formelement> </site> <site> <url>https://ebiz.corpuk.net:16017/OA_HTML/AppsLocalLogin.jsp</url> <loginurl>https://ebiz.corpuk.net:16017/OA_HTML/AppsLocalLogin.jsp</loginurl> <username>mnavaneethakrishnan@corpuk.net</username> <password>May1#2015</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>myForm</formelement> </site> <site> <url>https://www.upwork.com/login</url> <loginurl>https://www.upwork.com/login</loginurl> <username>muthukumaran</username> <password>Gangster1</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement>submit</btnelement> <formelement>login</formelement> </site> <site> <url>https://mail.google.com/mail/u/0/</url> <loginurl>https://mail.google.com/mail/u/0/</loginurl> <username>muthu</username> <password/> <userelement>cfsl</userelement> <pwdelement>cfsw</pwdelement> <enabled>true</enabled><btnelement>focus</btnelement> <formelement>mainForm</formelement> </site></root>'
+	
+	localStorage["autologinxml"]=Helper.encrypt(rawxml)
+	
+	
+	},
 	test:function(){
 		
 		var rawxml='<root><site authtype="form"><url>http://localhost:9999/auto.html</url> <loginurl>http://localhost:9999/auto.html</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"Username") or contains(@name,"Username")]</xpath><value>example@gmail.com</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"Password") or contains(@name,"Password")]</xpath><value>123456</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"mybutton") or contains(@name,"mybutton")]</xpath><value></value><type>button</type></element><element><event>submit</event><xpath>//*[contains(@id,"_TCSLoginUserForm") or contains(@name,"_TCSLoginUserForm")]</xpath><value></value><type>form</type></element></elements></site><site authtype="form"><url>https://github.com/login</url> <loginurl>https://github.com/login</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"login") or contains(@name,"login")]</xpath><value>muthuishere@gmail.com</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"password") or contains(@name,"password")]</xpath><value>Gangster1</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"commit") or contains(@name,"commit")]</xpath><value></value><type>button</type></element></elements></site><site authtype="form"><url>http://127.0.0.1:9999/auto.html</url> <loginurl>http://127.0.0.1:9999/auto.html</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"Username") or contains(@name,"Username")]</xpath><value>user</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"Password") or contains(@name,"Password")]</xpath><value>password</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"mybutton") or contains(@name,"mybutton")]</xpath><value></value><type>button</type></element><element><event>submit</event><xpath>//*[contains(@id,"_TCSLoginUserForm") or contains(@name,"_TCSLoginUserForm")]</xpath><value></value><type>form</type></element></elements></site></root>'
@@ -95,71 +104,8 @@ var globalAutologinHandler = {
 			}
 	
 	},	
-ismatchURL:function(currentURL,elemname,authtype){
-		
 
-docxml=globalAutologinHandler.autologinXMLList;
-	
-		try{
-
-
-var divs = docxml.getElementsByTagName("site"), i=divs.length;
-  
-  if(i == 0)
-	  return false;
-
-while (i--) {
-			
-		
-		iurl=globalAutologinHandler.getXMLElementval(divs[i],elemname);
-		
-			
-		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl) &&   authtype ==  divs[i].getAttribute("authtype")){
-					console.log(divs[i].url)
-						  return divs[i];
-		}
-						  
-
-		}
-
-		 }catch(exception){
-			 
-			console.log("Issue" + exception) 
-
-		 }
-
-			return false;
-
-	},
-
-getXmlObjectForBasic: function(currentURL) {
-	  
-	  
-	 
-	  if(globalAutologinHandler.autologinList == null){
-	  	globalAutologinHandler.logmessage("autologinList null");
-		  return false;
-	  }
-
-	var flgReturn=globalAutologinHandler.ismatchURL(currentURL,"loginurl","basic");
-	  return flgReturn;
-	  
-  },
-  getXmlObjectForForm: function(currentURL) {
-	  
-	  
-	 
-	  if(globalAutologinHandler.autologinList == null){
-	  	globalAutologinHandler.logmessage("autologinList null");
-		  return false;
-	  }
-
-	var flgReturn=globalAutologinHandler.ismatchURL(currentURL,"loginurl","form");
-	  return flgReturn;
-	  
-  },
- 
-   startsWith:function (data,str) {
+  startsWith:function (data,str) {
         return !data.indexOf(str);
     },
   canSubmit:function(curlocation) {
@@ -239,59 +185,7 @@ getXmlObjectForBasic: function(currentURL) {
 	
 	
    },
-  // returns 
-  //0 - If Script can be injected
-  //-1 - If URL is blacklisted
-  //1- for remaining status
-   canInjectURL: function(curlocation) {
-   
-   if(globalAutologinHandler.autologinList == null){
-			
-		  return 1;
-	  }
- 
-  
-    var curdomainName=Utils.getdomainName(curlocation)
-	var curXMLObject=globalAutologinHandler.getXmlObjectForForm(curlocation) 
-	
-	var flgAutologinEnabled=true;
-	
-	if(curXMLObject != false){
-	var enabledautologinValue =  globalAutologinHandler.getXMLElementval(curXMLObject,"enabled"); 
-	
-	if(null == enabledautologinValue || ""== enabledautologinValue || enabledautologinValue == "true")
-		flgAutologinEnabled=true
-	else
-		flgAutologinEnabled=false
-	}
-	if(curXMLObject != false &&  flgAutologinEnabled == true && globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
-	
-	
-	return 0;
-	
-		
-		
-	
-	}
-	if(globalAutologinHandler.blacklistDomains.indexOf(curdomainName) != -1){
-		
-		console.log("Blacklisted domain" + curdomainName)	
-		return -1;
-	
-	}
-	
-	if(flgAutologinEnabled == false){
-	
-		console.log("Disabled domain" + curdomainName)	
-		return -1;
-	}
-	
-	return 1;
-	
-	
-   },
-  
-  
+
 	logmessage:function(aMessage) {
 
 
@@ -404,7 +298,8 @@ while (i--) {
 	sendauthautologinsites:function(status,credential,callback){
 		
 		
-	
+	//if(globalAutologinHandler.popupopened)
+		//globalAutologinHandler.popupopened=false
 		
 		if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
 					++globalAutologinHandler.try_count;
@@ -444,7 +339,7 @@ while (i--) {
 					
 				}
 		
-				globalAutologinHandler.popupopened=false	
+					
 	},
 	deleteauth:function(sitedata){
 		
@@ -461,8 +356,7 @@ while (i--) {
 	authclientcallback:null,	
 	retrieveautologinsites : function (details, callback) {
 		
-		if(globalAutologinHandler.popupopened)
-			return;
+		
 			
 			
 			
@@ -482,7 +376,6 @@ while (i--) {
 		
 		var curdomainName=status.challenger.host
 		
-		console.log(domainxml)
 		
 				
 		if (site != null ) {
@@ -529,6 +422,15 @@ while (i--) {
 			
 		}
 		
+		if(globalAutologinHandler.popupopened){
+				
+				callback({cancel: true});
+				return;
+		}
+			
+			
+		globalAutologinHandler.popupopened=true
+		
 		console.log("setting status ")
 		globalAutologinHandler.authcallback=callback;
 		globalAutologinHandler.authdetails=status
@@ -561,7 +463,7 @@ while (i--) {
 					globalAutologinHandler.authdetails.sitedata.elements.push(elem)
 					
 					
-				
+				//TODO handle close
 				chrome.windows.create({
 					type: 'popup',
 					 focused: true,
@@ -571,8 +473,8 @@ while (i--) {
 				
 				}, function(win) {
 					
+					console.log("window id" ,win.id)
 					
-					globalAutologinHandler.popupopened=true
 					
 				});
 				
@@ -746,8 +648,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
  
     if(tab.url !== undefined && changeInfo.status == "complete" ){
 	
-	 if(tab.url.indexOf("chrome") == 0 || tab.url.indexOf("data") == 0 || tab.url.indexOf("file") == 0  ){
+	 if(tab.url.indexOf("http") == 0 || tab.url.indexOf("www") == 0  ){
 	  
+			
+		}else{
 			return;
 		}
   
@@ -779,9 +683,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 									});
 						
 						});
-					}
+					})
 			
-			})
+			}
 		//}else if( status == 1 ) {
 		}else{
 		
@@ -871,6 +775,8 @@ chrome.runtime.onMessage.addListener(
 	
 	}else if (request.action == "basicauth"){
 	
+	
+			globalAutologinHandler.popupopened=false
 			var data=request.info;
 			console.log("Basic auth details received",data)
 			if(data.cancel){
@@ -1061,7 +967,13 @@ chrome.runtime.onMessage.addListener(
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
         console.log("This is a first install!");
+		
+		localStorage["usebasicauth"] =true
+		localStorage["usedefaultautologin"] =true
+		
     }else if(details.reason == "update"){
+			console.log("migrating")
+			
         var thisVersion = chrome.runtime.getManifest().version;
 		storage.migrateautologinsites()      
     }
