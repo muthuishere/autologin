@@ -54,17 +54,12 @@
 		text-decoration: none;
 	}
 	
+	
 	.container
 	{
 		overflow: hidden;
 		margin: 0em auto;
-		width: 800px;
-	}
-	.container
-	{
-		overflow: hidden;
-		margin: 0em auto;
-		width: 800px;
+		width: 1200px;
 	}
 
 /*********************************************************************************/
@@ -147,7 +142,7 @@
 	.boxC
 	{
 		background: rgba(0,0,0,.1);
-		width: 800px;
+		width: 1200px;
 		padding: 40px 40px;
 	}
 

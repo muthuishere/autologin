@@ -635,14 +635,14 @@ searchdomain:function(domainname,authtype){
                 autoLoginInfo.url = cursite.url;
 				autoLoginInfo.authtype=cursite.authtype
                 autoLoginInfo.loginurl =  cursite.loginurl; 
-				var samesites=storage.get(cursite.authtype,cursite.url)
-				autoLoginInfo.sites=samesites
+				//var samesites=storage.get(cursite.authtype,cursite.url)
+				//autoLoginInfo.sites=samesites
                 autoLoginInfo.enabled = cursite.enabled;				
 					autoLoginInfo.domain=cursite.url;
 					
 					var selectbox="<select class='selectbox' id='select"+ autoLoginInfo.domain+"'>"
 					
-					for(k=0;k<samesites.length;k++){
+					for(k=0;k<cursite.credentials.length;k++){
 						
 						
 						
