@@ -415,6 +415,30 @@ var autoLoginOptions = {
 			
 	
 	  },
+	 onSelectboxchanged:function(domname){
+		  
+		  //get queryselector targetId
+		  //set textbox values from targetids
+		  //
+		  console.log(domname,document.querySelector("#select"+domname))
+		  var option =document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
+		  
+		  
+		  
+		  var changeduser=option.getAttribute("data-changed-username")
+		  var changedpwd=option.getAttribute("data-changed-password")
+		  
+		  if(changeduser == "")
+			document.querySelector("#user"+domname).value=option.getAttribute("data-username")
+		else
+				document.querySelector("#user"+domname).value=changeduser
+			
+			if(changedpwd == "")
+				document.querySelector("#pwd"+domname).value=option.getAttribute("data-password")
+			else
+				document.querySelector("#pwd"+domname).value=changedpwd
+		  
+	  },
     loadOptions: function () {
 
 	
@@ -451,9 +475,14 @@ var autoLoginOptions = {
         for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
             //work with element
 			
+			autoLoginOptions.onSelectboxchanged(inputElement.getAttribute("data-domname"))
+			
             inputElement.addEventListener('change', function(evt){
 			
 			//autoLoginOptions.infoChanged
+			autoLoginOptions.onSelectboxchanged(evt.target.getAttribute("data-domname"))
+			
+				console.log("changed event " + evt.target.getAttribute("data-domname"))
 			}, false);
 			 
 		
@@ -638,9 +667,10 @@ searchdomain:function(domainname,authtype){
 				//var samesites=storage.get(cursite.authtype,cursite.url)
 				//autoLoginInfo.sites=samesites
                 autoLoginInfo.enabled = cursite.enabled;				
-					autoLoginInfo.domain=cursite.url;
+					autoLoginInfo.domain=autoLoginOptions.getdomainName(cursite.url);
 					
-					var selectbox="<select class='selectbox' id='select"+ autoLoginInfo.domain+"'>"
+					var mod_domain=autoLoginInfo.domain.replace(/\./g,"_")
+					var selectbox="<select data-domname='"+mod_domain+"' style='width:180px' class='selectbox' id='select"+mod_domain +"'>"
 					
 					for(k=0;k<cursite.credentials.length;k++){
 						
@@ -649,9 +679,15 @@ searchdomain:function(domainname,authtype){
 						var datainfo={}
 						
 						
-						var elems = samesites[k].elements
-				  
-				  
+						var elems = cursite.credentials[k].elements
+					datainfo.username=cursite.credentials[k].user
+					autoLoginInfo.domname=mod_domain
+					
+					var selectedstr=""
+					if(cursite.credentials[k].defaultsite)
+						selectedstr="selected='selected'"
+					
+					
 				  for( l=0;l< elems.length ;l++){
 					  
 					  var field=elems[l]
@@ -662,8 +698,11 @@ searchdomain:function(domainname,authtype){
 						  datainfo.pwdxpath= field.xpath
 					 }
 					 
-					  if(field.type === "text"  ){
-					  
+				
+					  if(field.type === "text" && datainfo.username ==   field.value)
+						datainfo.userxpath= field.xpath
+				  
+					  	 /*
 						if( datainfo.username !== ""){
 						
 								if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 )){
@@ -676,13 +715,15 @@ searchdomain:function(domainname,authtype){
 						 datainfo.username= field.value
 						  datainfo.userxpath= field.xpath
 						  }
-					 }
+					 } */
 					 
 						
 					}
 				
 
-				selectbox += "<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  ></option>"
+				selectbox += "<option data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
+				
+				console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
 					
 					}
 					
@@ -753,9 +794,9 @@ searchdomain:function(domainname,authtype){
 	
 			row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
 				"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+	
-					"<td>"+autoLoginInfo.selectbox +"  /></td>"+
-					"<td><input class='inp' type='text'  value=''/></td>"+
-					"<td><input class='inp' type='password'   value=''/></td>"+
+					"<td style='text-align:left'>"+autoLoginInfo.selectbox +" </td>"+
+					"<td><input class='inp' id='user"+autoLoginInfo.domname+"' type='text'  value=''/></td>"+
+					"<td><input class='inp' id='pwd"+autoLoginInfo.domname+"' type='password'   value=''/></td>"+
 					"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
 					"<td> <a  class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
 					
