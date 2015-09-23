@@ -97,33 +97,45 @@ var autoLoginOptions = {
 
 	infoChanged:function(event){
 	
-	document.querySelector("#sitechangedstatus").innerHTML="";
+	
+	console.log(event.target)
+	
+		document.querySelector("#sitechangedstatus").innerHTML="";
 	
 	document.querySelector("a#btnUpdate").setAttribute("class","button") ;
 	
-		var xpath=event.target.getAttribute("xpath") 	
-			
-	 var domainrow=event.target.parentNode.parentNode;
-	  autoLoginOptions.changedDomains.push(domainrow.getAttribute("domainname"));
-	  var autoLoginObject=autoLoginOptions.searchdomain(domainrow.getAttribute("domainname"),domainrow.getAttribute("authtype"))
-	  
-	event.target.className += ' inputChanged';
+	var domname=event.target.getAttribute("data-domname")
+
+		var selectedoption= document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
+		  
+		  document.querySelector("#select"+domname).setAttribute("data-changed","true")
+		  
+					
+					
+					
+
+
+					document.querySelector("#select"+domname).className += ' inputChanged'
+	
 	if(event.target.getAttribute("type")=="text"){
 	
-		autoLoginOptions.setXMLPathval(autoLoginObject,xpath,event.target.value)
+		selectedoption.setAttribute("data-changed-username",event.target.value)
 	
 	}else if(event.target.getAttribute("type")=="password"){
 		
-		autoLoginOptions.setXMLPathval(autoLoginObject,xpath,event.target.value)
+		selectedoption.setAttribute("data-changed-password",event.target.value)
 	
-	//autoLoginOptions.setXMLElementval(autoLoginObject,"password",event.target.value)
+	
 	
 	}else if(event.target.getAttribute("type")=="checkbox"){
 	
 	if(event.target.checked)
-	  autoLoginOptions.setXMLElementval(autoLoginObject,"enabled","true")
+		document.querySelector("#select"+domname).setAttribute("data-enabled","true")	  
 	 else
-		autoLoginOptions.setXMLElementval(autoLoginObject,"enabled","false")
+		document.querySelector("#select"+domname).setAttribute("data-enabled","false")
+	
+	
+	
 	}
 	
 	},
@@ -600,6 +612,8 @@ searchdomain:function(domainname,authtype){
 		if(document.querySelector("a#btnUpdate").getAttribute("class") == "buttondisable" )
 			return;
 	
+		
+	
 	   var oSerializer = new XMLSerializer();
         var rawxml = oSerializer.serializeToString(autoLoginOptions.autologinXMLList);
 	
@@ -670,7 +684,7 @@ searchdomain:function(domainname,authtype){
 					autoLoginInfo.domain=autoLoginOptions.getdomainName(cursite.url);
 					
 					var mod_domain=autoLoginInfo.domain.replace(/\./g,"_")
-					var selectbox="<select data-domname='"+mod_domain+"' style='width:180px' class='selectbox' id='select"+mod_domain +"'>"
+					var selectbox="<select data-authtype='"+autoLoginInfo.authtype+"' data-url='"+autoLoginInfo.url+"' data-changed='' data-enabled='"+autoLoginInfo.enabled+"' data-domname='"+mod_domain+"' style='width:180px' class='selectbox' id='select"+mod_domain +"'>"
 					
 					for(k=0;k<cursite.credentials.length;k++){
 						
@@ -777,7 +791,7 @@ searchdomain:function(domainname,authtype){
 	
 	
 			var autologinChecked=""
-			if(autoLoginInfo.enabled == "true"){
+			if(autoLoginInfo.enabled == true){
 				autologinChecked="CHECKED"
 			}
 			
@@ -795,10 +809,10 @@ searchdomain:function(domainname,authtype){
 			row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
 				"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+	
 					"<td style='text-align:left'>"+autoLoginInfo.selectbox +" </td>"+
-					"<td><input class='inp' id='user"+autoLoginInfo.domname+"' type='text'  value=''/></td>"+
-					"<td><input class='inp' id='pwd"+autoLoginInfo.domname+"' type='password'   value=''/></td>"+
-					"<td><input class='inp' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
-					"<td> <a  class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
+					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='user"+autoLoginInfo.domname+"' type='text'  value=''/></td>"+
+					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='pwd"+autoLoginInfo.domname+"' type='password'   value=''/></td>"+
+					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
+					"<td> <a  data-domname='"+autoLoginInfo.domname+"' class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
 					
 					
 	
@@ -829,3 +843,36 @@ container.innerHTML=myString
 document.body.appendChild(container)
 
 */
+
+
+function dummy(){	var inputElements = document.querySelectorAll('select.selectbox');
+        for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
+		
+			if(inputElement.getAttribute("data-changed") == "true"){
+			
+			var site={}
+			
+			site.authtype=inputElement.getAttribute("data-authtype")
+			site.url=inputElement.getAttribute("data-url")
+			site.enabled= (inputElement.getAttribute("data-enabled") == "true")
+			site.credentials=[]
+			
+			for(k=0;k<inputElement.querySelectorAll('option').length;k++){
+			
+				var optionElement=inputElement.querySelectorAll('option')[k]
+				
+				var credential={}
+				credential.user=optionElement.getAttribute("")
+				/*
+				
+				"<option data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
+				
+				*/
+			
+			}
+			
+		
+		}
+		}
+		}
+		
