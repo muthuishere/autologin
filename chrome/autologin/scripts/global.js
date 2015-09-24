@@ -919,7 +919,7 @@ chrome.runtime.onMessage.addListener(
 			var savedCredential= Helper.decrypt(localStorage["credential"] );
 			
 			var result=(savedCredential != "")
-			
+			console.log("result",result)
 				sendResponse({"valid":result});
 			
 	

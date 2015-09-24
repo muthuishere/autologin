@@ -98,7 +98,7 @@ var autoLoginOptions = {
 	infoChanged:function(event){
 	
 	
-	console.log(event.target)
+	//console.log(event.target)
 	
 		document.querySelector("#sitechangedstatus").innerHTML="";
 	
@@ -279,6 +279,7 @@ var autoLoginOptions = {
 	
 				chrome.extension.sendMessage({action: "hasCredential"}, function(response) {
 				
+				console.log("option hasCredential ",response)
 				if(response.valid){
 				
 					//Show Password panel
@@ -432,7 +433,7 @@ var autoLoginOptions = {
 		  //get queryselector targetId
 		  //set textbox values from targetids
 		  //
-		  console.log(domname,document.querySelector("#select"+domname))
+		  //console.log(domname,document.querySelector("#select"+domname))
 		  var option =document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
 		  
 		  
@@ -451,6 +452,7 @@ var autoLoginOptions = {
 				document.querySelector("#pwd"+domname).value=changedpwd
 		  
 	  },
+	  
     loadOptions: function () {
 
 	
@@ -599,7 +601,7 @@ searchdomain:function(domainname,authtype){
 	
 	updateinputBoxStyle:function(){
 	
-	var inputElements = document.querySelectorAll('input.inp');
+	var inputElements = document.querySelectorAll('select.selectbox');
         for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
             //work with element
 			inputElement.className=inputElement.className.replace("inputChanged" ,"")
@@ -612,23 +614,70 @@ searchdomain:function(domainname,authtype){
 		if(document.querySelector("a#btnUpdate").getAttribute("class") == "buttondisable" )
 			return;
 	
+				
+			var inputElements = document.querySelectorAll('select.selectbox');
+			for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
+
+				if (inputElement.getAttribute("data-changed") == "true") {
+					console.log("Data changed")
+					var site = {}
+
+					site.authtype = inputElement.getAttribute("data-authtype")
+						site.url = inputElement.getAttribute("data-url")
+						site.enabled = (inputElement.getAttribute("data-enabled") == "true")
+						site.credentials = []
+						
+						var hasUpdated=false
+
+						for (k = 0; k < inputElement.querySelectorAll('option').length; k++) {
+
+							var optionElement = inputElement.querySelectorAll('option')[k]
+
+							
+								
+								site.user = optionElement.getAttribute("data-username")
+								site.userxpath = optionElement.getAttribute("data-userxpath")
+								
+								site.pwdxpath = optionElement.getAttribute("data-pwdxpath")
+								site.password = optionElement.getAttribute("data-password")
+								
+								site.changeduser = optionElement.getAttribute("data-changed-username")
+								site.changedpassword = optionElement.getAttribute("data-changed-password")
+								
+								if(site.changeduser != "" || site.changedpassword != "" ){
+								console.log("Data changed updating",site)
+										storage.updatecredential(site)
+										hasUpdated=true
+								}
+										
+								
+
+						}
+						
+						if(!hasUpdated)
+							storage.updatecredential(site)
+						
+				}
+
+			}
+
+
+			
+		//	if(1 == 1)
+		//		return
 		
 	
-	   var oSerializer = new XMLSerializer();
-        var rawxml = oSerializer.serializeToString(autoLoginOptions.autologinXMLList);
 	
-        localStorage["autologinxml"] = Helper.encrypt(rawxml);
-	
-		
-			chrome.extension.sendMessage({action: "refreshData"}, function(response) {
+			//autoLoginOptions.updateinputBoxStyle();
+			
+			//Update table
+			autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
+			autoLoginOptions.loadOptions();
+			
 				
-				autoLoginOptions.updateinputBoxStyle();
-				
-				
-				autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
-				document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
-				
-				});
+				//document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
+			
+			
 				
 		
 
@@ -737,7 +786,7 @@ searchdomain:function(domainname,authtype){
 
 				selectbox += "<option data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
 				
-				console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
+				//console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
 					
 					}
 					
