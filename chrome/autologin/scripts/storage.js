@@ -300,6 +300,51 @@ var storage = {
 		return null
 	},
 
+		updatedefaultcredential : function (site) {
+
+		for (i = 0; i < storage.autologinsites.length; i++) {
+
+			cursite = storage.autologinsites[i]
+
+				if (cursite.authtype == site.authtype && cursite.url == site.url) {
+
+					
+						for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
+
+							var curcredential = storage.autologinsites[i].credentials[k]
+							
+							
+								if(site.defaultsite == true && curcredential.user != site.user )
+									storage.autologinsites[i].credentials[k].defaultsite=false
+								
+								
+								if (curcredential.user == site.user ) {
+									storage.autologinsites[i].credentials[k].defaultsite=site.defaultsite
+									
+								}
+
+						}
+						storage.updatestorage();
+					
+				}
+		}
+
+	},
+	updatesiteenabled : function (site) {
+		
+		
+		for (i = 0; i < storage.autologinsites.length; i++) {
+
+			cursite = storage.autologinsites[i]
+
+				if (cursite.authtype == site.authtype && cursite.url == site.url && undefined != site.enabled ) {
+
+					storage.autologinsites[i].enabled = site.enabled
+					storage.updatestorage();
+					}
+		}
+		
+	},
 	updatecredential : function (site) {
 
 		for (i = 0; i < storage.autologinsites.length; i++) {
@@ -308,22 +353,19 @@ var storage = {
 
 				if (cursite.authtype == site.authtype && cursite.url == site.url) {
 
-					storage.autologinsites[i].enabled = site.enabled
-					
-					if(undefined != site.userxpath){
+				
 					
 						for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
 
-							var curcredential = storage.autologinsites[i].credentials[k]
 							
 							console.log("curcredential",curcredential)
 
 								var obj = {}
 								obj.authtype = site.authtype
 								obj.url = site.url
-								obj.user = curcredential.user
+								obj.user = storage.autologinsites[i].credentials[k].user
 
-								var curcredential = storage.getuserdata(obj)
+								 var curcredential = storage.getuserdata(obj)
 
 								console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
 								if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {
@@ -337,11 +379,7 @@ var storage = {
 
 						}
 
-					}else{
-									storage.updatestorage();
-										return;
 					
-					}
 				}
 		}
 

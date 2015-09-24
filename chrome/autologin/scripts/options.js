@@ -437,6 +437,19 @@ var autoLoginOptions = {
 		  var option =document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
 		  
 		  
+		  //check if its favourite ,
+		  var isdefault=(option.getAttribute("data-defaultsite") == "true")
+		  
+		  if(isdefault)
+		  {
+			  //new true identified
+			  
+			  document.querySelector("#lnkdefault"+domname).querySelector("img").setAttribute("src","images/default-true.png")
+			  
+		  }else{
+			    document.querySelector("#lnkdefault"+domname).querySelector("img").setAttribute("src","images/default-false.png")
+			  
+		  }
 		  
 		  var changeduser=option.getAttribute("data-changed-username")
 		  var changedpwd=option.getAttribute("data-changed-password")
@@ -474,6 +487,22 @@ var autoLoginOptions = {
             removeElement.addEventListener('click', autoLoginOptions.removeAutologin, false);
 
         }
+		
+		
+		  removeElements = document.querySelectorAll('a.setdefault');
+        for ( i = 0, removeElement; removeElement = removeElements[i]; i++) {
+            //work with element
+            removeElement.addEventListener('click', autoLoginOptions.setdefaultuser, false);
+
+        }
+		
+		  removeElements = document.querySelectorAll('a.removecredential');
+        for ( i = 0, removeElement; removeElement = removeElements[i]; i++) {
+            //work with element
+            removeElement.addEventListener('click', autoLoginOptions.removeCredential, false);
+
+        }
+		
 		
 		var inputElements = document.querySelectorAll('input.inp');
         for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
@@ -537,35 +566,7 @@ var autoLoginOptions = {
 
     },
 	
-    removeAutologin: function (event) {
-
-	//find domain 
-	//remove from autologinxmllist
-	
-	document.querySelector("#sitechangedstatus").innerHTML="";
-	
-	document.querySelector("a#btnUpdate").setAttribute("class","button") ;
-	 var docxml=autoLoginOptions.autologinXMLList ;
-	 
-	 var domainrow=event.target.parentNode.parentNode.parentNode;
-	
-	 var domainname=domainrow.getAttribute("domainname");
-	 
-	 
-	 var autoLoginObject=autoLoginOptions.searchdomain(domainname,domainrow.getAttribute("authtype"))
-	
-	 
-	 if(null != autoLoginObject)
-		autoLoginObject.parentNode.removeChild(autoLoginObject);
-				
-	 
-	 domainrow.parentNode.removeChild(domainrow);
-	 
-        return false;
-		
-		
-    },
-	
+ 
 searchdomain:function(domainname,authtype){
 		
 
@@ -599,6 +600,88 @@ searchdomain:function(domainname,authtype){
 
 	},
 	
+setdefaultuser:function(event){
+
+
+	var domname = event.target.getAttribute("data-domname")
+	
+	var inputElement= document.querySelector("#select"+domname)
+	 
+	 var selectedoption= document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
+	 
+	 var site={}
+			
+			site.authtype=inputElement.getAttribute("data-authtype")
+			site.url=inputElement.getAttribute("data-url")
+			site.user=selectedoption.getAttribute("data-username")
+			
+			
+								
+								
+			if(selectedoption.getAttribute("data-defaultsite") == "true")
+				site.defaultsite=false
+			else
+				site.defaultsite=true
+				
+				storage.updatedefaultcredential(site)
+			
+			
+			autoLoginOptions.flashdiv("statusSuccess","Successfully Updated default  Credential");
+			autoLoginOptions.loadOptions();
+	 
+	 return false;
+},
+removeCredential:function(event){
+
+console.log("removing credential")
+	var domname = event.target.getAttribute("data-domname")
+	
+	var inputElement= document.querySelector("#select"+domname)
+	 
+	 var selectedoption= document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
+	 
+	 var site={}
+			
+			site.authtype=inputElement.getAttribute("data-authtype")
+			site.url=inputElement.getAttribute("data-url")
+			
+			site.user=selectedoption.getAttribute("data-username")
+			
+			
+			storage.removeCredential(site)	
+			
+			autoLoginOptions.flashdiv("statusSuccess","Successfully removed Credential");
+			autoLoginOptions.loadOptions();
+			
+			return false;
+			
+
+},
+
+
+removeAutologin: function (event) {
+
+	
+	var domname = event.target.getAttribute("data-domname")
+	
+	var inputElement= document.querySelector("#select"+domname)
+	 
+	 var site={}
+			
+			site.authtype=inputElement.getAttribute("data-authtype")
+			site.url=inputElement.getAttribute("data-url")
+			
+			storage.removeSite(site)	
+			
+			autoLoginOptions.flashdiv("statusSuccess","Successfully removed Site");
+			autoLoginOptions.loadOptions();
+			
+	 
+        return false;
+		
+		
+    },
+	
 	updateinputBoxStyle:function(){
 	
 	var inputElements = document.querySelectorAll('select.selectbox');
@@ -622,9 +705,12 @@ searchdomain:function(domainname,authtype){
 					console.log("Data changed")
 					var site = {}
 
-					site.authtype = inputElement.getAttribute("data-authtype")
+						site.authtype = inputElement.getAttribute("data-authtype")
 						site.url = inputElement.getAttribute("data-url")
 						site.enabled = (inputElement.getAttribute("data-enabled") == "true")
+						storage.updatesiteenabled(site)
+						
+						
 						site.credentials = []
 						
 						var hasUpdated=false
@@ -654,8 +740,7 @@ searchdomain:function(domainname,authtype){
 
 						}
 						
-						if(!hasUpdated)
-							storage.updatecredential(site)
+						
 						
 				}
 
@@ -735,6 +820,7 @@ searchdomain:function(domainname,authtype){
 					var mod_domain=autoLoginInfo.domain.replace(/\./g,"_")
 					var selectbox="<select data-authtype='"+autoLoginInfo.authtype+"' data-url='"+autoLoginInfo.url+"' data-changed='' data-enabled='"+autoLoginInfo.enabled+"' data-domname='"+mod_domain+"' style='width:180px' class='selectbox' id='select"+mod_domain +"'>"
 					
+					autoLoginInfo.credentialcount=cursite.credentials.length;
 					for(k=0;k<cursite.credentials.length;k++){
 						
 						
@@ -765,26 +851,12 @@ searchdomain:function(domainname,authtype){
 					  if(field.type === "text" && datainfo.username ==   field.value)
 						datainfo.userxpath= field.xpath
 				  
-					  	 /*
-						if( datainfo.username !== ""){
-						
-								if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 )){
-									datainfo.username= field.value
-									datainfo.userxpath= field.xpath
-								
-								}
-								
-						}else{
-						 datainfo.username= field.value
-						  datainfo.userxpath= field.xpath
-						  }
-					 } */
-					 
 						
 					}
 				
 
-				selectbox += "<option data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
+				selectbox += "<option  data-defaultsite='"+cursite.credentials[k].defaultsite+"'  data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
+				
 				
 				//console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
 					
@@ -855,13 +927,21 @@ searchdomain:function(domainname,authtype){
 				imagename="shield.png"
 			}
 	
+	var credentialcss=""
+	if(autoLoginInfo.credentialcount == 1)
+		credentialcss="visibility:hidden"
+	
 			row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
 				"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+	
-					"<td style='text-align:left'>"+autoLoginInfo.selectbox +" </td>"+
+					"<td style='text-align:left'><table><tr><td>"+
+					
+					autoLoginInfo.selectbox +" </td><td>"+
+					
+					"<a  style='"+credentialcss+"' id='lnkdefault"+autoLoginInfo.domname+"'   data-domname='"+autoLoginInfo.domname+"' data-enabled='false' class='setdefault' href='#'><img  data-domname='"+autoLoginInfo.domname+"' src='images/default-false.png' title='Remove from default' class='btnDelete'/></a>" +" </td><td>"+ "<a    style='"+credentialcss+"' id='lnkremoveuser"+autoLoginInfo.domname+"' data-domname='"+autoLoginInfo.domname+"' class='removecredential' href='#'><img  data-domname='"+autoLoginInfo.domname+"' title='Remove user' src='images/remove-user.png' class='btnDelete'/></a>" +" </td></tr></table></td>"+
 					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='user"+autoLoginInfo.domname+"' type='text'  value=''/></td>"+
 					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='pwd"+autoLoginInfo.domname+"' type='password'   value=''/></td>"+
 					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
-					"<td> <a  data-domname='"+autoLoginInfo.domname+"' class='remove' href='#'><img src='images/delete.png' class='btnDelete'/></a> </td>";
+					"<td> <a  data-domname='"+autoLoginInfo.domname+"' class='remove' href='#'><img  data-domname='"+autoLoginInfo.domname+"' src='images/delete.png' class='btnDelete'/></a> </td>";
 					
 					
 	
