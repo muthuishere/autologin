@@ -73,6 +73,19 @@ var authHandler={
 }
 window.addEventListener('load', authHandler.init);
 
+window.addEventListener("beforeunload", function (event) {
+  
+		
+		
+		var data ={}
+		data.cancel =true
+		
+		
+		chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {});
+		
+		
+});
+
 
 //document.body.addEventListener("load", authHandler.init(), false);
 

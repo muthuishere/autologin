@@ -370,7 +370,7 @@ var autoLoginOptions = {
 					
 					
 					
-					chrome.extension.sendMessage({action: "updateBasicAuthSetting",usebasicAuth:event.target.checked}, function(response) {
+					chrome.extension.sendMessage({action: "updateBasicAuthHandlers",usebasicAuth:event.target.checked}, function(response) {
 				
 				
 				
@@ -625,11 +625,18 @@ setdefaultuser:function(event){
 				
 				storage.updatedefaultcredential(site)
 			
-			
+			autoLoginOptions.reloadStorage()		
 			autoLoginOptions.flashdiv("statusSuccess","Successfully Updated default  Credential");
 			autoLoginOptions.loadOptions();
 	 
 	 return false;
+},
+reloadStorage:function(){
+	chrome.extension.sendMessage({action: "reloadStorage"}, function(response) {
+				
+				
+				
+						});
 },
 removeCredential:function(event){
 
@@ -649,7 +656,7 @@ console.log("removing credential")
 			
 			
 			storage.removeCredential(site)	
-			
+			autoLoginOptions.reloadStorage()	
 			autoLoginOptions.flashdiv("statusSuccess","Successfully removed Credential");
 			autoLoginOptions.loadOptions();
 			
@@ -672,6 +679,8 @@ removeAutologin: function (event) {
 			site.url=inputElement.getAttribute("data-url")
 			
 			storage.removeSite(site)	
+			
+			autoLoginOptions.reloadStorage()	
 			
 			autoLoginOptions.flashdiv("statusSuccess","Successfully removed Site");
 			autoLoginOptions.loadOptions();
@@ -730,7 +739,15 @@ removeAutologin: function (event) {
 								site.changeduser = optionElement.getAttribute("data-changed-username")
 								site.changedpassword = optionElement.getAttribute("data-changed-password")
 								
+								 
+								 
 								if(site.changeduser != "" || site.changedpassword != "" ){
+								
+								if(site.changeduser == "")
+									site.changeduser=site.user
+								else if(site.changedpassword !== "")
+										site.changedpassword=site.password
+										
 								console.log("Data changed updating",site)
 										storage.updatecredential(site)
 										hasUpdated=true
@@ -756,10 +773,12 @@ removeAutologin: function (event) {
 			//autoLoginOptions.updateinputBoxStyle();
 			
 			//Update table
+			autoLoginOptions.reloadStorage()	
 			autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
 			autoLoginOptions.loadOptions();
 			
 				
+						
 				//document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
 			
 			

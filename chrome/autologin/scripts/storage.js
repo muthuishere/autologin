@@ -149,7 +149,8 @@ var storage = {
 							}
 
 					}
-					if (!isUserModfied) {
+					//basic auth requires only one credential
+					if (!isUserModfied && site.authtype != "basic" ) {
 
 						var credential = {}
 						credential.user = site.user
@@ -234,6 +235,39 @@ var storage = {
 			}
 
 			return resultsite
+
+	},
+	getbasicauthdata : function ( url) {
+
+		var credential=null
+			var site = storage.get("basic",url)
+
+			if(null != site){
+			
+			 credential = {}
+				credential.sitedata = {
+					"authtype" : "basic",
+					"url" : url
+				}
+				var elems = site.credentials[0].elements
+
+					for (index = 0, len = elems.length; index < len; ++index) {
+
+						var field = elems[index]
+
+							if (field.type === "password") {
+								credential.password = field.value
+
+							}
+
+							if (field.type === "text") {
+								credential.username = field.value
+
+							}
+
+					}
+		}
+	return credential
 
 	},
 	changeflag : function (authtype, url, flgenabled) {
@@ -366,6 +400,9 @@ var storage = {
 								obj.user = storage.autologinsites[i].credentials[k].user
 
 								 var curcredential = storage.getuserdata(obj)
+								 
+								
+										
 
 								console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
 								if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {

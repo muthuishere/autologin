@@ -86,10 +86,10 @@ var globalAutologinHandler = {
 	
 		
 			
-	updateBasicAuthHandlers:function(){
+	updateBasicAuthHandlers:function(usebasicauth){
 	
 		
-		var usebasicauth= (localStorage["usebasicauth"] === 'true')
+	
 			if(usebasicauth){
 			
 			
@@ -293,16 +293,16 @@ while (i--) {
 	authdetails:null,
 	authretrycount:0,
 	popupopened:false,
-	sendauthautologinsites:function(status,credential,callback){
+	sendcredentials:function(status,credential,callback){
 		
 		
 	//if(globalAutologinHandler.popupopened)
 		//globalAutologinHandler.popupopened=false
-		
+		console.log("status",globalAutologinHandler.last_request_id,"status.requestId ",status.requestId )
 		if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
 					++globalAutologinHandler.try_count;
 					console.log("increment try count")
-						//globalAutologinHandler.retrieveautologinsites(status,callback)
+						
 					
 				} else {
 					globalAutologinHandler.try_count = 0;
@@ -316,42 +316,30 @@ while (i--) {
 					globalAutologinHandler.last_tab_id = status.tabId;
 					
 						console.log("Sending data to page " ,globalAutologinHandler.try_count,credential )
-					callback({authautologinsites: {username: credential.username, password: credential.password}});	
+					
+					
+					
+					  callback({authCredentials: {username: credential.username, password: credential.password}});
+				
+				
 					
 				}else{
 				
 				//remove autologin credential and send cancel status
-					if(credential.input ==="autologin"){
-						
-						//One more 
-						
-					//	globalAutologinHandler.try_count--;
-						//console.log(credential)
-						globalAutologinHandler.deleteauth(credential.sitedata)
-						//globalAutologinHandler.retrieveautologinsites(status,callback)
-						
-					}
-					
-						globalAutologinHandler.cancelauth(status,callback)
+					if(credential.input ==="autologin")
+								storage.removeSite(credential.sitedata)
+											
+						callback({cancel: true});
+						globalAutologinHandler.try_count = 0;
 					
 					
 				}
 		
 					
 	},
-	deleteauth:function(sitedata){
-		
-		removeResponse=storage.remove(sitedata)
-		
 	
 	
-	},
-	cancelauth:function(details,callback){
-		callback({cancel: true});
-		globalAutologinHandler.try_count = 0;
-		
-	},
-	authclientcallback:null,	
+	
 	retrieveautologinsites : function (details, callback) {
 		
 		
@@ -366,7 +354,7 @@ while (i--) {
 		
 		//TODO check url has authorization autologinsites in storage or user has set authorization autologinsites
 		
-		 var site=storage.get("basic",url)
+		 var credential=storage.getbasicauthdata(url)
 		 
 		
 		
@@ -374,44 +362,17 @@ while (i--) {
 		
 		
 				
-		if (site != null ) {
+		if (credential != null ) {
 
-		var credential = {};
-		credential.username = ""
-		credential.passwords = ""
+			credential.input="autologin" 
 		
-			var elems=site.elements
-			credential.sitedata=site
-			var username=""
-			for (index = 0, len = elems.length; index < len; ++index) {
-			
-				var field=elems[index]
-				
-					if(field.type === "password"){
-						 credential.password= field.value
-						
-					 }
-					 
-					  if(field.type === "text"){
-						 credential.username= field.value
-						
-					 }
-					
-					credential.input="autologin"
-					
-			
-			}
-		//domainxml get username password
-			
-			//credential.username = "mnavaneethakrishnan@corpuk.net"
-				//credential.password = "July#2015"
 				if(credential.username !== "" && credential.password !== "" ){
 					globalAutologinHandler.authcallback=null;
 					globalAutologinHandler.authdetails=null
 					
 					//TODO show popup to retrieve autologin credential
-					console.log("authentication sent from storage ",credential,status,domainxml)
-					globalAutologinHandler.sendauthautologinsites(status,credential,callback)
+					console.log("authentication sent from storage ",credential,status)
+					globalAutologinHandler.sendcredentials(status,credential,callback)
 					
 					return;
 					}
@@ -425,6 +386,9 @@ while (i--) {
 		}
 			
 			
+				globalAutologinHandler.authcallback=null;
+					globalAutologinHandler.authdetails=null
+					
 		globalAutologinHandler.popupopened=true
 		
 		console.log("setting status ")
@@ -458,7 +422,7 @@ while (i--) {
 					elem.xpath="password"
 					globalAutologinHandler.authdetails.sitedata.elements.push(elem)
 					
-					
+					globalAutologinHandler.authpopup=null;
 				//TODO handle close
 				chrome.windows.create({
 					type: 'popup',
@@ -468,34 +432,31 @@ while (i--) {
 				
 				
 				}, function(win) {
-					
+					globalAutologinHandler.authpopup=win
 					console.log("window id" ,win.id)
 					
 					
 				});
 				
-				
 				/*
-				chrome.tabs.getSelected(null,function(tab) {
-					var tablink = tab.url;
+				var timer = setInterval(function(){
+				
+					if(null != globalAutologinHandler.authpopup){
+						if (globalAutologinHandler.popupopened=true && globalAutologinHandler.authpopup.closed) {
+							console.log("Child window closed");   
+							globalAutologinHandler.authcallback({cancel: true});
+							clearInterval(timer);
+						}else if(globalAutologinHandler.popupopened=false){
+						
+								clearInterval(timer);
+						}
 					
-						if(tab.url.indexOf("chrome") >=0){
-							if(null != globalAutologinHandler.authclientcallback)
-								globalAutologinHandler.authclientcallback({"valid":false,"message":"Invalid autologinsites"});	
-							else{
-								
-								alert("Invalid page")
-								
-							}
-							
-							
-						}else{
-								chrome.tabs.executeScript(null, {file:"scripts/autoLoginAuth.js"}, function() {
-									
-								});
-						}		
-					});
-			*/
+					}
+				}, 5000);
+*/
+
+				
+			
 			
 			
 					
@@ -522,8 +483,8 @@ while (i--) {
 			
 		
 
-		
-		globalAutologinHandler.updateBasicAuthHandlers()
+			var usebasicauth= (localStorage["usebasicauth"] === 'true')
+		globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 		
 			console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
@@ -779,10 +740,10 @@ chrome.runtime.onMessage.addListener(
 				
 				//remove iframe on current tab
 				//send cancel event 
+				globalAutologinHandler.authcallback({cancel: true});
 				
-				globalAutologinHandler.cancelauth(globalAutologinHandler.authdetails,globalAutologinHandler.authcallback)
 				sendResponse({"valid":true});	
-				globalAutologinHandler.authclientcallback=null;
+				
 			}else{
 				
 				
@@ -792,8 +753,6 @@ chrome.runtime.onMessage.addListener(
 				
 					//globalAutologinHandler.addAutoLoginElements(request.info,"form")
 					
-	
-				globalAutologinHandler.authclientcallback=sendResponse
 				
 				if(data.useAutologin &&  globalAutologinHandler.authdetails && globalAutologinHandler.authdetails.sitedata){
 				
@@ -819,11 +778,9 @@ chrome.runtime.onMessage.addListener(
 				}
 				
 				
-				globalAutologinHandler.sendauthautologinsites(globalAutologinHandler.authdetails,data,globalAutologinHandler.authcallback)
+				globalAutologinHandler.sendcredentials(globalAutologinHandler.authdetails,data,globalAutologinHandler.authcallback)
 				sendResponse({"valid":true});	
 					
-				//sendResponse({"valid":true});	
-				
 				
 				
 				
@@ -903,11 +860,21 @@ chrome.runtime.onMessage.addListener(
 			
 	
 	
+	}else if (request.action == "reloadStorage"){
+	
+		
+			storage.init()
+			
+				sendResponse({"valid":true });
+			
+	
+	
 	}else if (request.action == "updateBasicAuthHandlers"){
 	
 		
 			localStorage["usebasicauth"]= request.usebasicAuth;
-			globalAutologinHandler.updateBasicAuthHandlers()
+				var usebasicauth= localStorage["usebasicauth"]
+			globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 				sendResponse({"valid":true });
 			
 	
