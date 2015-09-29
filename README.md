@@ -1,7 +1,7 @@
 Auto Login
 =========
 
-A Chrome/Firefox Extension
+A Chrome Extension
 
 	To Login  to your websites automatically.
 	Enable / Disable Individual websites for Autologin
