@@ -114,8 +114,8 @@ var autoLoginOptions = {
 					
 					
 
-
-					document.querySelector("#select"+domname).className += ' inputChanged'
+					if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1)
+								document.querySelector("#select"+domname).className += ' inputChanged'
 	
 	if(event.target.getAttribute("type")=="text"){
 	
@@ -535,10 +535,13 @@ var autoLoginOptions = {
 		 document.querySelector("input.inp").addEventListener('keypress', function(event){
 		
 			 
-			 
-			 if(event.target.className.indexOf("inputChanged") <0){
+			 var domname=this.getAttribute("data-domname")
+			
+			if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1){
+					document.querySelector("#select"+domname).className += ' inputChanged'
+								
 				document.querySelector("a#btnUpdate").setAttribute("class","button") ;
-				event.target.className += ' inputChanged';
+				
 				}
 	
 	
@@ -640,7 +643,6 @@ reloadStorage:function(){
 },
 removeCredential:function(event){
 
-console.log("removing credential")
 	var domname = event.target.getAttribute("data-domname")
 	
 	var inputElement= document.querySelector("#select"+domname)
