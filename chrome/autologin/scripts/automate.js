@@ -1,6 +1,6 @@
-if (undefined == autoLogin){
+if (undefined == automate){
 
-var autoLogin = {
+var automate = {
     doc: null,
     initialized: false,
     autologinList: null,
@@ -10,72 +10,6 @@ var autoLogin = {
     pwdelemName: null,
 	site:null,
 
-    ismatchURL: function (currentURL, elemname,authtype) {
-
-
-        docxml = autoLogin.autologinXMLList;
-
-        try {
-
-
-            var divs = docxml.getElementsByTagName("site"),
-                i = divs.length;
-
-            if (i == 0)
-                return false;
-
-            while (i--) {
-
-
-		
-				 
-			
-                iurl = autoLogin.getXMLElementval(divs[i], elemname);
-                if (autoLogin.isDomainValid(currentURL, iurl) && divs[i].getAttribute("authtype") == "form") {
-
-                    return divs[i];
-                }
-
-
-            }
-
-        } catch (exception) {
-
-            console.log("Issue" + exception)
-
-        }
-
-        return false;
-
-    },
-
-    isLoginPage: function (currentURL) {
-
-
-
-        if (autoLogin.autologinList == null) {
-            autoLogin.logmessage("autologinList null");
-            return false;
-        }
-
-        var flgReturn = autoLogin.ismatchURL(currentURL, "loginurl","form");
-        return flgReturn;
-
-    },
-    isValidURL: function (currentURL) {
-
-
-
-        if (autoLogin.autologinList == null) {
-
-            return false;
-        }
-
-
-        var flgReturn = autoLogin.ismatchURL(currentURL, "url","form");
-        return flgReturn;
-
-    },
 
     getelembyid: function (id) {
 
@@ -94,13 +28,13 @@ var autoLogin = {
 
     initFormObject: function (formname) {
 
-        var formObject = autoLogin.getelembyidname("form", formname)
+        var formObject = automate.getelembyidname("form", formname)
 
-        autoLogin.formObject = null;
+        automate.formObject = null;
         console.log(formObject)
         if (null != formObject) {
 
-            autoLogin.formObject = formObject;
+            automate.formObject = formObject;
 
 
         } else {
@@ -115,12 +49,12 @@ var autoLogin = {
                 var inputpwdelems = formelement.querySelectorAll('input[type="password"]');
                 var inputtxtelems = formelement.querySelectorAll('input[type="text"]');
 
-                var inputuserelem = formelement.querySelector('input[name="' + autoLogin.userelemName + '"]');
-                var inputpwdelem = formelement.querySelector('input[name="' + autoLogin.pwdelemName + '"]');
+                var inputuserelem = formelement.querySelector('input[name="' + automate.userelemName + '"]');
+                var inputpwdelem = formelement.querySelector('input[name="' + automate.pwdelemName + '"]');
 
 
                 if (null != inputuserelem && null != inputpwdelem && inputpwdelems.length == 1) {
-                    autoLogin.formObject = formelement;
+                    automate.formObject = formelement;
                     break;
                 }
 
@@ -136,7 +70,7 @@ var autoLogin = {
     getinputelem: function (elemname) {
 
 
-        var formelem = autoLogin.formObject
+        var formelem = automate.formObject
 
          if (formelem == null ||  formelem == "") {
             	//alert("form is null" + elemname);
@@ -160,10 +94,10 @@ var autoLogin = {
 
 
     getelembyidname: function (tagname, elemname) {
-        var elem = autoLogin.getelembyid(elemname)
+        var elem = automate.getelembyid(elemname)
 
         if (elem == null)
-            return autoLogin.getelembyname(tagname, elemname)
+            return automate.getelembyname(tagname, elemname)
         else
             return elem;
 
@@ -248,21 +182,21 @@ var autoLogin = {
 							 console.log("Enter key event ")
 							 
 							 
-							 var elem =autoLogin.getElementByXpath(obj.enterelement.xpath)
+							 var elem =automate.getElementByXpath(obj.enterelement.xpath)
 							 
 						
 							 if (elem) elem.focus();
-								autoLogin.raiseKeyEvent(elem ,13)
+								automate.raiseKeyEvent(elem ,13)
 								
 							 setTimeout(function() {	
-										autoLogin.triggerclick(obj)
+										automate.triggerclick(obj)
 									}, 200);
 									
 									
 							
 						 }
 						 else
-							autoLogin.triggerclick(obj)
+							automate.triggerclick(obj)
 						 
 						
 						 
@@ -273,15 +207,15 @@ var autoLogin = {
 							 
 							  console.log("click key event ")
 							  console.log(obj.clickelement.xpath)
-							 var elem =autoLogin.getElementByXpath(obj.clickelement.xpath)
+							 var elem =automate.getElementByXpath(obj.clickelement.xpath)
 							
-							 var result = autoLogin.raiseClickEvent(elem)
+							 var result = automate.raiseClickEvent(elem)
 							 	 setTimeout(function() {	
-										autoLogin.triggersubmit(obj)
+										automate.triggersubmit(obj)
 									}, 400);
 							
 						 } else
-							autoLogin.triggersubmit(obj)
+							automate.triggersubmit(obj)
 						 
 	},
 	triggersubmit:function(obj){
@@ -289,7 +223,7 @@ var autoLogin = {
 	
 						  if(obj.formelement){
 							  console.log("Form submit  event ")
-							 var elem =autoLogin.getElementByXpath(obj.formelement.xpath)
+							 var elem =automate.getElementByXpath(obj.formelement.xpath)
 							 elem.submit();
 							 //raise submit event
 							
@@ -301,7 +235,7 @@ var autoLogin = {
 	
 	
 
-                autoLogin.logmessage("Attempting to Insert");
+                automate.logmessage("Attempting to Insert");
 
 				var haspassword =false
 
@@ -322,7 +256,7 @@ var autoLogin = {
 					  var field=elems[k]
 					  
 					 if( field.type  === "password"){
-						 var elem =autoLogin.getElementByXpath(field.xpath)
+						 var elem =automate.getElementByXpath(field.xpath)
 								if(elem)
 										haspassword=true;
 					 }
@@ -376,7 +310,7 @@ var autoLogin = {
 							
 							if( field.value  !== "" && (field.type  !== "button" && field.type  !== "submit"  ) ){
 								
-								var elem =autoLogin.getElementByXpath(field.xpath)
+								var elem =automate.getElementByXpath(field.xpath)
 								if(elem){
 									
 									elem.value=field.value
@@ -392,7 +326,7 @@ var autoLogin = {
 						 obj.formelement=formelement
 						 
 						 
-						 autoLogin.triggerkeyevent(obj)
+						 automate.triggerkeyevent(obj)
 						
 	  
 
@@ -403,7 +337,7 @@ var autoLogin = {
                     return;
                 }
 
-                autoLogin.logmessage("Invalid Page");
+                automate.logmessage("Invalid Page");
 
 
 
@@ -439,40 +373,48 @@ var autoLogin = {
 
 
 
-        try {
-
-
-
-            if (null == autoLogin.site ) {
-                autoLogin.logmessage("Data not Loaded")
+  
+            if (null == automate.site ) {
+                automate.logmessage("Data not Loaded")
                 return;
             }
 
 
-			 if ( autoLogin.site.credentials.length == 1) {
+			 if ( automate.site.credentials.length == 1) {
 				 
 				 
-				autoLogin.logmessage("Single login")
-					autoLogin.initiate(autoLogin.site)
+				automate.logmessage("Single login")
+				automate.site.elements= automate.site.credentials[0].elements
+				
+					automate.initiate(automate.site)
 				return
 			 }
 			 
-			 if ( autoLogin.site.credentials.length > 1) {
+			 if ( automate.site.credentials.length > 1) {
 			 
 					//show autlogin info with list of users
 					
 					var validsites=[]
 					//reiterate sites ensure all xpaths are available
-				autoLogin.logmessage("Single login")
+				automate.logmessage("Multiple login")
 				
-				for(i=0;i<autoLogin.site.credentials.length ;i++){
+				for(i=0;i<automate.site.credentials.length ;i++){
 				
-					var curcredential=autoLogin.site.credentials[i]
+					var curcredential=automate.site.credentials[i]
 					var canadd=true
+						automate.logmessage("Multiple login",curcredential)
+					if(curcredential.defaultsite){
+						var currentsite=automate.site
+						
+						currentsite.elements=curcredential.elements
+						automate.initiate(currentsite)
+						return
+						
+					}
 					 var elems = curcredential.elements;
 					  for( k=0;k< elems.length ;k++){
 					  
-						  var elem =autoLogin.getElementByXpath(elems[k].xpath)
+						  var elem =automate.getElementByXpath(elems[k].xpath)
 						  
 							if(elem)	
 								continue
@@ -481,8 +423,14 @@ var autoLogin = {
 										
 						
 					  }
-						  if(canadd)
-							validsites.push(curcredential)
+						  if(canadd){
+							  var currentsite=automate.site
+							  currentsite.user=curcredential.user
+							  currentsite.elements=curcredential.elements
+							  
+							
+							validsites.push(currentsite)
+							}
 				  
 					
 				}
@@ -491,7 +439,7 @@ var autoLogin = {
 				
 				userselect.init(extnid,validsites,function(site){
 						
-							autoLogin.initiate(site)
+							automate.initiate(site)
 				})
 				
 				
@@ -532,8 +480,8 @@ var autoLogin = {
 		
 
 			
-            autoLogin.site=response.site
-            autoLogin.handlePageLoad();
+            automate.site=response.site
+            automate.handlePageLoad();
         });
 
 
@@ -590,8 +538,8 @@ var autoLogin = {
 
 
 
-autoLogin.init()
+automate.init()
 
 }
-//window.addEventListener("load", function(e) { autoLogin.handlePageLoad(); }, false); 
-//window.addEventListener("unload", function() {autoLogin.uninit()}, false);
+//window.addEventListener("load", function(e) { automate.handlePageLoad(); }, false); 
+//window.addEventListener("unload", function() {automate.uninit()}, false);

@@ -10,7 +10,7 @@ var globalAutologinHandler = {
 	lastloggedInDomain:null,	
 	lastloggedInTimeinMilliseconds:0,
 	
-	blacklistDomains:new Array(),
+	poolingDomains:new Array(),
 	loggedIn:true,
 	
 	testmigrate:function(){
@@ -116,7 +116,7 @@ var globalAutologinHandler = {
 	var MAX_ALLOWED_TIME_DIFFERENCE=60 *1000
 	
   if(null != globalAutologinHandler.lastloggedInDomain  && curdomainName == globalAutologinHandler.lastloggedInDomain   &&  timedifference <  MAX_ALLOWED_TIME_DIFFERENCE){
-  globalAutologinHandler.blacklistDomains.push(curdomainName)
+  globalAutologinHandler.poolingDomains.push(curdomainName)
   return false
   }
   return true
@@ -153,7 +153,7 @@ var globalAutologinHandler = {
 	var flgAutologinEnabled=site.enabled;
 	result.info=site;
 	
-	if( flgAutologinEnabled == true && globalAutologinHandler.blacklistDomains.indexOf(curdomainName) == -1 )  {
+	if( flgAutologinEnabled == true && globalAutologinHandler.poolingDomains.indexOf(curdomainName) == -1 )  {
 	
 		result.status=0;
 		
@@ -162,7 +162,7 @@ var globalAutologinHandler = {
 		
 	
 	}
-	if(globalAutologinHandler.blacklistDomains.indexOf(curdomainName) != -1){
+	if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) != -1){
 		
 		console.log("Blacklisted domain" + curdomainName)	
 		result.status=-1;
@@ -491,7 +491,74 @@ while (i--) {
 	//globalAutologinHandler.loadDoc( )
 	
 	
+	},
+	processScripts:function(tab){
+		
+		var tabId=tab.id
+		
+	var  siteInfo = globalAutologinHandler.retrieveSiteInfo(tab.url)
+	var status=siteInfo.status
+	
+	//console.log("tab check",siteInfo,globalAutologinHandler.loggedIn)
+	
+		if(  status == 0) {
+		
+			if(globalAutologinHandler.loggedIn==false){
+			
+				chrome.tabs.executeScript(tabId, {file:"scripts/validate.js"}, function(details) {
+						//script injected
+						console.log("Inserted validate module")
+					});
+				
+			}else{
+			
+			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
+		
+		
+			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
+						chrome.tabs.executeScript(tabId, {file:"scripts/userselect.js"}, function() {
+							
+							chrome.tabs.executeScript(tabId, {file:"scripts/automate.js"}, function() {
+										//script injected
+										console.log("Inserted autoLogin")
+									});
+						
+						});
+					})
+			
+			}
+	
+		}else{
+		
+		//console.log("got complete")
+			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
+		
+		
+			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
+						//script injected
+						
+			
+						chrome.tabs.executeScript(tabId, {file:"scripts/captureUI.js"}, function() {
+					
+								
+								chrome.tabs.executeScript(tabId, {file:"scripts/capture.js"}, function() {
+									//script injected
+								//	console.log("got autoLoginCapture" +tabId)
+								});
+						
+						}); 
+						
+						
+			
+				});
+				
+				
+			
+		}
+		
+		
 	}
+  
 	
 			
 	
@@ -593,7 +660,7 @@ var Utils={
 					
 					
 	}
-  
+
   };
 
 //globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
@@ -612,65 +679,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			return;
 		}
   
-  var  siteInfo = globalAutologinHandler.retrieveSiteInfo(tab.url)
-	var status=siteInfo.status
-	
-	//console.log("tab check",siteInfo,globalAutologinHandler.loggedIn)
-	
-		if(  status == 0) {
 		
-			if(globalAutologinHandler.loggedIn==false){
-			
-				chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCredentials.js"}, function(details) {
-						//script injected
-						console.log("Inserted autoLoginCredentials")
-					});
-				
-			}else{
-			
-			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
-		
-		
-			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
-						chrome.tabs.executeScript(tabId, {file:"scripts/userselect.js"}, function() {
-							
-							chrome.tabs.executeScript(tabId, {file:"scripts/autoLogin.js"}, function() {
-										//script injected
-										console.log("Inserted autoLogin")
-									});
-						
-						});
-					})
-			
-			}
-		//}else if( status == 1 ) {
-		}else{
-		
-		//console.log("got complete")
-			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
-		
-		
-			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
-						//script injected
-						
-			
-						chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCaptureIcon.js"}, function() {
-					
-								
-								chrome.tabs.executeScript(tabId, {file:"scripts/autoLoginCapture.js"}, function() {
-									//script injected
-								//	console.log("got autoLoginCapture" +tabId)
-								});
-						
-						}); 
-						
-						
-			
-				});
-				
-				
-			
-		}
+			globalAutologinHandler.processScripts(tab)
 	}
 });
 
@@ -702,9 +712,8 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "injectAutoLogin"){
 	
 	
-			chrome.tabs.executeScript(sender.tab.id, {file:"scripts/autoLogin.js"}, function() {
-					//script injected
-				});
+			globalAutologinHandler.processScripts(sender.tab)
+			
 			
 		sendResponse({"valid":true});
 	
@@ -730,6 +739,15 @@ chrome.runtime.onMessage.addListener(
 	
 	
 	
+	}else if (request.action == "hiddencapture"){
+	
+			// Check in storage
+			var site=storage.get("form",request.url)
+			var data={"hiddencapture":(site !=null)}
+			console.log("hiddencapture",data,request.url)
+			console.log(site !=null)
+			sendResponse(data);	
+		
 	}else if (request.action == "basicauth"){
 	
 	

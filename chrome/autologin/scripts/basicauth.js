@@ -1,10 +1,10 @@
-if (undefined == authHandler){
+if (undefined == basicauth){
 
-var authHandler={
+var basicauth={
 
 	startCapture:false,
 	onCaptureAutoLogin:function(startCapture){
-		authHandler.startCapture=startCapture
+		basicauth.startCapture=startCapture
 		
 	},
 	init:function(){
@@ -20,7 +20,7 @@ var authHandler={
 			window.close();
 			return
 		}
-			authHandler.initauth(response)
+			basicauth.initauth(response)
         });
 
 		
@@ -38,7 +38,7 @@ var authHandler={
 		 
 		var extnid=chrome.extension.getURL("/") 
 		
-		//autoLoginCaptureIcon.init(extnid,authHandler.onCaptureAutoLogin)
+		//autoLoginCaptureIcon.init(extnid,basicauth.onCaptureAutoLogin)
 	
 		 document.querySelector("#btnlogin").addEventListener('click', function(event){
 		
@@ -71,7 +71,7 @@ var authHandler={
 	
 	
 }
-window.addEventListener('load', authHandler.init);
+window.addEventListener('load', basicauth.init);
 
 window.addEventListener("beforeunload", function (event) {
   
@@ -87,7 +87,7 @@ window.addEventListener("beforeunload", function (event) {
 });
 
 
-//document.body.addEventListener("load", authHandler.init(), false);
+//document.body.addEventListener("load", basicauth.init(), false);
 
 
 }

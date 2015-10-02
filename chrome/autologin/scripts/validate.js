@@ -1,6 +1,6 @@
-if (undefined == autoLoginCredentials){
+if (undefined == validate){
 
-var autoLoginCredentials={
+var validate={
 
 	
 	showGetPassword:function(){
@@ -9,10 +9,10 @@ var autoLoginCredentials={
 		var container=document.createElement("div");
 		container.innerHTML=myString
 		document.body.appendChild(container)
-		 document.querySelector("input#btnaskpassword").addEventListener('click', autoLoginCredentials.onClickActivateButton, false);
+		 document.querySelector("input#btnaskpassword").addEventListener('click', validate.onClickActivateButton, false);
 		 document.querySelector("input#txtaskpassword").addEventListener('keypress', function(event){
 		 if (event.which == 13 || event.keyCode == 13) {
-            autoLoginCredentials.onClickActivateButton();
+            validate.onClickActivateButton();
             return false;
         }
         return true;
@@ -43,6 +43,6 @@ var autoLoginCredentials={
 
 }
 
-autoLoginCredentials.showGetPassword();
+validate.showGetPassword();
 
 }

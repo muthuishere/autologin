@@ -1,8 +1,8 @@
 
-if (undefined == autoLoginCapture) {
+if (undefined == capture) {
 
-	var autoLoginCapture = {
-		captureForm : null,
+	var capture = {
+		form : null,
 		elems : [],
 		startCapture : false,
 		disableIconURL : "",
@@ -60,11 +60,11 @@ if (undefined == autoLoginCapture) {
 		},
 		setelemvalue : function (element, value) {
 
-			for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
-				var elem = autoLoginCapture.elems[index];
-				if (autoLoginCapture.elems[index].xpath == autoLoginCapture.getXPath(element)) {
+			for (index = 0, len = capture.elems.length; index < len; ++index) {
+				var elem = capture.elems[index];
+				if (capture.elems[index].xpath == capture.getXPath(element)) {
 					if (undefined !== value)
-						autoLoginCapture.elems[index].value = value
+						capture.elems[index].value = value
 
 							return;
 				}
@@ -73,9 +73,9 @@ if (undefined == autoLoginCapture) {
 		},
 		checkpasswordhasvalue : function () {
 
-			for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
-				var elem = autoLoginCapture.elems[index];
-				if (autoLoginCapture.elems[index].type == "password" && autoLoginCapture.elems[index].value != "") {
+			for (index = 0, len = capture.elems.length; index < len; ++index) {
+				var elem = capture.elems[index];
+				if (capture.elems[index].type == "password" && capture.elems[index].value != "") {
 
 					return true;
 				}
@@ -86,22 +86,22 @@ if (undefined == autoLoginCapture) {
 		},
 		updateElements : function () {
 
-			for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
+			for (index = 0, len = capture.elems.length; index < len; ++index) {
 
-				var elem = autoLoginCapture.getElementByXpath(autoLoginCapture.elems[index].xpath)
+				var elem = capture.getElementByXpath(capture.elems[index].xpath)
 					if (elem.value)
-						autoLoginCapture.elems[index].value = elem.value
+						capture.elems[index].value = elem.value
 
 			}
 
 		},
 		setelemevent : function (element, evt) {
 
-			for (index = 0, len = autoLoginCapture.elems.length; index < len; ++index) {
-				var elem = autoLoginCapture.elems[index];
-				if (autoLoginCapture.elems[index].xpath == autoLoginCapture.getXPath(element)) {
+			for (index = 0, len = capture.elems.length; index < len; ++index) {
+				var elem = capture.elems[index];
+				if (capture.elems[index].xpath == capture.getXPath(element)) {
 
-					autoLoginCapture.elems[index].event = evt
+					capture.elems[index].event = evt
 						return;
 				}
 
@@ -109,10 +109,10 @@ if (undefined == autoLoginCapture) {
 		},
 		init : function () {
 			/*
-			autoLoginCapture.disableIconURL=extnid +"images/capture_disable.png"
-			autoLoginCapture.enableIconURL=extnid +"images/capture_enable.png"
-			autoLoginCapture.hoverIconURL=extnid +"images/capture_hover.png"
-			autoLoginCapture.backgroundIconURL=extnid +"images/bg.png"
+			capture.disableIconURL=extnid +"images/capture_disable.png"
+			capture.enableIconURL=extnid +"images/capture_enable.png"
+			capture.hoverIconURL=extnid +"images/capture_hover.png"
+			capture.backgroundIconURL=extnid +"images/bg.png"
 			// if form has one password field and one text field and both elements are visible
 			//call the autologin function to show
 			 */
@@ -134,11 +134,11 @@ if (undefined == autoLoginCapture) {
 
 			for (var i = 0, formelement; formelement = forms[i]; i++) {
 
-				if (autoLoginCapture.isVisible(formelement) && formelement.getAttribute("type") !== "hidden") {
+				if (capture.isVisible(formelement) && formelement.getAttribute("type") !== "hidden") {
 
 					var elem = {}
 
-					elem.xpath = autoLoginCapture.getXPath(formelement)
+					elem.xpath = capture.getXPath(formelement)
 						val = ""
 						if (formelement.value && undefined != formelement.value)
 							val = formelement.value
@@ -168,25 +168,25 @@ if (undefined == autoLoginCapture) {
 													
 														
 														var parentformelem = {}
-														parentformelem.xpath = autoLoginCapture.getXPath(parentform)
+														parentformelem.xpath = capture.getXPath(parentform)
 														parentformelem.type = "form"
 														parentformelem.event = ""
 														parentformelem.value = ""
 
-														autoLoginCapture.elems.push(parentformelem)
+														capture.elems.push(parentformelem)
 														parentform.addEventListener('submit', function (e) {
 
 															console.log("Form submit validation")
 															//if password element has value dont do anything or capture all input and send it to background
-															if (autoLoginCapture.checkpasswordhasvalue() == false)
-																autoLoginCapture.updateElements();
+															if (capture.checkpasswordhasvalue() == false)
+																capture.updateElements();
 
-															if (autoLoginCapture.alreadySubmitted == false) {
+															if (capture.alreadySubmitted == false) {
 
 																console.log("Updating through form submit")
 
-																autoLoginCapture.setelemevent(e.target, "submit")
-																autoLoginCapture.sendtoBackground()
+																capture.setelemevent(e.target, "submit")
+																capture.sendtoBackground()
 															}
 
 														}, false);
@@ -197,14 +197,14 @@ if (undefined == autoLoginCapture) {
 
 								}
 
-								autoLoginCapture.elems.push(elem)
+								capture.elems.push(elem)
 
 								formelement.addEventListener('blur', function (e) {
 
 									//send xpath & value to background page
 
 
-									autoLoginCapture.setelemvalue(e.target, e.target.value)
+									capture.setelemvalue(e.target, e.target.value)
 
 									e = e || window.event;
 									if (e.returnValue === false || e.isDefaultPrevented) {
@@ -228,12 +228,12 @@ if (undefined == autoLoginCapture) {
 									e = e || window.event;
 
 									if (e.keyCode == 13) {
-										autoLoginCapture.setelemvalue(e.target, e.target.value)
-										autoLoginCapture.setelemevent(e.target, "enter")
-										autoLoginCapture.sendtoBackground()
+										capture.setelemvalue(e.target, e.target.value)
+										capture.setelemevent(e.target, "enter")
+										capture.sendtoBackground()
 
 									} else
-										autoLoginCapture.setelemvalue(e.target, e.target.value)
+										capture.setelemvalue(e.target, e.target.value)
 
 										if (e.returnValue === false || e.isDefaultPrevented) {
 
@@ -247,8 +247,8 @@ if (undefined == autoLoginCapture) {
 								}, false)
 
 								formelement.addEventListener('click', function (e) {
-									autoLoginCapture.setelemevent(e.target, "click")
-									autoLoginCapture.sendtoBackground()
+									capture.setelemevent(e.target, "click")
+									capture.sendtoBackground()
 									//check element is button
 
 									//send element
@@ -277,9 +277,23 @@ if (undefined == autoLoginCapture) {
 			
 			//todo Default is only icon
 			//if(null !=pwdelem)
-				//autoLoginCaptureIconCheck.init(extnid,autoLoginCapture.onCaptureAutoLogin,pwdelem)
+				//autoLoginCaptureIconCheck.init(extnid,capture.onCaptureAutoLogin,pwdelem)
 		//	else	
-				autoLoginCaptureIcon.init(extnid,autoLoginCapture.onCaptureAutoLogin)
+			
+		//check domain already exists and show/hide icon based on it 
+		var data ={}
+		data.url =this.getdomainName(document.location.toString().split('?')[0])
+		
+		chrome.extension.sendMessage({action: "hiddencapture",url:data.url}, function(response) {
+			
+			console.log("hiddencapture",response)
+			if(response.hiddencapture == true)
+				capture.onCaptureAutoLogin(true)
+			else
+				captureUI.init(extnid,capture.onCaptureAutoLogin)
+			
+		});
+				
 				//
 				
 				
@@ -289,12 +303,12 @@ if (undefined == autoLoginCapture) {
 		},
 		onCaptureAutoLogin : function (startCapture ) {
 
-			console.log("on capture autologin" + 	autoLoginCapture.startCapture)
+			console.log("on capture autologin" + 	capture.startCapture)
 		
-		autoLoginCapture.startCapture = startCapture
+		capture.startCapture = startCapture
 		
-		if (startCapture && autoLoginCapture.checkpasswordhasvalue() == false)
-					autoLoginCapture.updateElements();
+		if (startCapture && capture.checkpasswordhasvalue() == false)
+					capture.updateElements();
 																
 
 		},
@@ -307,14 +321,14 @@ if (undefined == autoLoginCapture) {
 		},
 		sendtoBackground : function () {
 
-			if (autoLoginCapture.startCapture == true) {
+			if (capture.startCapture == true) {
 
 				//console.log(autoLoginXmlInfo)
 
 				var data = {}
 					data.url = this.getdomainName(document.location.toString().split('?')[0])
 					data.loginurl = document.location.toString().split('?')[0]
-					data.elements = autoLoginCapture.elems
+					data.elements = capture.elems
 					data.enabled="true"					
 					data.authtype='form'
 				
@@ -332,7 +346,7 @@ if (undefined == autoLoginCapture) {
 				console.log("Not required");
 			}
 
-			autoLoginCapture.alreadySubmitted = true;
+			capture.alreadySubmitted = true;
 			return true;
 		},
 		 getdomainName: function (str) {
@@ -353,7 +367,7 @@ if (undefined == autoLoginCapture) {
 			for (var i in btnelems) {
 				if (btnelems[i]instanceof Object) {
 					//do stuff with postAs[i];
-					autoLoginCapture.addClickEventHandler(btnelems[i])
+					capture.addClickEventHandler(btnelems[i])
 				}
 			}
 
@@ -377,7 +391,7 @@ if (undefined == autoLoginCapture) {
 				//verify onclick attribute exists
 
 				btnelem.addEventListener("click", function (event) {
-					autoLoginCapture.onBeforeAutoLoginSubmit(event)
+					capture.onBeforeAutoLoginSubmit(event)
 					eval(btnhandler)
 				}, false);
 
@@ -387,16 +401,16 @@ if (undefined == autoLoginCapture) {
 
 	function initAutoLoginCapture() {
 
-		//console.log("Starting listener" +  autoLoginCapture.captureForm)
+		//console.log("Starting listener" +  capture.form)
 
-		if (undefined != autoLoginCapture.captureForm) {
-			//console.log("Starting listener" +  autoLoginCapture.captureForm)
-			autoLoginCapture.captureForm.addEventListener('submit', autoLoginCapture.onBeforeAutoLoginSubmit, false);
+		if (undefined != capture.form) {
+			//console.log("Starting listener" +  capture.form)
+			capture.form.addEventListener('submit', capture.onBeforeAutoLoginSubmit, false);
 
 			// Add enter event to password field element
 			//Verify Password field has been entered & userfield has been entered
 
-			var pwdElem = autoLoginCapture.captureForm.querySelector("input[type='password']");
+			var pwdElem = capture.form.querySelector("input[type='password']");
 			var pwdhandler = ""
 				if (pwdElem.outerHTML.toLowerCase().indexOf("onkeydown") > 0) {
 					pwdhandler = pwdElem.getAttributeNode('onkeydown').nodeValue
@@ -406,31 +420,31 @@ if (undefined == autoLoginCapture) {
 				pwdElem.addEventListener("keydown", function (event) {
 					if (event.keycode == 13) {
 
-						//if(autoLoginCapture.captureForm.querySelector("input[type='password']").value !== "" )
-						autoLoginCapture.onBeforeAutoLoginSubmit(event)
+						//if(capture.form.querySelector("input[type='password']").value !== "" )
+						capture.onBeforeAutoLoginSubmit(event)
 
 						eval(pwdhandler)
 					}
 
 				}, false);
 
-			var btnelems = autoLoginCapture.captureForm.querySelectorAll("input[type='button']")
+			var btnelems = capture.form.querySelectorAll("input[type='button']")
 
 				if (null !== btnelems) {
 
-					autoLoginCapture.addClickEvents(btnelems)
+					capture.addClickEvents(btnelems)
 
 				}
 
-				var aTags = autoLoginCapture.captureForm.querySelectorAll("a")
+				var aTags = capture.form.querySelectorAll("a")
 				if (null !== aTags) {
-					autoLoginCapture.addClickEvents(aTags)
+					capture.addClickEvents(aTags)
 				}
 
-				var btnTags = autoLoginCapture.captureForm.querySelectorAll('button')
+				var btnTags = capture.form.querySelectorAll('button')
 
 				if (null !== btnTags) {
-					autoLoginCapture.addClickEvents(btnTags)
+					capture.addClickEvents(btnTags)
 
 				}
 
@@ -464,6 +478,6 @@ if (undefined == autoLoginCapture) {
 		};
 	}
 
-	autoLoginCapture.init()
+	capture.init()
 
 }

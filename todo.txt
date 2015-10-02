@@ -3,21 +3,24 @@ Multiple basic auth dialogs
 basic auth cancels
 
 
-remove checkbox and always capturing data
-same site appears twice , dont show dialog capture again
+AUtologin page
 
-
-default username ?
-
-
-
-	default 
+	user select
+	hidden capture & update
 	
-			enable/disable for entire site
+	
 		
 		
 	
 	
 	
+	if domain is available try autologin
+			automate.js
+			
+	if its pooling period
+			inject capture.js 
 	
 	
+	fix automate.js , changing default credential not working
+	
+	fix 
