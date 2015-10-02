@@ -125,7 +125,7 @@ var storage = {
 	add : function (site) {
 
 		var isPushed = false;
-
+		//console.log("Adding credentials", site)
 		for (i = 0; i < storage.autologinsites.length; i++) {
 
 			cursite = storage.autologinsites[i]
@@ -157,7 +157,7 @@ var storage = {
 							credential.defaultsite = false
 							credential.elements = site.elements
 							storage.autologinsites[i].credentials.push(credential)
-							console.log("Adding credentials", site)
+							console.log("Adding new credentials to site ", site)
 
 					}
 
@@ -172,7 +172,7 @@ var storage = {
 		}
 
 		if (!isPushed) {
-
+			console.log("Adding new  site ", site)
 			var currentsite = {}
 			currentsite.authtype = site.authtype
 				currentsite.url = site.url

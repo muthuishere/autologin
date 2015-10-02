@@ -881,7 +881,7 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "reloadStorage"){
 	
 		
-			storage.init()
+				storage.init()
 			
 				sendResponse({"valid":true });
 			
