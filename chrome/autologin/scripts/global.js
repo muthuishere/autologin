@@ -41,37 +41,82 @@ var globalAutologinHandler = {
 
 
 				//find user
+				//Set Pooling domains 
+			
 				
+				globalAutologinHandler.pushtoPool(curdomainName)
 				
 		
 			var elems=obj.elements
 			
-			var username=""
+			var indices=[]
+			
+			var invalidxpaths=[];
+			console.log("elems",elems)
 			for (index = 0, len = elems.length; index < len; ++index) {
-			
-			
-			var field=elems[index]
-			
-			 if(field.type === "text"  ){
-					  
-						if( username !== ""){
-						
-								if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 )){
-									username= field.value
-								}
-								
-						}else{
-							username= field.value
-						  }
-					 }
-					 
+				var field=elems[index]
+				if(field.type === "password" && field.value == "" && null != field.parentxpath  && "" != field.parentxpath ){
+						invalidxpaths.push(field.parentxpath)
+				}
 				
 			}
+			console.log("invalidxpaths",invalidxpaths)
+			for (i = 0, xlen = invalidxpaths.length; i < xlen; ++i) {
+				
+				var invalidxpath = invalidxpaths[i]
+				
+				for (index = 0, len = elems.length; index < len; ++index) {
+					var field=elems[index]
+					
+					if(field.parentxpath === invalidxpath || field.xpath === invalidxpath   ){
+							indices.push(index)
+					}
+					
+				}
+			}
+			//console.log("indices",indices)
+			
+			
+			var username=""
+			var tmpusername=""
+			var captureelems=[]
+			for (index = 0, len = elems.length; index < len; ++index) {
+			
+		
+				if(indices.indexOf(index)  == -1){
+					
+					var field=elems[index]
+					captureelems.push(field)
+					
+					
+					
+					 if(field.type == "text"    ){
+							  
+								
+								
+										if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 || field.xpath.toLowerCase().indexOf("signin") >=0 || field.xpath.toLowerCase().indexOf("name") >=0  )){
+											username= field.value
+											console.log("username",username,field.xpath)
+										}
+										
+								
+									tmpusername= field.value
+								  
+							 }
+							 
+							 
+				} 
+				
+			}
+			
+			if(username == "")
+				username=tmpusername
 			
 			
 			obj.user=username
 			obj.authtype=authtype
-	
+			obj.elements=captureelems
+			
 			//checkuser already exists , if yes update
 			
 						storage.add(obj)
@@ -106,17 +151,28 @@ var globalAutologinHandler = {
   startsWith:function (data,str) {
         return !data.indexOf(str);
     },
+	pushtoPool:function(curdomainName){
+		 
+		 var MAX_ALLOWED_TIME_DIFFERENCE=60 *1000
+		 
+		 
+		 setTimeout(function(){
+			 
+			 var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
+				if (index > -1) 
+					globalAutologinHandler.poolingDomains.splice(index, 1);
+				
+			 
+		 },MAX_ALLOWED_TIME_DIFFERENCE)
+		
+	},
   canSubmit:function(curlocation) {
   
 
   var curdomainName=Utils.getdomainName(curlocation)
-	var curTimeinMs=Date.now()
+
 	
-	var timedifference=curTimeinMs -  globalAutologinHandler.lastloggedInTimeinMilliseconds
-	var MAX_ALLOWED_TIME_DIFFERENCE=60 *1000
-	
-  if(null != globalAutologinHandler.lastloggedInDomain  && curdomainName == globalAutologinHandler.lastloggedInDomain   &&  timedifference <  MAX_ALLOWED_TIME_DIFFERENCE){
-  globalAutologinHandler.poolingDomains.push(curdomainName)
+  if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) > -1 ){		
   return false
   }
   return true
@@ -125,8 +181,9 @@ var globalAutologinHandler = {
   updateSuccessLogin: function(curlocation) {
   var curdomainName=Utils.getdomainName(curlocation)
   var curTimeinMs=Date.now()
-  globalAutologinHandler.lastloggedInDomain=curdomainName
-  globalAutologinHandler.lastloggedInTimeinMilliseconds=curTimeinMs;
+  globalAutologinHandler.pushtoPool(curdomainName)
+  //globalAutologinHandler.lastloggedInDomain=curdomainName
+  //globalAutologinHandler.lastloggedInTimeinMilliseconds=curTimeinMs;
   
   //console.log("Updating Success Login for domain" + globalAutologinHandler.lastloggedInDomain + " at time" + globalAutologinHandler.lastloggedInTimeinMilliseconds)
   
@@ -574,7 +631,7 @@ while (i--) {
 var Utils={
 
 	getdomainName:function(str){
-		if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+		if(str.indexOf("http") != 0 )
 			return str
 		
 			var    a      = document.createElement('a');

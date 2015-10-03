@@ -151,6 +151,10 @@ if (undefined == capture) {
 								if (formelement.getAttribute("type")) {
 									elem.type = formelement.getAttribute("type").toLowerCase()
 
+										if(elem.type == "email" || elem.type == "number"  || elem.type == "tel" || elem.type == "search" )
+											elem.type="text"
+										
+										
 										if (formelement.getAttribute("type").toLowerCase() === "password" ) {
 												
 												
@@ -169,6 +173,7 @@ if (undefined == capture) {
 														
 														var parentformelem = {}
 														parentformelem.xpath = capture.getXPath(parentform)
+														
 														parentformelem.type = "form"
 														parentformelem.event = ""
 														parentformelem.value = ""
@@ -193,6 +198,12 @@ if (undefined == capture) {
 
 												}
 
+										}
+
+
+										if (formelement.form) {
+											
+														elem.parentxpath=capture.getXPath(formelement.form)
 										}
 
 								}
@@ -351,7 +362,7 @@ if (undefined == capture) {
 		},
 		 getdomainName: function (str) {
 	
-			if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+			if(str.indexOf("http") != 0 )
 					return str
 				
 					var    a      = document.createElement('a');

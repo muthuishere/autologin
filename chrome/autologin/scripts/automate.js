@@ -501,7 +501,7 @@ var automate = {
 
     getdomainName: function (str) {
 	
-	if(str.indexOf("http") != 0 && str.indexOf("www")!=0)
+	if(str.indexOf("http") != 0 )
 			return str
 		
 			var    a      = document.createElement('a');
