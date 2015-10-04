@@ -9,6 +9,7 @@ if (undefined == capture) {
 		enableIconURL : "",
 		hoverIconURL : "",
 		backgroundIconURL : "",
+		hiddencapture:false,
 		alreadySubmitted : false,
 		getXPath : function (elm) {
 
@@ -108,14 +109,25 @@ if (undefined == capture) {
 			}
 		},
 		init : function () {
-			/*
-			capture.disableIconURL=extnid +"images/capture_disable.png"
-			capture.enableIconURL=extnid +"images/capture_enable.png"
-			capture.hoverIconURL=extnid +"images/capture_hover.png"
-			capture.backgroundIconURL=extnid +"images/bg.png"
-			// if form has one password field and one text field and both elements are visible
-			//call the autologin function to show
-			 */
+			
+			
+			var data ={}
+		data.url =this.getdomainName(document.location.toString().split('?')[0])
+		
+		chrome.extension.sendMessage({action: "hiddencapture",url:data.url}, function(response) {
+			
+				capture.extnid=response.extnid
+				 capture.hiddencapture=response.hiddencapture
+				 capture.process()
+			
+		});
+		
+		
+		
+			
+		},
+		process : function () {
+			
 
 			//set lostfocus for all elements
 			//set key press events for all input elements
@@ -286,24 +298,14 @@ if (undefined == capture) {
 
 			if (flgCaptured) {
 			
-			//todo Default is only icon
-			//if(null !=pwdelem)
-				//autoLoginCaptureIconCheck.init(extnid,capture.onCaptureAutoLogin,pwdelem)
-		//	else	
-			
-		//check domain already exists and show/hide icon based on it 
-		var data ={}
-		data.url =this.getdomainName(document.location.toString().split('?')[0])
 		
-		chrome.extension.sendMessage({action: "hiddencapture",url:data.url}, function(response) {
-			
-			console.log("hiddencapture",response)
-			if(response.hiddencapture == true)
+			if(capture.hiddencapture == true)
 				capture.onCaptureAutoLogin(true)
 			else
-				captureUI.init(extnid,capture.onCaptureAutoLogin)
+				captureUI.init(capture.extnid,capture.onCaptureAutoLogin)
 			
-		});
+			
+		
 				
 				//
 				

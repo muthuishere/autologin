@@ -43,7 +43,7 @@ var globalAutologinHandler = {
 				//find user
 				//Set Pooling domains 
 			
-				
+				var curdomainName=Utils.getdomainName(obj.url)
 				globalAutologinHandler.pushtoPool(curdomainName)
 				
 		
@@ -572,7 +572,7 @@ while (i--) {
 			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
 		
-			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
+			
 						chrome.tabs.executeScript(tabId, {file:"scripts/userselect.js"}, function() {
 							
 							chrome.tabs.executeScript(tabId, {file:"scripts/automate.js"}, function() {
@@ -581,7 +581,7 @@ while (i--) {
 									});
 						
 						});
-					})
+				
 			
 			}
 	
@@ -590,11 +590,6 @@ while (i--) {
 		//console.log("got complete")
 			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
-		
-			chrome.tabs.executeScript(tabId, {code:jscode,allFrames :false}, function() {
-						//script injected
-						
-			
 						chrome.tabs.executeScript(tabId, {file:"scripts/captureUI.js"}, function() {
 					
 								
@@ -607,7 +602,6 @@ while (i--) {
 						
 						
 			
-				});
 				
 				
 			
@@ -763,7 +757,8 @@ chrome.runtime.onMessage.addListener(
 	
 			var site= storage.get("form",request.domain)
 			
-			sendResponse({"site": site});
+			
+			sendResponse({"site": site,"extnid":chrome.extension.getURL("/")});
 	
 	
 	}else if (request.action == "injectAutoLogin"){
@@ -801,8 +796,8 @@ chrome.runtime.onMessage.addListener(
 			// Check in storage
 			var site=storage.get("form",request.url)
 			var data={"hiddencapture":(site !=null)}
-			console.log("hiddencapture",data,request.url)
-			console.log(site !=null)
+			data.extnid=chrome.extension.getURL("/") 
+			
 			sendResponse(data);	
 		
 	}else if (request.action == "basicauth"){

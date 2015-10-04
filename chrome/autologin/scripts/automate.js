@@ -437,7 +437,7 @@ var automate = {
 				
 				
 				
-				userselect.init(extnid,validsites,function(site){
+				userselect.init(automate.extnid,validsites,function(site){
 						
 							automate.initiate(site)
 				})
@@ -479,7 +479,7 @@ var automate = {
         }, function (response) {
 		
 
-			
+			 automate.extnid=response.extnid
             automate.site=response.site
             automate.handlePageLoad();
         });
