@@ -153,14 +153,25 @@ var globalAutologinHandler = {
     },
 	pushtoPool:function(curdomainName){
 		 
-		 var MAX_ALLOWED_TIME_DIFFERENCE=60 *1000
+			var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
+				if (index > -1) {
+					console.log ("removing existing domain" + curdomainName)
+					globalAutologinHandler.poolingDomains.splice(index, 1);
+					}
+					
+					
+
+		 globalAutologinHandler.poolingDomains.push(curdomainName)
+		 var MAX_ALLOWED_TIME_DIFFERENCE= 15 * 60 *1000
 		 
 		 
 		 setTimeout(function(){
 			 
 			 var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
-				if (index > -1) 
+				if (index > -1) {
+				console.log ("removing domain" + curdomainName)
 					globalAutologinHandler.poolingDomains.splice(index, 1);
+					}
 				
 			 
 		 },MAX_ALLOWED_TIME_DIFFERENCE)
@@ -173,8 +184,11 @@ var globalAutologinHandler = {
 
 	
   if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) > -1 ){		
+  console.log("Dont allow" + curdomainName)
   return false
   }
+  
+  console.log("allow" + curdomainName)
   return true
   
   },
@@ -186,6 +200,20 @@ var globalAutologinHandler = {
   //globalAutologinHandler.lastloggedInTimeinMilliseconds=curTimeinMs;
   
   //console.log("Updating Success Login for domain" + globalAutologinHandler.lastloggedInDomain + " at time" + globalAutologinHandler.lastloggedInTimeinMilliseconds)
+  
+  
+  },
+   removefromPool: function(curlocation) {
+  
+  var curdomainName=Utils.getdomainName(curlocation)
+  globalAutologinHandler.pushtoPool(curdomainName)
+  
+  	var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
+				if (index > -1) {
+					console.log ("removing from pool" + curdomainName)
+					globalAutologinHandler.poolingDomains.splice(index, 1);
+					}
+					
   
   
   },
@@ -587,7 +615,7 @@ while (i--) {
 	
 		}else{
 		
-		//console.log("got complete")
+		console.log("Attempting capture")
 			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
 						chrome.tabs.executeScript(tabId, {file:"scripts/captureUI.js"}, function() {
@@ -978,6 +1006,14 @@ chrome.runtime.onMessage.addListener(
 	sendResponse({actionresponse: flgResponse});
 	
 	
+	}else if (request.action == "submiterror"){
+	
+	
+		globalAutologinHandler.removefromPool(sender.tab.url)
+		
+	sendResponse({"valid":"true"});
+	
+	
 	}else if (request.action == "addAutoLoginFormElements"){
 	
 	
@@ -987,10 +1023,6 @@ chrome.runtime.onMessage.addListener(
 	sendResponse({});
 	
 	
-	}else if (request.action == "success"){
-	
-	globalAutologinHandler.updateSuccessLogin(sender.tab.url)
-	sendResponse({actionresponse: "success"});
 	}
      
   });

@@ -46,7 +46,7 @@ var storage = {
 
 			var site = {}
 			site.authtype = 'form'
-				site.url = partner.url
+				site.url =  Utils.getdomainName(partner.url)
 				site.loginurl = partner.loginurl
 				site.enabled = (partner.enabled == "true")
 

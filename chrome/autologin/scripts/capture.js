@@ -269,15 +269,20 @@ if (undefined == capture) {
 
 								}, false)
 
-								formelement.addEventListener('click', function (e) {
-									capture.setelemevent(e.target, "click")
-									capture.sendtoBackground()
-									//check element is button
+								
+								if( formelement.tagName.toLowerCase() == "button" ||  (formelement.tagName.toLowerCase() == "input" && elem.type != "text" ) ){
+								
+									formelement.addEventListener('click', function (e) {
+										capture.setelemevent(e.target, "click")
+										capture.sendtoBackground()
+										//check element is button
 
-									//send element
-									//event click
+										//send element
+										//event click
 
-								}, false)
+									}, false)
+								
+								}
 
 				}
 
