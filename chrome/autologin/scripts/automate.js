@@ -32,7 +32,7 @@ var automate = {
         var formObject = automate.getelembyidname("form", formname)
 
         automate.formObject = null;
-        console.log(formObject)
+        //console.log(formObject)
         if (null != formObject) {
 
             automate.formObject = formObject;
@@ -144,7 +144,7 @@ var automate = {
 		
 		var keyboardEvent = document.createEvent("KeyboardEvent");
 		var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-		console.log(keycode)
+		//console.log(keycode)
 
 		keyboardEvent[initMethod](
 						   "keydown", // event type : keydown, keyup, keypress
@@ -172,7 +172,7 @@ var automate = {
 	
 	 //
 						 if(obj.enterelement){
-							 console.log("Enter key event ")
+						//	 console.log("Enter key event ")
 							 
 							 
 							 var elem =automate.getElementByXpath(obj.enterelement.xpath)
@@ -213,9 +213,9 @@ var automate = {
 	},
 	triggersubmit:function(obj){
 	
-	 console.log("triggersubmit event ")
+	 //console.log("triggersubmit event ")
 						  if(obj.formelement){
-							  console.log("Form submit  event ")
+							//  console.log("Form submit  event ")
 							 
 							 try{
 								 var elem =automate.getElementByXpath(obj.formelement.xpath)
@@ -234,7 +234,7 @@ var automate = {
 						 }
 	},
 	submiterror:function(){
-	console.log("submit error called")
+	//console.log("submit error called")
 	
 	
 										for(t=0;t<automate.inputelems.length;t++){
@@ -297,7 +297,7 @@ var automate = {
                     }, function (response) {
 
                         if (response.actionresponse == false) {
-                            console.log("Cannot submit the form")
+                          //  console.log("Cannot submit the form")
                             return
                         }
 						

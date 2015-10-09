@@ -141,9 +141,11 @@
 	.boxB,
 	.boxC
 	{
-		background: rgba(0,0,0,.1);
+		
+		
 		width: 1200px;
 		padding: 40px 40px;
+		
 	}
 
 	.boxA,
@@ -227,7 +229,9 @@
 	{
 		overflow: hidden;
 		padding: 1em 0em;
-		background: #FFF;
+		background-color:#E9EFF2;
+		border-radius: 25px;
+	
 	}
 
 	#page

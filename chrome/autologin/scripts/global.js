@@ -52,7 +52,7 @@ var globalAutologinHandler = {
 			var indices=[]
 			
 			var invalidxpaths=[];
-			console.log("elems",elems)
+			//console.log("elems",elems)
 			for (index = 0, len = elems.length; index < len; ++index) {
 				var field=elems[index]
 				if(field.type === "password" && field.value == "" && null != field.parentxpath  && "" != field.parentxpath ){
@@ -60,7 +60,7 @@ var globalAutologinHandler = {
 				}
 				
 			}
-			console.log("invalidxpaths",invalidxpaths)
+			//console.log("invalidxpaths",invalidxpaths)
 			for (i = 0, xlen = invalidxpaths.length; i < xlen; ++i) {
 				
 				var invalidxpath = invalidxpaths[i]
@@ -96,7 +96,7 @@ var globalAutologinHandler = {
 								
 										if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 || field.xpath.toLowerCase().indexOf("signin") >=0 || field.xpath.toLowerCase().indexOf("name") >=0  )){
 											username= field.value
-											console.log("username",username,field.xpath)
+											//console.log("username",username,field.xpath)
 										}
 										
 								
@@ -291,13 +291,13 @@ removeSite:function(autologinRawXML){
 
 removeSiteObject:function(autologinObject){
 	
-	console.log("=====================")
-	console.log(autologinObject)
+	//console.log("=====================")
+	//console.log(autologinObject)
    var currentURL= globalAutologinHandler.getXMLElementval(autologinObject,"loginurl")
 
    authtype=autologinObject.getElementsByTagName("site")[0].getAttribute("authtype")
 		//authtype= autologinObject.firstChild.getAttribute("authtype")
-   console.log("==== END  =================")
+   //console.log("==== END  =================")
 
 
 	
@@ -386,12 +386,12 @@ while (i--) {
 		console.log("status",globalAutologinHandler.last_request_id,"status.requestId ",status.requestId )
 		if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
 					++globalAutologinHandler.try_count;
-					console.log("increment try count")
+					//console.log("increment try count")
 						
 					
 				} else {
 					globalAutologinHandler.try_count = 0;
-					console.log("increment try count again")
+				//	console.log("increment try count again")
 				}
 
 				if (globalAutologinHandler.try_count < 3) {
@@ -400,7 +400,7 @@ while (i--) {
 					globalAutologinHandler.last_request_id = status.requestId;
 					globalAutologinHandler.last_tab_id = status.tabId;
 					
-						console.log("Sending data to page " ,globalAutologinHandler.try_count,credential )
+					//	console.log("Sending data to page " ,globalAutologinHandler.try_count,credential )
 					
 					
 					
@@ -435,7 +435,7 @@ while (i--) {
 		var status=details
 		var url = status.challenger.host;
 		console.log("auth required")
-		console.log(status)
+		//console.log(status)
 		
 		//TODO check url has authorization autologinsites in storage or user has set authorization autologinsites
 		
@@ -483,7 +483,7 @@ while (i--) {
 		
 				
 				
-				console.log("creating popup")
+				//console.log("creating popup")
 				
 				
 				globalAutologinHandler.authdetails.sitedata={}
@@ -523,22 +523,7 @@ while (i--) {
 					
 				});
 				
-				/*
-				var timer = setInterval(function(){
-				
-					if(null != globalAutologinHandler.authpopup){
-						if (globalAutologinHandler.popupopened=true && globalAutologinHandler.authpopup.closed) {
-							console.log("Child window closed");   
-							globalAutologinHandler.authcallback({cancel: true});
-							clearInterval(timer);
-						}else if(globalAutologinHandler.popupopened=false){
-						
-								clearInterval(timer);
-						}
-					
-					}
-				}, 5000);
-*/
+		
 
 				
 			
@@ -854,8 +839,8 @@ chrome.runtime.onMessage.addListener(
 				
 				if(data.useAutologin &&  globalAutologinHandler.authdetails && globalAutologinHandler.authdetails.sitedata){
 				
-					console.log("saving autologin")
-					console.log(globalAutologinHandler.authdetails)
+					//console.log("saving autologin")
+					//console.log(globalAutologinHandler.authdetails)
 						for(k=0;k<globalAutologinHandler.authdetails.sitedata.elements.length;k++){
 							
 							var elem=globalAutologinHandler.authdetails.sitedata.elements[k]

@@ -193,14 +193,14 @@ if (undefined == capture) {
 														capture.elems.push(parentformelem)
 														parentform.addEventListener('submit', function (e) {
 
-															console.log("Form submit validation")
+														//	console.log("Form submit validation")
 															//if password element has value dont do anything or capture all input and send it to background
 															if (capture.checkpasswordhasvalue() == false)
 																capture.updateElements();
 
 															if (capture.alreadySubmitted == false) {
 
-																console.log("Updating through form submit")
+																//console.log("Updating through form submit")
 
 																capture.setelemevent(e.target, "submit")
 																capture.sendtoBackground()
@@ -321,7 +321,7 @@ if (undefined == capture) {
 		},
 		onCaptureAutoLogin : function (startCapture ) {
 
-			console.log("on capture autologin" + 	capture.startCapture)
+			//console.log("on capture autologin" + 	capture.startCapture)
 		
 		capture.startCapture = startCapture
 		
@@ -356,12 +356,12 @@ if (undefined == capture) {
 						info : data
 					}, function (response) {
 
-						console.log("Updated data ")
+						//console.log("Updated data ")
 
 					});
 			} else {
 
-				console.log("Not required");
+				//console.log("Not required");
 			}
 
 			capture.alreadySubmitted = true;

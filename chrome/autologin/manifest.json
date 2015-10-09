@@ -3,10 +3,10 @@
   "manifest_version": 2,
   "name": "Auto Login",
   "short_name": "Auto Login",
-  "version": "3.1.0",
+  "version": "3.0.0",
 
 
-  "description": "Automatically login to your favourite websites without entering credentials ",
+  "description": "Automatically login to your favourite websites  without entering credentials , even for Basic Auth Now ",
   "icons": {  
    "48" : "images/autologin-48.png",
    "64" : "images/autologin-64.png",

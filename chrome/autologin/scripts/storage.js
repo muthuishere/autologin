@@ -110,7 +110,7 @@ var storage = {
 
 	updatestorage : function () {
 
-		localStorage["autologinsites"] = JSON.stringify(storage.autologinsites);
+		localStorage["autologinsites"] = Helper.encrypt(JSON.stringify(storage.autologinsites));
 
 	},
 	getCredentialAtIndex : function (index) {
@@ -409,7 +409,7 @@ var storage = {
 
 									storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser
 										storage.autologinsites[i].credentials[k].elements[curcredential.pwdIndex].value = site.changedpassword
-										console.log("Updated storage data" , site)
+										//console.log("Updated storage data" , site)
 										storage.updatestorage();
 										return;
 								}
@@ -532,7 +532,7 @@ var storage = {
 		if (localStorage["autologinsites"] == undefined || localStorage["autologinsites"] == "") {
 			localStorage["autologinsites"] = []
 		} else
-			storage.autologinsites = JSON.parse(localStorage["autologinsites"]);
+			storage.autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
 
 	}
 }
