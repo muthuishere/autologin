@@ -860,10 +860,10 @@ removeAutologin: function (event) {
             while (i--) {
 					
 					var cursite=sites[i]
-					if(urls.indexOf(cursite.url) >=0){
+					/*if(urls.indexOf(cursite.url) >=0){
 						continue
-					}
-					urls.push(cursite.url)
+					} */
+					//urls.push(cursite.url)
                 var autoLoginInfo = {};
                 autoLoginInfo.url = cursite.url;
 				autoLoginInfo.authtype=cursite.authtype
@@ -873,7 +873,7 @@ removeAutologin: function (event) {
                 autoLoginInfo.enabled = cursite.enabled;				
 					autoLoginInfo.domain=autoLoginOptions.getdomainName(cursite.url);
 					
-					var mod_domain=autoLoginInfo.domain.replace(/\./g,"_")
+					var mod_domain=autoLoginInfo.domain.replace(/\./g,"_") +"_" + autoLoginInfo.authtype
 					var selectbox="<select data-authtype='"+autoLoginInfo.authtype+"' data-url='"+autoLoginInfo.url+"' data-changed='' data-enabled='"+autoLoginInfo.enabled+"' data-domname='"+mod_domain+"' style='width:180px' class='selectbox' id='select"+mod_domain +"'>"
 					
 					autoLoginInfo.credentialcount=cursite.credentials.length;

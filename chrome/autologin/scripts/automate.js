@@ -309,7 +309,7 @@ var automate = {
 						var formelement =null
 						var clickelement =null
 						automate.inputelems=[]
-						var inputelemCount=0
+						var capturedelemcount=0
 						//event priority , if 
 						for( k=0;k< jsonObj.fields.length ;k++){
 							var field =  jsonObj.fields[k] 
@@ -327,8 +327,17 @@ var automate = {
 								enterelement=field
 							}
 							
-							if(field.type  === "text" ||   field.type  === "password" )
-								inputelemCount++
+							var curtype=field.type
+							
+							
+							if(curtype == "email" || curtype == "number"  || curtype == "tel" || curtype == "search" )
+											curtype="text"
+										
+							if(curtype  === "text" ||   curtype  === "password" ){
+								console.log(field)
+								capturedelemcount++
+								
+							}
 							
 							if( field.value  !== "" && (field.type  !== "button" && field.type  !== "submit"  ) ){
 								
@@ -346,8 +355,8 @@ var automate = {
 						// txtCount
 						
 						//iterate all input elements of form , identify text elements 
-						//inputelemCount
-						 
+						//capturedelemcount
+						 console.log("==================")
 						 if(null != formelement){
 							  var curform =automate.getElementByXpath(formelement.xpath)
 							  
@@ -361,13 +370,20 @@ var automate = {
 										if (formchild.getAttribute("type")) 
 											curtype=formchild.getAttribute("type").toLowerCase()
 										
-										if(curtype == "text" || curtype == "password"  )
+										
+										if(curtype == "email" || curtype == "number"  || curtype == "tel" || curtype == "search" )
+											curtype="text"
+										
+										
+										if(curtype == "text" || curtype == "password"  ){
+											console.log(formchild)
 											actInputCount++
+										}
 								}
 								
-								if(actInputCount != inputelemCount ){
+								if(capturedelemcount < actInputCount   ){
 										
-										console.log("Invalid Form Identified , Cannot Submit")
+										console.log(  "Invalid Form Identified , Cannot Submit actInputCount " + actInputCount + "capturedelemcount " + capturedelemcount )
 										
 										automate.submiterror()
 										return
