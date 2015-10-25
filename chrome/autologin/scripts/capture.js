@@ -42,15 +42,7 @@ if (undefined == capture) {
 			return segs.length ? '/' + segs.join('/') : null;
 
 		},
-		getXPathold : function (element) {
-			var xpath = '';
-			for (; element && element.nodeType == 1; element = element.parentNode) {
-				var id = $(element.parentNode).children(element.tagName).index(element) + 1;
-				id > 1 ? (id = '[' + id + ']') : (id = '');
-				xpath = '/' + element.tagName.toLowerCase() + id + xpath;
-			}
-			return xpath;
-		},
+	
 		getElementByXpath : function (path) {
 
 			var evaluator = new XPathEvaluator();
@@ -87,6 +79,7 @@ if (undefined == capture) {
 		},
 		updateElements : function () {
 
+		console.log("updateElements" ,capture.elems)
 			for (index = 0, len = capture.elems.length; index < len; ++index) {
 
 				var elem = capture.getElementByXpath(capture.elems[index].xpath)
@@ -126,6 +119,7 @@ if (undefined == capture) {
 		
 			
 		},
+		
 		process : function () {
 			
 
@@ -141,9 +135,16 @@ if (undefined == capture) {
 
 			var flgCaptured = false
 			var pwdelem=null
+			var pwdelems=[]
 			var parentform =null
+			var formcount=0
+			
 			var forms = document.querySelectorAll("input,select,textarea button");
+			var canCapture=true
 
+		
+				
+			
 			for (var i = 0, formelement; formelement = forms[i]; i++) {
 
 				if (capture.isVisible(formelement) && formelement.getAttribute("type") !== "hidden") {
@@ -151,6 +152,7 @@ if (undefined == capture) {
 					var elem = {}
 
 					elem.xpath = capture.getXPath(formelement)
+					elem.parentxpath=""
 						val = ""
 						if (formelement.value && undefined != formelement.value)
 							val = formelement.value
@@ -158,6 +160,7 @@ if (undefined == capture) {
 								elem.type = "text"
 								elem.value = val
 								elem.event = ""
+								
 								
 
 								if (formelement.getAttribute("type")) {
@@ -172,12 +175,14 @@ if (undefined == capture) {
 												
 													
 													flgCaptured = true
+													pwdelems.push(formelement)
 												
 											
 
 												if (formelement.form) {
 													 parentform = formelement.form
-											
+													 formcount++
+													
 														
 														if(document.querySelectorAll("form").length == 1  )
 																pwdelem=formelement
@@ -193,9 +198,9 @@ if (undefined == capture) {
 														capture.elems.push(parentformelem)
 														parentform.addEventListener('submit', function (e) {
 
-														//	console.log("Form submit validation")
+														console.log("Form submit validation")
 															//if password element has value dont do anything or capture all input and send it to background
-															if (capture.checkpasswordhasvalue() == false)
+															//if (capture.checkpasswordhasvalue() == false)
 																capture.updateElements();
 
 															if (capture.alreadySubmitted == false) {
@@ -212,10 +217,12 @@ if (undefined == capture) {
 
 										}
 
-
+										
 										if (formelement.form) {
 											
 														elem.parentxpath=capture.getXPath(formelement.form)
+														if(null == elem.parentxpath)
+															elem.parentxpath=""
 										}
 
 								}
@@ -287,7 +294,7 @@ if (undefined == capture) {
 				}
 
 			}
-			
+			/*
 			if(null !=pwdelem && null != parentform ){
 			
 				var inpelems=parentform.querySelectorAll("input[type^=text]")
@@ -299,15 +306,27 @@ if (undefined == capture) {
 						}
 					
 				}
-			}
+			} */
 
-			if (flgCaptured) {
+			if(formcount == 1 && null != parentform && flgCaptured){
+				
+				if(parentform.innerText.toLowerCase().indexOf("picture displayed") >=0  || parentform.innerText.toLowerCase().indexOf("characters displayed") >=0  || parentform.innerText.toLowerCase().indexOf("captcha") >=0  || parentform.innerText.toLowerCase().indexOf("otp") >=0 ){
+														console.log("Has OTP /Captcha")
+													
+														return;
+														
+														
+													}
+				
+			}
+			
+			if (flgCaptured ) {
 			
 		
 			if(capture.hiddencapture == true)
 				capture.onCaptureAutoLogin(true)
 			else
-				captureUI.init(capture.extnid,capture.onCaptureAutoLogin)
+				captureUI.init(capture.extnid,capture.onCaptureAutoLogin,pwdelems)
 			
 			
 		
@@ -350,7 +369,7 @@ if (undefined == capture) {
 					data.enabled="true"					
 					data.authtype='form'
 				
-
+						console.log("Sending to background")
 					chrome.extension.sendMessage({
 						action : "addAutoLoginFormElements",
 						info : data
@@ -364,7 +383,7 @@ if (undefined == capture) {
 				//console.log("Not required");
 			}
 
-			capture.alreadySubmitted = true;
+			//capture.alreadySubmitted = true;
 			return true;
 		},
 		 getdomainName: function (str) {
@@ -499,3 +518,5 @@ if (undefined == capture) {
 	capture.init()
 
 }
+
+

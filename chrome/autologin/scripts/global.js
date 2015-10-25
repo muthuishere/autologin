@@ -52,14 +52,28 @@ var globalAutologinHandler = {
 			var indices=[]
 			
 			var invalidxpaths=[];
+			var hasParentXpath=false
+			var hasValidElems=false
+			
 			//console.log("elems",elems)
 			for (index = 0, len = elems.length; index < len; ++index) {
 				var field=elems[index]
-				if(field.type === "password" && field.value == "" && null != field.parentxpath  && "" != field.parentxpath ){
+				if(field.type === "password" && field.value == "" &&  "" != field.parentxpath ){
 						invalidxpaths.push(field.parentxpath)
 				}
 				
+				if(field.type === "password" &&  field.value != "" ){
+					hasValidElems=true
+					if("" != field.parentxpath )
+						hasParentXpath=true
+				}
 			}
+			
+			if(!hasValidElems){
+				console.log("Invalid Elements , Cannot add")
+				return
+			}
+				
 			//console.log("invalidxpaths",invalidxpaths)
 			for (i = 0, xlen = invalidxpaths.length; i < xlen; ++i) {
 				
@@ -70,7 +84,9 @@ var globalAutologinHandler = {
 					
 					if(field.parentxpath === invalidxpath || field.xpath === invalidxpath   ){
 							indices.push(index)
-					}
+					}else if(hasParentXpath && field.type !== "form" && "" == field.parentxpath)
+							indices.push(index)
+					
 					
 				}
 			}
@@ -562,6 +578,23 @@ while (i--) {
 	
 	
 	},
+	injectCapture:function(tabId){
+		
+			console.log("Attempting capture")
+			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
+		
+						chrome.tabs.executeScript(tabId, {file:"scripts/captureUI.js"}, function() {
+					
+								
+								chrome.tabs.executeScript(tabId, {file:"scripts/capture.js"}, function() {
+									//script injected
+								//	console.log("got autoLoginCapture" +tabId)
+								});
+						
+						}); 
+		
+		
+	},
 	processScripts:function(tab){
 		
 		var tabId=tab.id
@@ -600,20 +633,9 @@ while (i--) {
 	
 		}else{
 		
-		console.log("Attempting capture")
-			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
-		
-						chrome.tabs.executeScript(tabId, {file:"scripts/captureUI.js"}, function() {
-					
-								
-								chrome.tabs.executeScript(tabId, {file:"scripts/capture.js"}, function() {
-									//script injected
-								//	console.log("got autoLoginCapture" +tabId)
-								});
+
 						
-						}); 
-						
-						
+					globalAutologinHandler.injectCapture(tabId)	
 			
 				
 				
@@ -982,14 +1004,20 @@ chrome.runtime.onMessage.addListener(
 	
 	}else if (request.action == "cansubmit"){
 	
-	
-	var flgResponse=globalAutologinHandler.canSubmit(sender.tab.url)
-	
-	if(flgResponse == true)
-		globalAutologinHandler.updateSuccessLogin(sender.tab.url)
 		
-	sendResponse({actionresponse: flgResponse});
-	
+		var flgResponse=globalAutologinHandler.canSubmit(sender.tab.url)
+		
+		if(flgResponse == true){
+			globalAutologinHandler.updateSuccessLogin(sender.tab.url)
+			
+		}else{
+			
+			globalAutologinHandler.injectCapture(sender.tab.id)	
+			
+		}
+			
+		sendResponse({actionresponse: flgResponse});
+		
 	
 	}else if (request.action == "submiterror"){
 	

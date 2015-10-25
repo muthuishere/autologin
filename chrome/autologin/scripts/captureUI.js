@@ -11,7 +11,8 @@ var captureUI={
 	callback:null,	
 	startCapture:false,
 	dragged:0,
-	init:function(appextnid,callback,isSelected){
+	pwdelems:[],
+	init:function(appextnid,callback,pwdelems,isSelected){
 		
 		
 		captureUI.callback=callback
@@ -20,6 +21,7 @@ var captureUI={
 	captureUI.enableIconURL=appextnid +"images/capture_enable.png"
 	captureUI.hoverIconURL=appextnid +"images/capture_hover.png"
 	captureUI.backgroundIconURL=appextnid +"images/bg.png"
+	captureUI.pwdelems=pwdelems
 	// if form has one password field and one text field and both elements are visible
 	//call the autologin function to show
 
@@ -108,12 +110,48 @@ var captureUI={
 					document.onmousemove = _move_elem;
 					document.onmouseup = _destroy;
 
+		
+			var handler = captureUI.onVisibilityChange(captureUI.pwdelems, callback);
+			document.addEventListener('scroll', handler, false); 
+			handler()
 			
+			//document.addEventListener('resize', handler, false); 
 			
 
 			
 
 	},
+	onVisibilityChange:function (elems, callback) {
+		return function () {
+			
+			for (l=0;l<elems.length;l++){
+				
+				if(captureUI.isElementInViewport(elems[l])){
+					console.log("Is in viewport")
+					document.querySelector("#draggable-element").style.visibility="visible"
+					
+				}else{
+					console.log("Is not in viewport")
+					document.querySelector("#draggable-element").style.visibility="hidden"
+				}
+					
+			}
+			
+		}
+	},
+	
+	isElementInViewport:function(el) {
+
+
+		var rect = el.getBoundingClientRect();
+
+		return (
+			rect.top >= 0 &&
+			rect.left >= 0 &&
+			rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+			rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+		);
+	},	
 	onCaptureAutoLogin:function(){
 
 	if(captureUI.dragged <2 ){

@@ -29,50 +29,52 @@ var userselect={
 				// event
 			
 			
-			var css='\n div#autoLoginselectUser.enable{ \n color:black; \n background:url("'+ userselect.enableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n   opacity:0.9; \n }\n  div#autoLoginselectUser.enable:hover{ \n   opacity:1.0; \n}';
+			// var css='\n div#autoLoginselectUser.enable{ \n color:black; \n background:url("'+ userselect.enableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n   opacity:0.9; \n }\n  div#autoLoginselectUser.enable:hover{ \n   opacity:1.0; \n}';
 		
-					style=document.createElement('style');
-					if (style.styleSheet)
-						style.styleSheet.cssText=css;
-					else 
-						style.appendChild(document.createTextNode(css));
-					document.getElementsByTagName('head')[0].appendChild(style);
+					// style=document.createElement('style');
+					// if (style.styleSheet)
+						// style.styleSheet.cssText=css;
+					// else 
+						// style.appendChild(document.createTextNode(css));
+					// document.getElementsByTagName('head')[0].appendChild(style);
 					
 					
 					var divelem=document.createElement("div");
 								
 								
-								var selectstr="<select id='autologinuser' >"
+								var selectstr="<select id='selectautologinuser' >"
+								console.log(sites)
 								for(k=0;k<sites.length;k++){
 								
-									selectstr += "<option value='"+k+"' >"+sites[k].user +"</option>"
+									selectstr += "<option  value='"+k+"' >"+sites[k].user +"</option>"
 								}
 								selectstr +=  "</select>"
 								
-						divelem.innerHTML='<div style="position:fixed;top:0px;right:0;z-index:1000"  draggable="true"><div id="autoLoginselectUser" style="padding-top:123px;height:55px;width:128px;font-face:Verdana;font-weight:bolder;font-size:15px;text-align:center" class="disable" title="Select user to login" > '+selectstr+' <br/><input type="submit" value="go" id="autologinselectuserbtn"></div></div>'
-						
+								
+								
+									var myString = '<div style="position:fixed;z-index:1000;border:2px solid;border-radius:25px;border-color:#000;background-color: #A2BCD0;right:0px;top:50px;height:155px;width:340px;font-family: Calibri, Verdana, sans-serif">   <table id="" style="width:100%" > <tbody> <tr><td rowspan="4"><img src="'+ chrome.extension.getURL("/images/autologin-128.png")   +'" title="AutoLogin"/></td></tr> <tr> <th style="font-size:12px;color:black;font-face:Verdana"> Select User:</th></tr><tr> <th> ' + selectstr +' </th> </tr><tr>   <th colspan="2">  <input type="button" value="go" id="autologinselectuserbtn">  </th>   </tr> </tbody> </table> </div>'
+									
+
+									/*
+						divelem.innerHTML='<div style="position:fixed;top:0px;right:0;z-index:1000"  draggable="true"><div id="autoLoginselectUser" class="enable" style="padding-top:123px;height:55px;width:128px;font-face:Verdana;font-weight:bolder;font-size:15px;text-align:center" class="disable" title="Select user to login" > '+selectstr+' <br/></div></div>'
+						*/
+						divelem.innerHTML=myString
 						//padding-top:128px;width:133px;
 						
 						
 						document.body.appendChild(divelem);
-						document.querySelector("div#autologinselectuserbtn").addEventListener('click',userselect.onselectuser, false);
+						document.querySelector("input#autologinselectuserbtn").addEventListener('click',userselect.onselectuser, false);
 		
 			
 			
-		 document.querySelector("input#txtaskpassword").addEventListener('keypress', function(event){
-		 if (event.which == 13 || event.keyCode == 13) {
-            userselect.onselectuser();
-            return false;
-        }
-        return true;
-		 }, false);
+	
 		 
 
 			
 	},
 	onselectuser:function(event){
 	
-			var val=document.querySelector("div#autologinuser").value
+			var val=document.querySelector("select#selectautologinuser").value
 								userselect.callback(userselect.sites[val])
 	
 	

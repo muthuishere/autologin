@@ -297,13 +297,13 @@ var automate = {
                     }, function (response) {
 
                         if (response.actionresponse == false) {
-                          //  console.log("Cannot submit the form")
+                          console.log("Cannot submit the form")
                             return
                         }
 						
 						//TODO Use JSONObj
 						
-                       // console.log("Submitting form")
+                        console.log("Submitting form")
 						
 						var enterelement=null
 						var formelement =null
@@ -468,7 +468,7 @@ var automate = {
 			 
 					//show autlogin info with list of users
 					
-					var validsites=[]
+					var validcredentials=[]
 					//reiterate sites ensure all xpaths are available
 				automate.logmessage("Multiple login")
 				
@@ -498,23 +498,37 @@ var automate = {
 						
 					  }
 						  if(canadd){
-							  var currentsite=automate.site
-							  currentsite.user=curcredential.user
-							  currentsite.elements=curcredential.elements
+							 
+							 console.log("Adding" +curcredential.user )
+							 
 							  
 							
-							validsites.push(currentsite)
+							validcredentials.push(curcredential)
 							}
 				  
 					
 				}
 				
 				
-				
-				userselect.init(automate.extnid,validsites,function(site){
+				if(validcredentials.length == 1){
+					var currentsite=automate.site
 						
-							automate.initiate(site)
+						currentsite.elements=validcredentials[0].elements
+						automate.initiate(currentsite)
+						return
+					
+				}
+				if(validcredentials.length > 1){
+				userselect.init(automate.extnid,validcredentials,function(sitecredential){
+						
+						var currentsite=automate.site
+						
+						currentsite.elements=sitecredential.elements
+						automate.initiate(currentsite)
+						
 				})
+				
+				}
 				
 				
 			 }
