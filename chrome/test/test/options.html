@@ -81,7 +81,7 @@
 			
 			<div style="margin:0 auto">
 			<div style="float:right;margin-right:50px"> 
-			<button id="btnUpdate"  href="#" class="buttondisable">Update</button>
+			<a id="btnUpdate"  href="#" class="buttondisable">Update </a>
 			</div>
 			
 			</div>
@@ -93,12 +93,8 @@
 			<tbody>
 			<tr>
 			<th>Enter Password to view options:</th>
-			<th> <input type="password" id="txtaskpassword" class="inptxt" /> </th>			
-			<th>
-				
-				<button id="btnaskpassword" class="button" >Show</button> 
-						
-				</th>			
+			<th> <input type="password" id="txtaskpassword" /> </th>			
+			<th> <input type="button" id="btnaskpassword" value="Show" /> </th>			
 			</tr>
 			<tr>
 			<td colspan="3" align="right">
@@ -137,7 +133,6 @@
 			<td style="text-align:left"> <input type="checkbox" id="chkpromptBasicAuth" value="1">Use Autologin for Basic Auth </td>			
 			
 			</tr>
-			<!--
 			<tr style="visibility:hidden">
 		
 			<td style="text-align:left"> <input type="checkbox" id="chkdefaultAutoLogin" value="1">Use Autologin by default </td>			
@@ -148,16 +143,9 @@
 			<td style="text-align:left"> <input type="checkbox" id="chkpromptMultiplecreds" value="1">Allow Multiple Credentials per site </td>			
 			
 			</tr>
-			-->
 			<tr>
 			
-			<td style="text-align:left"> 
-			
-			<button id="btnshowchangepwd" href="#" class="button">Change Password </button>
-			
-			<!-- <input type="button" id="btnshowchangepwd" value="Change Password"> -->
-
-			</td>			
+			<td style="text-align:left"> <input type="button" id="btnshowchangepwd" value="Change Password"> </td>			
 			
 			</tr>
 			
@@ -185,34 +173,22 @@
 			
 			<tr id="rowoldpassword" >
 			<th>Enter Old Password :</th>
-			<th> <input type="password" id="txtoldpassword" class="inptxt" /> </th>			
+			<th> <input type="password" id="txtoldpassword" /> </th>			
 			
 			</tr>
 			<tr>
 			<th>Enter New Password :</th>
-			<th> <input type="password" id="txtnewpassword" class="inptxt" /> </th>			
+			<th> <input type="password" id="txtnewpassword" /> </th>			
 			
 			</tr>
 			<tr>
 			<th>Confirm New Password :</th>
-			<th> <input type="password" id="txtrepeatnewpassword" class="inptxt" /> </th>			
+			<th> <input type="password" id="txtrepeatnewpassword" /> </th>			
 			
 			</tr>
-			<tr rowspan="3">
-  <th colspan="2">
-  &nbsp;
-</th></tr>
-
 			<tr>
-			<th align="left">
-				<button id="btncancelchangepassword" class="buttonred" >Cancel</button> 
-			
-			 </th>
-			<th align="right">
-			
-				<button id="btnchangepassword" class="button" >Change</button> 
-			
-			</th>			
+			<th><input type="button" id="btncancelchangepassword" value="Cancel" /> </th>
+			<th> <input type="button" id="btnchangepassword" value="Change" /></th>			
 			
 			</tr>
 			<tr>
@@ -256,7 +232,7 @@
 
 
 
-							<span style="  color: #C32B8A;font-size:10px;font-weight:bold        " > * 21% of your contribution will go to support Tamil literature , Fight hunger & Helping orphans.</span>
+							<span style="  color: #C32B8A;font-size:10px;    " > * 21% of your contribution will go to support Tamil literature , Fight hunger & Helping orphans.</span>
 							
 							<br/><br/><br/>
 

@@ -297,13 +297,13 @@ var automate = {
                     }, function (response) {
 
                         if (response.actionresponse == false) {
-                          console.log("Cannot submit the form")
+                         // console.log("Cannot submit the form")
                             return
                         }
 						
 						//TODO Use JSONObj
 						
-                        console.log("Submitting form")
+                        //console.log("Submitting form")
 						
 						var enterelement=null
 						var formelement =null
@@ -334,7 +334,7 @@ var automate = {
 											curtype="text"
 										
 							if(curtype  === "text" ||   curtype  === "password" ){
-								console.log(field)
+								//console.log(field)
 								capturedelemcount++
 								
 							}
@@ -356,7 +356,7 @@ var automate = {
 						
 						//iterate all input elements of form , identify text elements 
 						//capturedelemcount
-						 console.log("==================")
+						// console.log("==================")
 						 if(null != formelement){
 							  var curform =automate.getElementByXpath(formelement.xpath)
 							  
@@ -376,14 +376,14 @@ var automate = {
 										
 										
 										if(curtype == "text" || curtype == "password"  ){
-											console.log(formchild)
+											//console.log(formchild)
 											actInputCount++
 										}
 								}
 								
 								if(capturedelemcount < actInputCount   ){
 										
-										console.log(  "Invalid Form Identified , Cannot Submit actInputCount " + actInputCount + "capturedelemcount " + capturedelemcount )
+										//console.log(  "Invalid Form Identified , Cannot Submit actInputCount " + actInputCount + "capturedelemcount " + capturedelemcount )
 										
 										automate.submiterror()
 										return
@@ -499,7 +499,7 @@ var automate = {
 					  }
 						  if(canadd){
 							 
-							 console.log("Adding" +curcredential.user )
+							// console.log("Adding" +curcredential.user )
 							 
 							  
 							

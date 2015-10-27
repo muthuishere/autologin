@@ -31,11 +31,6 @@ var globalAutologinHandler = {
 
 	
 	
-	printraw:function(){
-		
-		var rawxml=Helper.decrypt(localStorage["autologinxml"])
-		console.log(rawxml)
-	},	
 	addAutoLoginElements:function(obj,authtype){
 	
 
@@ -200,11 +195,11 @@ var globalAutologinHandler = {
 
 	
   if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) > -1 ){		
-  //console.log("Dont allow" + curdomainName)
+  console.log("Dont allow" + curdomainName)
   return false
   }
   
- // console.log("allow" + curdomainName)
+  console.log("allow" + curdomainName)
   return true
   
   },
@@ -226,7 +221,7 @@ var globalAutologinHandler = {
   
   	var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
 				if (index > -1) {
-					//console.log ("removing from pool" + curdomainName)
+					console.log ("removing from pool" + curdomainName)
 					globalAutologinHandler.poolingDomains.splice(index, 1);
 					}
 					
@@ -366,24 +361,6 @@ while (i--) {
 	},
 	
 	/*
-	  
-	  set autologinXMLList
-	  genrate  jsonlist
-	  
-	*/
-	loadXMLDoc:function(dname) { 
-
-
-	  xhttp=new XMLHttpRequest(); 
-
-	xhttp.open("GET",dname,false); 
-	xhttp.send(); 
-	
-	
-	localStorage["autologinxml"] =Helper.encrypt(xhttp.responseText);
-	//globalAutologinHandler.loadDoc();
-	}, 
-	/*
 	  Load details from storage  to xml
 	*/
 	
@@ -399,7 +376,7 @@ while (i--) {
 		
 	//if(globalAutologinHandler.popupopened)
 		//globalAutologinHandler.popupopened=false
-		//console.log("status",globalAutologinHandler.last_request_id,"status.requestId ",status.requestId )
+		console.log("status",globalAutologinHandler.last_request_id,"status.requestId ",status.requestId )
 		if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
 					++globalAutologinHandler.try_count;
 					//console.log("increment try count")
@@ -472,7 +449,7 @@ while (i--) {
 					globalAutologinHandler.authdetails=null
 					
 					//TODO show popup to retrieve autologin credential
-					//console.log("authentication sent from storage ",credential,status)
+					console.log("authentication sent from storage ",credential,status)
 					globalAutologinHandler.sendcredentials(status,credential,callback)
 					
 					return;
@@ -492,7 +469,7 @@ while (i--) {
 					
 		globalAutologinHandler.popupopened=true
 		
-		//console.log("setting status ")
+		console.log("setting status ")
 		globalAutologinHandler.authcallback=callback;
 		globalAutologinHandler.authdetails=status
 		
@@ -559,17 +536,17 @@ while (i--) {
 	
 	//validate and set logged in
 	storage.init()
-	var credential=localStorage["credential"]
-	var promptrequired=localStorage["promptrequired"]
+	var credential=storage.getcredential();
+	var promptrequired=storage.getpromptrequired();
 	
-	if(undefined == credential || null == credential || undefined == promptrequired || null == promptrequired ||  promptrequired === 'false')
+	if(undefined == credential || null == credential || promptrequired == false)
 		globalAutologinHandler.loggedIn=true
 	else
 			globalAutologinHandler.loggedIn=false
 			
 		
 
-			var usebasicauth= (localStorage["usebasicauth"] === 'true')
+			var usebasicauth= storage.getbasicauth();
 		globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 		
 			//console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
@@ -610,7 +587,7 @@ while (i--) {
 			
 				chrome.tabs.executeScript(tabId, {file:"scripts/validate.js"}, function(details) {
 						//script injected
-						//console.log("Inserted validate module")
+						console.log("Inserted validate module")
 					});
 				
 			}else{
@@ -752,7 +729,7 @@ var Utils={
 //globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
 
 globalAutologinHandler.initExtension()
-globalAutologinHandler.printraw()
+
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
  
@@ -840,7 +817,7 @@ chrome.runtime.onMessage.addListener(
 	
 			globalAutologinHandler.popupopened=false
 			var data=request.info;
-			//console.log("Basic auth details received",data)
+			console.log("Basic auth details received",data)
 			if(data.cancel){
 				
 				//remove iframe on current tab
@@ -877,8 +854,8 @@ chrome.runtime.onMessage.addListener(
 							
 						}
 						
-						//console.log("Adding data")
-						//console.log(globalAutologinHandler.authdetails.sitedata)
+						console.log("Adding data")
+						console.log(globalAutologinHandler.authdetails.sitedata)
 					globalAutologinHandler.addAutoLoginElements(globalAutologinHandler.authdetails.sitedata,"basic")
 				}
 				
@@ -900,7 +877,8 @@ chrome.runtime.onMessage.addListener(
 	
 			var userCredential=request.info;
 			
-			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			
+			var savedCredential= storage.getcredential();
 			
 	
 			if(userCredential == savedCredential){
@@ -920,7 +898,9 @@ chrome.runtime.onMessage.addListener(
 	
 			var credential=request.info;
 			
-			localStorage["credential"]= Helper.encrypt(credential);
+			
+			
+			storage.setcredential(credential)
 			
 				sendResponse({"valid":true });
 			
@@ -932,10 +912,11 @@ chrome.runtime.onMessage.addListener(
 			
 			var newCredential=request.newCredential;
 			
-			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			var savedCredential=storage.getcredential()
 			
 			if(credential == savedCredential){
-				localStorage["credential"]= Helper.encrypt(newCredential);
+				storage.setcredential(newCredential)
+				
 				sendResponse({"valid":"true" });
 				}
 			else
@@ -946,18 +927,18 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "getPromptAtStartup"){
 	
 			
-			promptrequired=localStorage["promptrequired"]
+			promptrequired=storage.getpromptrequired() 
 			
 			
-				sendResponse({"promptrequired":(promptrequired === 'true') });
+				sendResponse({"promptrequired":promptrequired  });
 			
 	
 	
 	}else if (request.action == "updatePromptAtStartup"){
 	
 			
+			storage.setpromptrequired(request.promptrequired) 
 			
-			localStorage["promptrequired"]= request.promptrequired;
 			
 			
 			
@@ -977,8 +958,10 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "updateBasicAuthHandlers"){
 	
 		
-			localStorage["usebasicauth"]= request.usebasicAuth;
-				var usebasicauth= localStorage["usebasicauth"]
+				storage.setbasicauth(request.usebasicAuth) 
+		
+			
+				var usebasicauth= request.usebasicAuth
 			globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 				sendResponse({"valid":true });
 			
@@ -988,10 +971,10 @@ chrome.runtime.onMessage.addListener(
 	
 			
 			
-			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			var savedCredential= storage.getcredential();
 			
 			var result=(savedCredential != "")
-			//console.log("result",result)
+			
 				sendResponse({"valid":result});
 			
 	
@@ -1044,15 +1027,17 @@ chrome.runtime.onMessage.addListener(
 
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
-        console.log("This is a first install!");
+        //console.log("This is a first install!");
 		
-		localStorage["usebasicauth"] =true
-		localStorage["usedefaultautologin"] =true
+		//Initialize will take care
+	
+		//storage.setbasicauth(true)
 		
     }else if(details.reason == "update"){
 			console.log("migrating")
 			
         var thisVersion = chrome.runtime.getManifest().version;
-		storage.migrateautologinsites()      
+		storage.migrateautologinsites()  
+				
     }
 });

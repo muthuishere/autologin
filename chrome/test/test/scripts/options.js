@@ -102,7 +102,7 @@ var autoLoginOptions = {
 	
 		document.querySelector("#sitechangedstatus").innerHTML="";
 	
-	document.querySelector("#btnUpdate").setAttribute("class","button") ;
+	document.querySelector("a#btnUpdate").setAttribute("class","button") ;
 	
 	var domname=event.target.getAttribute("data-domname")
 
@@ -303,7 +303,7 @@ var autoLoginOptions = {
 		 }, false);
 		 
 		 
-	var buttonaskPassword = document.querySelector('#btnaskpassword');
+	var buttonaskPassword = document.querySelector('input#btnaskpassword');
 		 buttonaskPassword.addEventListener('click', autoLoginOptions.validateViewOptions, false);
 		  document.querySelector("input#txtaskpassword").focus();
 		 
@@ -313,7 +313,7 @@ var autoLoginOptions = {
 	
 				chrome.extension.sendMessage({action: "hasCredential"}, function(response) {
 				
-				//console.log("option hasCredential ",response)
+				console.log("option hasCredential ",response)
 				if(response.valid){
 				
 					//Show Password panel
@@ -341,41 +341,17 @@ var autoLoginOptions = {
 	},
 	 loadChangePassword: function () {
 	
-		
-			
-			
+			document.querySelector('#btnchangepassword').addEventListener('click', autoLoginOptions.onBtnChangePasswordClicked, false);
+			document.querySelector('#btncancelchangepassword').addEventListener('click', autoLoginOptions.onBtnCancelChangePasswordClicked, false);
 			document.querySelector("#tblchangepwd").style.display="";
 			document.querySelector("#tblsettings").style.display="none";
 			 
-			 	document.querySelector('#btnchangepassword').addEventListener('click', autoLoginOptions.onBtnChangePasswordClicked, false);
-			document.querySelector('#btncancelchangepassword').addEventListener('click', autoLoginOptions.onBtnCancelChangePasswordClicked, false);
-			
-			var inputtxtElements = document.querySelectorAll('#tblchangepwd .inptxt');
-        for (var i = 0, inputtxtElement; inputtxtElement = inputtxtElements[i]; i++) {
-            //work with element
-			
-            inputtxtElement.addEventListener('keypress',  function(event){
-		 
-		 
-				  if (event.which == 13 || event.keyCode == 13) {
-					autoLoginOptions.onBtnChangePasswordClicked(event)
-					return false;
-				}
-				return true;
-		 }, false);
-			 
-		
-        }
-		
-		 
 			 if(autoLoginOptions.hasPassword == false ){
 					document.querySelector("#rowoldpassword").style.display="none";
-					document.querySelector("#txtnewpassword").focus(); 
-					
+		
 				}else{
 				
 				document.querySelector("#rowoldpassword").style.display="";
-				document.querySelector("#txtoldpassword").focus(); 
 				}
 	
 	 },
@@ -407,7 +383,7 @@ var autoLoginOptions = {
 				
 						});
 						
-			var usebasicauth= (localStorage["usebasicauth"] === 'true')
+			var usebasicauth= storage.getbasicauth();
 			
 			if(usebasicauth)
 				document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
@@ -415,15 +391,6 @@ var autoLoginOptions = {
 				document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
 							
 			
-			/*
-			var usedefaultautologin= (localStorage["usedefaultautologin"] === 'true')
-			
-			if(usedefaultautologin)
-				document.querySelector('#chkdefaultAutoLogin').setAttribute("CHECKED","CHECKED")
-			else
-				document.querySelector('#chkdefaultAutoLogin').removeAttribute("CHECKED")
-				
-			*/
 			
 							
 			document.querySelector('#chkpromptBasicAuth').addEventListener('click', function(event){
@@ -438,40 +405,7 @@ var autoLoginOptions = {
 					
 			}, false);
 			
-			/*
-			var usemultiplecreds= (localStorage["usemultiplecreds"] === 'true')
 			
-			if(usemultiplecreds)
-				document.querySelector('#chkpromptMultiplecreds').setAttribute("CHECKED","CHECKED")
-			else
-				document.querySelector('#chkpromptMultiplecreds').removeAttribute("CHECKED")
-				
-				
-			document.querySelector('#chkpromptMultiplecreds').addEventListener('click', function(event){
-					
-					if(!event.target.checked){
-						
-						if(confirm("All existing Multiple credentials will be removed , Do you want to continue ?")){
-						
-						
-						localStorage["usemultiplecreds"] =event.target.checked
-						}
-					}
-					else
-						localStorage["usemultiplecreds"] =event.target.checked
-					
-					
-			}, false);
-			
-			document.querySelector('#chkdefaultAutoLogin').addEventListener('click', function(event){
-					
-						
-						localStorage["usedefaultautologin"] =event.target.checked
-						
-					
-					
-			}, false);
-				*/
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
 					
@@ -534,7 +468,7 @@ var autoLoginOptions = {
 			document.querySelector('#btnUpdate').style.display="";
         var sites = storage.autologinsites
 		
-		document.querySelector("#btnUpdate").setAttribute("class", "buttondisable");
+		document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
        var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(sites);
         //tblOptions
 		//Add
@@ -585,16 +519,13 @@ var autoLoginOptions = {
 			//autoLoginOptions.infoChanged
 			autoLoginOptions.onSelectboxchanged(evt.target.getAttribute("data-domname"))
 			
-				//console.log("changed event " + evt.target.getAttribute("data-domname"))
+				console.log("changed event " + evt.target.getAttribute("data-domname"))
 			}, false);
 			 
 		
         }
 		
 		
-		 
-		 
-		 
 		 document.querySelector("input.inp").addEventListener('keypress', function(event){
 		
 			 
@@ -603,7 +534,7 @@ var autoLoginOptions = {
 			if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1){
 					document.querySelector("#select"+domname).className += ' inputChanged'
 								
-				document.querySelector("#btnUpdate").setAttribute("class","button") ;
+				document.querySelector("a#btnUpdate").setAttribute("class","button") ;
 				
 				}
 	
@@ -617,7 +548,7 @@ var autoLoginOptions = {
 		 }, false);
 		
 		
-		 var buttonUpdate = document.querySelector('#btnUpdate');
+		 var buttonUpdate = document.querySelector('a#btnUpdate');
 		 buttonUpdate.addEventListener('click', autoLoginOptions.updateAutologin, false);
 		
 		}else{
@@ -768,7 +699,7 @@ removeAutologin: function (event) {
 	},
 	updateAutologin:function(event){
 	
-		if(document.querySelector("#btnUpdate").getAttribute("class") == "buttondisable" )
+		if(document.querySelector("a#btnUpdate").getAttribute("class") == "buttondisable" )
 			return;
 	
 				
@@ -776,7 +707,7 @@ removeAutologin: function (event) {
 			for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
 
 				if (inputElement.getAttribute("data-changed") == "true") {
-				//	console.log("Data changed")
+					console.log("Data changed")
 					var site = {}
 
 						site.authtype = inputElement.getAttribute("data-authtype")
@@ -844,7 +775,7 @@ removeAutologin: function (event) {
 			
 				
 						
-				//document.querySelector("#btnUpdate").setAttribute("class", "buttondisable");
+				//document.querySelector("a#btnUpdate").setAttribute("class", "buttondisable");
 			
 			
 				

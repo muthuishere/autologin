@@ -1,14 +1,138 @@
+var globalMem = {
+
+// LZW-compress a string
+	lzw_encode:function(s) {
+		var dict = {};
+		var data = (s + "").split("");
+		var out = [];
+		var currChar;
+		var phrase = data[0];
+		var code = 256;
+		for (var i=1; i<data.length; i++) {
+			currChar=data[i];
+			if (dict[phrase + currChar] != null) {
+				phrase += currChar;
+			}
+			else {
+				out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+				dict[phrase + currChar] = code;
+				code++;
+				phrase=currChar;
+			}
+		}
+		out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+		for (var i=0; i<out.length; i++) {
+			out[i] = String.fromCharCode(out[i]);
+		}
+		return out.join("");
+	},
+
+	// Decompress an LZW-encoded string
+	lzw_decode:function(s) {
+		var dict = {};
+		var data = (s + "").split("");
+		var currChar = data[0];
+		var oldPhrase = currChar;
+		var out = [currChar];
+		var code = 256;
+		var phrase;
+		for (var i=1; i<data.length; i++) {
+			var currCode = data[i].charCodeAt(0);
+			if (currCode < 256) {
+				phrase = data[i];
+			}
+			else {
+			   phrase = dict[currCode] ? dict[currCode] : (oldPhrase + currChar);
+			}
+			out.push(phrase);
+			currChar = phrase.charAt(0);
+			dict[code] = oldPhrase + currChar;
+			code++;
+			oldPhrase = phrase;
+		}
+		return out.join("");
+		},
+getItem:function(item,callback){
+
+
+chrome.storage.sync.get(item, function(response) {
+
+if(typeof callback === "function"){
+		if (!chrome.runtime.error) {
+			console.log(response);			
+			callback(response.item)
+		}else{
+			callback("")
+		}
+		}
+	});
+	
+	
+	
+	
+},
+setItem:function(item,val,callback){
+ 
+ var value=lzw_encode(val)
+	chrome.storage.sync.set({item:value}, function() {
+	
+		if(typeof callback === "function"){
+		
+				if (!chrome.runtime.error) 
+					callback(true)
+				else
+					callback(false)
+				
+			}
+	});
+		
+}
+
+}
+
+var localMem = {
+
+
+getItem:function(item,callback){
+
+
+	callback(localStorage[item])
+	
+
+	
+	
+	
+	
+},
+setItem:function(item,value){
+ 
+ localStorage[item]=value;
+ 
+ if (!chrome.runtime.error) {
+			
+			callback(true)
+		}else{
+			callback(false)
+		}
+		
+		
+}
+
+}
+
 
 var storage = {
 
 	autologinsites : [],
+	extensionsettings:{},
+	
 
 	migrateautologinsites : function () {
 
 		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")
 			return
 
-			localStorage["autologinsites"] = []
+		
 
 			var rawxml = Helper.decrypt(localStorage["autologinxml"])
 
@@ -102,15 +226,71 @@ var storage = {
 		}
 
 		//delete localStorage["autologinxml"]
-		storage.autologinsites = autologinsites
-			storage.updatestorage();
+		//if(storage.autologinsites.length == 0){
+				storage.autologinsites = autologinsites
+				storage.extensionsettings.promptrequired=false
+				storage.extensionsettings.usebasicauth=true
+				storage.extensionsettings.credential=""
+				
+				if(undefined != localStorage["credential"] && null != localStorage["credential"])
+					storage.extensionsettings.credential= Helper.decrypt(localStorage["credential"] )
+				
+				
+				if(undefined != localStorage["promptrequired"] && null != localStorage["promptrequired"])
+					storage.extensionsettings.promptrequired= (localStorage["promptrequired"] === 'true')
+				
+			
+					
+				storage.updatestorage();
+				
+		//}
+		
+			
+		
+		
 		localStorage["autologinxml"] = ""
 
 	},
 
+	setbasicauth:function(flg){
+		storage.extensionsettings.usebasicauth=flg
+		storage.updatestorage()
+	},
+	setpromptrequired:function(flg){
+		storage.extensionsettings.promptrequired=flg
+		storage.updatestorage()
+	},
+	setcredential:function(cred){
+		storage.extensionsettings.credential=cred
+		storage.updatestorage()
+	},
+	getcredential:function(){
+		return storage.extensionsettings.credential
+	},
+	getpromptrequired:function(){
+		return storage.extensionsettings.promptrequired
+	},
+	getbasicauth:function(){
+		return storage.extensionsettings.usebasicauth
+	},
 	updatestorage : function () {
 
-		localStorage["autologinsites"] = Helper.encrypt(JSON.stringify(storage.autologinsites));
+		var bfr=Helper.encrypt(JSON.stringify(storage.autologinsites));
+		
+		
+		
+		
+		//localStorage["autologinsites"] = bfr
+		
+		
+		globalMem.setItem("autologinsites",bfr)
+		storage.extensionsettings.lastmodified=new Date().getTime();		
+		bfr=Helper.encrypt(JSON.stringify(storage.extensionsettings));
+		
+		//localStorage["extensionsettings"] = bfr
+		globalMem.setItem("extensionsettings",bfr)
+		
+		//Update to global
 
 	},
 	getCredentialAtIndex : function (index) {
@@ -144,7 +324,7 @@ var storage = {
 								isUserModfied = true
 									delete storage.autologinsites[i].credentials[k].elements
 									storage.autologinsites[i].credentials[k].elements = site.elements
-									//console.log("modifying credentials", site)
+									console.log("modifying credentials", site)
 									break
 							}
 
@@ -157,7 +337,7 @@ var storage = {
 							credential.defaultsite = false
 							credential.elements = site.elements
 							storage.autologinsites[i].credentials.push(credential)
-							//console.log("Adding new credentials to site ", site)
+							console.log("Adding new credentials to site ", site)
 
 					}
 
@@ -172,7 +352,7 @@ var storage = {
 		}
 
 		if (!isPushed) {
-			//console.log("Adding new  site ", site)
+			console.log("Adding new  site ", site)
 			var currentsite = {}
 			currentsite.authtype = site.authtype
 				currentsite.url = site.url
@@ -186,7 +366,7 @@ var storage = {
 				credential.elements = site.elements
 
 				currentsite.credentials.push(credential)
-				//console.log("Adding site", currentsite)
+				console.log("Adding site", currentsite)
 
 				storage.autologinsites.push(currentsite)
 
@@ -321,7 +501,7 @@ var storage = {
 
 									}
 									
-									//console.log("datainfo",datainfo)
+									console.log("datainfo",datainfo)
 
 									if (datainfo.user != "")
 										return datainfo
@@ -392,7 +572,7 @@ var storage = {
 						for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
 
 							
-							//console.log("curcredential",curcredential)
+							console.log("curcredential",curcredential)
 
 								var obj = {}
 								obj.authtype = site.authtype
@@ -404,7 +584,7 @@ var storage = {
 								
 										
 
-								//console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
+								console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
 								if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {
 
 									storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser
@@ -422,54 +602,6 @@ var storage = {
 
 	},
 
-	updatecredentialold : function (site) {
-
-		for (i = 0; i < storage.autologinsites.length; i++) {
-
-			cursite = storage.autologinsites[i]
-
-				if (cursite.authtype == site.authtype && cursite.url == site.url) {
-
-					var isUserModfied = false;
-					for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
-
-						var curcredential = storage.autologinsites[i].credentials[k]
-
-							if (curcredential.user == site.user) {
-
-								isUserModfied = true
-
-									if (undefined != site.defaultsite) {
-										//delete storage.autologinsites[i].credentials[k].defaultsite
-										storage.autologinsites[i].credentials[k].defaultsite = site.defaultsite
-											console.log("Changing default site")
-									}
-									delete storage.autologinsites[i].credentials[k].elements
-									storage.autologinsites[i].credentials[k].elements = site.elements
-
-									storage.updatestorage();
-
-							} else {
-
-								//change default site info , if default site is set to true
-								if (undefined != site.defaultsite && site.defaultsite == true) {
-
-									storage.autologinsites[i].credentials[k].defaultsite = false
-
-								}
-
-							}
-
-					}
-
-					//updated all
-
-					return;
-
-				}
-		}
-
-	},
 	removeCredential : function (site) {
 
 		var isCredentialRemoved = false;
@@ -527,12 +659,45 @@ var storage = {
 
 	},
 
+	sync:function(){
+	
+	storage.extensionsettings.promptrequired=false
+	storage.extensionsettings.usebasicauth=true
+	storage.extensionsettings.credential=""
+	
+	globalMem.getItem("autologinsites",function(item){
+	
+		if("" != item && null != item && undefined !=item){
+			
+			storage.autologinsites = JSON.parse(Helper.decrypt(item));
+		}
+	
+	})
+	
+	globalMem.getItem("extensionsettings",function(item){
+	
+		if("" != item && null != item && undefined !=item){
+			
+			storage.extensionsettings = JSON.parse(Helper.decrypt(item));
+		}
+		
+	})
+	
+	
+
+		
+	},
 	init : function () {
 
-		if (localStorage["autologinsites"] == undefined || localStorage["autologinsites"] == "") {
+	storage.sync()
+	/*
+		if (localStorage["autologinsites"] == undefined || localStorage["autologinsites"] == "") {		
+		
 			localStorage["autologinsites"] = []
 		} else
-			storage.autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
+			autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
+			
+			*/
 
 	}
 }

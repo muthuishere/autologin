@@ -79,7 +79,7 @@ if (undefined == capture) {
 		},
 		updateElements : function () {
 
-		console.log("updateElements" ,capture.elems)
+		//console.log("updateElements" ,capture.elems)
 			for (index = 0, len = capture.elems.length; index < len; ++index) {
 
 				var elem = capture.getElementByXpath(capture.elems[index].xpath)
@@ -198,7 +198,7 @@ if (undefined == capture) {
 														capture.elems.push(parentformelem)
 														parentform.addEventListener('submit', function (e) {
 
-														console.log("Form submit validation")
+														//console.log("Form submit validation")
 															//if password element has value dont do anything or capture all input and send it to background
 															//if (capture.checkpasswordhasvalue() == false)
 																capture.updateElements();
