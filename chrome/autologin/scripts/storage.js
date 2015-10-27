@@ -8,6 +8,16 @@ var storage = {
 		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")
 			return
 
+		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== ""){
+				
+			storage.autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
+			return
+			
+			}
+			
+			
+			
+			
 			localStorage["autologinsites"] = []
 
 			var rawxml = Helper.decrypt(localStorage["autologinxml"])
@@ -104,6 +114,7 @@ var storage = {
 		//delete localStorage["autologinxml"]
 		storage.autologinsites = autologinsites
 			storage.updatestorage();
+			localStorage["backupautologinxml"]=localStorage["autologinxml"]
 		localStorage["autologinxml"] = ""
 
 	},
@@ -422,54 +433,6 @@ var storage = {
 
 	},
 
-	updatecredentialold : function (site) {
-
-		for (i = 0; i < storage.autologinsites.length; i++) {
-
-			cursite = storage.autologinsites[i]
-
-				if (cursite.authtype == site.authtype && cursite.url == site.url) {
-
-					var isUserModfied = false;
-					for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
-
-						var curcredential = storage.autologinsites[i].credentials[k]
-
-							if (curcredential.user == site.user) {
-
-								isUserModfied = true
-
-									if (undefined != site.defaultsite) {
-										//delete storage.autologinsites[i].credentials[k].defaultsite
-										storage.autologinsites[i].credentials[k].defaultsite = site.defaultsite
-											console.log("Changing default site")
-									}
-									delete storage.autologinsites[i].credentials[k].elements
-									storage.autologinsites[i].credentials[k].elements = site.elements
-
-									storage.updatestorage();
-
-							} else {
-
-								//change default site info , if default site is set to true
-								if (undefined != site.defaultsite && site.defaultsite == true) {
-
-									storage.autologinsites[i].credentials[k].defaultsite = false
-
-								}
-
-							}
-
-					}
-
-					//updated all
-
-					return;
-
-				}
-		}
-
-	},
 	removeCredential : function (site) {
 
 		var isCredentialRemoved = false;
