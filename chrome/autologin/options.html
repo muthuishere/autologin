@@ -32,7 +32,7 @@
 	
 		<ul style="margin-top:15px">
 			<li id="mnusitesparent" class="current"><a  id="mnusites" href="#">Sites</a></li>
-			<li id="mnuchangepasswordparent" ><a id="mnuchangepassword" href="#">Settings</a></li>	
+			<li id="mnuautologinsettingsparent" ><a id="mnuautologinsettings" href="#">Settings</a></li>	
 				<li id="mnusupportparent" ><a id="mnusupport" href="#">Support</a></li>	
 			
 			
@@ -117,43 +117,44 @@
 			<div id="divpasswordchange"  style="display:none;">
 			
 			
-			
-			<table id="tblsettings" style="text-align:left" cellpadding="10">
+	<table id="tblsettings" style="text-align:left;width:100%" cellpadding="10">
+  <tbody><tr><td valign="top">
+<table class="tblsubsettings" cellpadding="10">
 			<tbody>
 			<tr>
 			
-			<th align="left"><u>Settings</u></th>			
+			<th colspan="2" align="left"><u>Password</u></th>			
 			
 			</tr>
 			
 			
 			<tr>
 		
-			<td style="text-align:left"> <input type="checkbox" id="chkpromptAutologin" value="1">Prompt Password before Autologin  per session </td>			
+			<td style="text-align:left">
+			Prompt Password
+			</td>
+			<td>
+			<div class="onoffswitch">
+				<input type="checkbox" name="chkpromptAutologin" class="onoffswitch-checkbox" id="chkpromptAutologin" checked>
+				<label class="onoffswitch-label" for="chkpromptAutologin">
+					<span class="onoffswitch-inner"></span>
+					<span class="onoffswitch-switch"></span>
+				</label>
+			</div>
+			
+			
+			</td>			
 			
 			</tr>
-			<tr>
-		
-			<td style="text-align:left"> <input type="checkbox" id="chkpromptBasicAuth" value="1">Use Autologin for Basic Auth </td>			
 			
-			</tr>
-			<!--
-			<tr style="visibility:hidden">
-		
-			<td style="text-align:left"> <input type="checkbox" id="chkdefaultAutoLogin" value="1">Use Autologin by default </td>			
 			
-			</tr>
-			<tr style="visibility:hidden" >
-		
-			<td style="text-align:left"> <input type="checkbox" id="chkpromptMultiplecreds" value="1">Allow Multiple Credentials per site </td>			
-			
-			</tr>
-			-->
 			<tr>
 			
 			<td style="text-align:left"> 
-			
-			<button id="btnshowchangepwd" href="#" class="button">Change Password </button>
+			Master Password 
+			</td>
+			<td>
+			<button id="btnshowchangepwd" href="#" class="button">Change</button>
 			
 			<!-- <input type="button" id="btnshowchangepwd" value="Change Password"> -->
 
@@ -171,8 +172,95 @@
 			
 			</tbody>
 			</table>
+    
+    </td><td valign="top">
+    <table class="tblsubsettings"  cellpadding="10">
+			<tbody>
+			<tr>
+			
+			<th align="left"><u>Basic Auth</u></th>			
+			
+			</tr>
 			
 			
+			
+			<tr>
+              <td style="text-align:left"> Use Basic Auth </td>			
+		
+			<td style="text-align:left"> 
+			<div class="onoffswitch">
+				<input type="checkbox" name="chkpromptBasicAuth" class="onoffswitch-checkbox" id="chkpromptBasicAuth" checked>
+				<label class="onoffswitch-label" for="chkpromptBasicAuth">
+					<span class="onoffswitch-inner"></span>
+					<span class="onoffswitch-switch"></span>
+				</label>
+			</div>
+			
+			
+			
+			</td>			
+			
+			</tr>
+              
+              
+                 
+			
+			
+			
+			
+			
+			
+			</tbody>
+			</table>
+    </td><td  valign="top">
+    <table class="tblsubsettings" cellpadding="10">
+			<tbody>
+			<tr>
+			
+			<th colspan="2" align="left"><u>Export/Import Data</u></th>			
+			
+			</tr>
+			
+			
+              
+              <tr>
+             	
+		
+			<td style="text-align:left">Export Data </td><td  style="text-align:right">
+			
+			<button id="btnExport" href="#" class="buttonred">Export</button>
+			
+			
+			</td>			
+			
+			</tr>
+                 <tr>
+            	
+		
+			<td style="text-align:left">Import Data </td><td>  
+			<input type="file" id="fileimport" style="visibility:hidden;width:100px" value="Import" accept=".bin"/> 
+			<button  style="text-align:right" id="btnImport" href="#" class="buttongreen">Import</button>
+			
+			</td>
+			
+			
+			
+			</tr>
+			
+			
+			
+			
+			
+			
+			</tbody>
+			</table>
+  </td>
+  
+  </tr>
+<tr><td>
+  
+  </td></tr>
+</tbody></table>		
 			
 			
 			<table id="tblchangepwd" style="margin:0 auto;display:none" >

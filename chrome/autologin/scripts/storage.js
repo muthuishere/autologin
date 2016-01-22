@@ -3,6 +3,42 @@ var storage = {
 
 	autologinsites : [],
 
+	getExportData:function(){
+		
+		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== ""){
+				
+			
+			return localStorage["autologinsites"]
+			
+			}
+			return "";
+	},
+	importdata:function(rawdata){
+		
+		//decrypt data
+		
+		var jsonobj;
+		
+		try{
+			
+		var data =Helper.decrypt(rawdata)
+			
+			jsonobj=JSON.parse(data);
+			
+			
+		}catch(exception){
+			
+			return false;
+		}
+		// check entries greater than zero and valid entries , return true or false
+		
+		storage.autologinsites = jsonobj
+		
+		console.log(storage.autologinsites )
+		
+		storage.updatestorage();
+		return true;
+	},
 	migrateautologinsites : function () {
 
 		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")

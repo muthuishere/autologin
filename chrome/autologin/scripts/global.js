@@ -222,7 +222,7 @@ var globalAutologinHandler = {
    removefromPool: function(curlocation) {
   
   var curdomainName=Utils.getdomainName(curlocation)
-  globalAutologinHandler.pushtoPool(curdomainName)
+  
   
   	var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
 				if (index > -1) {
@@ -237,51 +237,51 @@ var globalAutologinHandler = {
   
   
    retrieveSiteInfo: function(curlocation) {
-   
-   var result={}
-   result.status=1;
-   result.info=null;
-   
-   
-   var curdomainName=Utils.getdomainName(curlocation)
-	var site=storage.get("form",curdomainName)
- 
-		if(site== null){
+	   
+	   var result={}
+	   result.status=1;
+	   result.info=null;
+	   
+	   
+	   var curdomainName=Utils.getdomainName(curlocation)
+		var site=storage.get("form",curdomainName)
+	 
+			if(site== null){
+			
+				return result;
+			}
 		
+		var flgAutologinEnabled=site.enabled;
+		result.info=site;
+		
+		if( flgAutologinEnabled == true && globalAutologinHandler.poolingDomains.indexOf(curdomainName) == -1 )  {
+		
+			result.status=0;
+			
 			return result;
+			
+			
+		
 		}
-    
-	var flgAutologinEnabled=site.enabled;
-	result.info=site;
-	
-	if( flgAutologinEnabled == true && globalAutologinHandler.poolingDomains.indexOf(curdomainName) == -1 )  {
-	
-		result.status=0;
+		if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) != -1){
+			
+			console.log("Blacklisted domain" + curdomainName)	
+			result.status=-1;
+			//return result;
+			
+		
+		}
+		
+		if(flgAutologinEnabled == false){
+		
+			console.log("Disabled domain" + curdomainName)	
+			result.status=-1;
+			//return result;
+			
+		}
 		
 		return result;
 		
-		
-	
-	}
-	if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) != -1){
-		
-		console.log("Blacklisted domain" + curdomainName)	
-		result.status=-1;
-		//return result;
-		
-	
-	}
-	
-	if(flgAutologinEnabled == false){
-	
-		console.log("Disabled domain" + curdomainName)	
-		result.status=-1;
-		//return result;
-		
-	}
-	
-	return result;
-	
 	
    },
 
@@ -562,8 +562,13 @@ while (i--) {
 	var credential=localStorage["credential"]
 	var promptrequired=localStorage["promptrequired"]
 	
-	if(undefined == credential || null == credential || undefined == promptrequired || null == promptrequired ||  promptrequired === 'false')
+	if(undefined == credential || null == credential || undefined == promptrequired || null == promptrequired ||  promptrequired === 'false'){
+		
 		globalAutologinHandler.loggedIn=true
+		if(promptrequired === 'true')
+				localStorage["promptrequired"]='false'
+		
+	}		
 	else
 			globalAutologinHandler.loggedIn=false
 			
@@ -580,7 +585,7 @@ while (i--) {
 	},
 	injectCapture:function(tabId){
 		
-			console.log("Attempting capture")
+			//console.log("Attempting capture")
 			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
 		
 						chrome.tabs.executeScript(tabId, {file:"scripts/captureUI.js"}, function() {

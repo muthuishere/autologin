@@ -110,12 +110,9 @@ var autoLoginOptions = {
 		  
 		  document.querySelector("#select"+domname).setAttribute("data-changed","true")
 		  
-					
-					
-					
 
-					if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1)
-								document.querySelector("#select"+domname).className += ' inputChanged'
+	if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1)
+				document.querySelector("#select"+domname).className += ' inputChanged'
 	
 	if(event.target.getAttribute("type")=="text"){
 	
@@ -145,7 +142,7 @@ var autoLoginOptions = {
 	
 	document.querySelector("#navigation").style.visibility="visible"
 	document.querySelector("#mnusitesparent").setAttribute("class", "current");
-	document.querySelector("#mnuchangepasswordparent").removeAttribute("class");
+	document.querySelector("#mnuautologinsettingsparent").removeAttribute("class");
 	document.querySelector("#mnusupportparent").removeAttribute("class");
 	
 	document.querySelector("#divSites").style.display="";
@@ -235,7 +232,7 @@ var autoLoginOptions = {
 	
 	
 	},
-	menuChangePasswordClicked:function(event){
+	menuAutologinSettingsClicked:function(event){
 	
 	//On Sites clicked
 	
@@ -244,7 +241,7 @@ var autoLoginOptions = {
 	
 	
 	document.querySelector("#navigation").style.visibility="visible"
-	document.querySelector("#mnuchangepasswordparent").setAttribute("class", "current");
+	document.querySelector("#mnuautologinsettingsparent").setAttribute("class", "current");
 	document.querySelector("#mnusitesparent").removeAttribute("class");
 	document.querySelector("#mnusupportparent").removeAttribute("class");
 	
@@ -267,7 +264,7 @@ var autoLoginOptions = {
 		document.querySelector("#navigation").style.visibility="visible"
 	
 	document.querySelector("#mnusitesparent").removeAttribute("class");
-	document.querySelector("#mnuchangepasswordparent").removeAttribute("class");
+	document.querySelector("#mnuautologinsettingsparent").removeAttribute("class");
 	
 	document.querySelector("#mnusupportparent").setAttribute("class", "current");
 	
@@ -333,7 +330,7 @@ var autoLoginOptions = {
 	
 	
 	document.querySelector('a#mnusites').addEventListener('click', autoLoginOptions.menuSitesClicked, false);
-	document.querySelector('a#mnuchangepassword').addEventListener('click', autoLoginOptions.menuChangePasswordClicked, false);
+	document.querySelector('a#mnuautologinsettings').addEventListener('click', autoLoginOptions.menuAutologinSettingsClicked, false);
 	document.querySelector('a#mnusupport').addEventListener('click', autoLoginOptions.showSupport, false);
 	
 		 storage.init()
@@ -474,6 +471,18 @@ var autoLoginOptions = {
 				*/
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
+					var credential=localStorage["credential"]
+					if(undefined == credential || null == credential ){
+						if(event.target.checked == true){
+							
+							event.target.checked=false;
+							alert("Error: Master Password is empty,Set Master Password and select again")
+							
+							return false;
+						}
+						
+					}
+					
 					
 					chrome.extension.sendMessage({action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {
 				
@@ -483,6 +492,89 @@ var autoLoginOptions = {
 					
 			}, false);
 			
+			
+			document.querySelector('#btnExport').addEventListener('click', function(){
+					
+					//Download from localStorage
+					
+					
+					 var a = document.createElement('a');
+					var blob = new Blob([ storage.getExportData() ], {type : "text/plain;charset=UTF-8"});
+					a.href = window.URL.createObjectURL(blob);
+					a.download = "autologindata.bin";
+					a.style.display = 'none';
+					document.body.appendChild(a);
+					a.click(); //this is probably the key - simulating a click on a download link
+					delete a;// we don't need this anymore
+					
+					
+			}, false);
+			
+			
+			
+						function errorHandler(domError) {
+                                console.error(domError);
+                                autoLoginOptions.flashdiv("statusError","Invalid autologindata file ");
+                            }
+							
+							
+						var readFileUpdateUI = function(file /*, element, nameElement*/ ) {
+                                var reader = new FileReader();
+                                reader.onerror = errorHandler;
+                                reader.onload = function(writeEvent) {
+									
+									if(file.name.indexOf(".bin") <0){
+										
+										autoLoginOptions.flashdiv("statusError","Invalid autologindata file ");
+										return;
+									}
+                                    
+									
+                                    var result = writeEvent.target.result;
+									
+									
+									 var r = confirm("All the existing data will be Overridden , Press Ok to Confirm!");
+									if (r == true) {
+										txt = "You pressed OK!";
+									} else {
+										
+										return;
+									}
+									var flgvalid=storage.importdata(result)
+									
+									if(flgvalid){
+										
+										autoLoginOptions.reloadStorage()	
+										autoLoginOptions.flashdiv("statusSuccess","Successfully Imported Autologin data");
+									}										
+									else
+										autoLoginOptions.flashdiv("statusError","Invalid autologindata contents in file");
+									
+									
+                                    
+                                    //                                console.log(result);
+                                };
+                                
+                                reader.readAsText(file);
+                            };
+							
+							
+			
+							var importElement = document.querySelector('#btnImport');
+                            var importFileElement = document.querySelector('#fileimport');
+                            importFileElement.addEventListener('change', function(event) {
+                               // console.log(event.target.files);
+                                if (event.target.files.length === 1) {
+                                    readFileUpdateUI(event.target.files[0] /*, mod, modFileName*/ );
+                                }
+                            }, false);
+                            importElement.addEventListener('click', function(event) {
+                                importFileElement.click();
+                            }, false);
+							
+			
+			
+		
 			
 			//remove password
 			

@@ -109,6 +109,12 @@ var automate = {
         return document.querySelector(tagname + '[name="' + elemname + '"]');
 
     },
+	isVisible : function (elem) {
+			if (elem.style.visibility == "hidden")
+				return false
+
+				return elem.offsetWidth > 0 || elem.offsetHeight > 0;
+		},
     fireMouseEvent: function (type, node) {
         var doc = node.ownerDocument;
         var event = doc.createEvent("MouseEvents");
@@ -367,6 +373,9 @@ var automate = {
 										
 										var curtype="text"
 										
+										
+										
+										
 										if (formchild.getAttribute("type")) 
 											curtype=formchild.getAttribute("type").toLowerCase()
 										
@@ -374,10 +383,12 @@ var automate = {
 										if(curtype == "email" || curtype == "number"  || curtype == "tel" || curtype == "search" )
 											curtype="text"
 										
-										
-										if(curtype == "text" || curtype == "password"  ){
-											//console.log(formchild)
-											actInputCount++
+										if(automate.isVisible(formchild)){
+											
+											if(curtype == "text" || curtype == "password"  ){
+												//console.log(formchild)
+												actInputCount++
+											}
 										}
 								}
 								
