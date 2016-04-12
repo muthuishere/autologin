@@ -13,29 +13,8 @@ var globalAutologinHandler = {
 	poolingDomains:new Array(),
 	loggedIn:true,
 	
-	testmigrate:function(){
-	
-	var rawxml='<root> <site> <url>https://mail.three.co.uk/owa/auth/logon.aspx</url> <loginurl>https://mail.three.co.uk/owa/auth/logon.aspx</loginurl> <username>hutchison3g\mnavaneethakrishnan</username> <password>June#2015</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>logonForm</formelement> </site> <site> <url>https://webmail.tcs.com/</url> <loginurl>https://webmail.tcs.com/</loginurl> <username>muthukumaran n</username> <password>Yluj31#2015</password> <userelement>Username</userelement> <pwdelement>Password</pwdelement> <enabled>true</enabled><btnelement>mybutton</btnelement> <formelement>_TCSLoginUserForm</formelement> </site> <site> <url>https://inchnm04.tcs.com/mail/mail2/152656.nsf</url> <loginurl>https://inchnm04.tcs.com/mail/mail2/152656.nsf</loginurl> <username>muthukumaran n</username> <password>Yluj31#2015</password> <userelement>Username</userelement> <pwdelement>Password</pwdelement> <enabled>true</enabled><btnelement>mybutton</btnelement> <formelement>_TCSLoginUserForm</formelement> </site> <site> <url>https://github.com/login</url> <loginurl>https://github.com/login</loginurl> <username>muthuishere@gmail.com</username> <password>Gangster1</password> <userelement>login</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement>commit</btnelement> <formelement/> </site> <site> <url>http://idmssop01.at.three.com/sso/pages/login.jsp</url> <loginurl>http://idmssop01.at.three.com/sso/pages/login.jsp</loginurl> <username>mnavaneethakrishnan@corpuk.net</username> <password>April#2015</password> <userelement>ssousername</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement/> </site> <site> <url>https://www.odesk.com/login</url> <loginurl>https://www.odesk.com/login</loginurl> <username>muthukumaran</username> <password>Gangster1</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement>submit</btnelement> <formelement>login</formelement> </site>  <site> <url>https://dev.intently.com/login.html</url> <loginurl>https://dev.intently.com/login.html</loginurl> <username>muthuishere@gmail.com</username> <password>Gangster1</password> <userelement>email</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>login-form</formelement> </site>  <site> <url>https://bitbucket.org/account/signin/</url> <loginurl>https://bitbucket.org/account/signin/</loginurl> <username>muthuishere</username> <password>Gangster1</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>login-form</formelement> </site> <site> <url>https://ebiz.corpuk.net:16017/OA_HTML/AppsLocalLogin.jsp</url> <loginurl>https://ebiz.corpuk.net:16017/OA_HTML/AppsLocalLogin.jsp</loginurl> <username>mnavaneethakrishnan@corpuk.net</username> <password>May1#2015</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement/> <formelement>myForm</formelement> </site> <site> <url>https://www.upwork.com/login</url> <loginurl>https://www.upwork.com/login</loginurl> <username>muthukumaran</username> <password>Gangster1</password> <userelement>username</userelement> <pwdelement>password</pwdelement> <enabled>true</enabled><btnelement>submit</btnelement> <formelement>login</formelement> </site> <site> <url>https://mail.google.com/mail/u/0/</url> <loginurl>https://mail.google.com/mail/u/0/</loginurl> <username>muthu</username> <password/> <userelement>cfsl</userelement> <pwdelement>cfsw</pwdelement> <enabled>true</enabled><btnelement>focus</btnelement> <formelement>mainForm</formelement> </site></root>'
-	
-	localStorage["autologinxml"]=Helper.encrypt(rawxml)
 	
 	
-	},
-	test:function(){
-		
-		var rawxml='<root><site authtype="form"><url>http://localhost:9999/auto.html</url> <loginurl>http://localhost:9999/auto.html</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"Username") or contains(@name,"Username")]</xpath><value>example@gmail.com</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"Password") or contains(@name,"Password")]</xpath><value>123456</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"mybutton") or contains(@name,"mybutton")]</xpath><value></value><type>button</type></element><element><event>submit</event><xpath>//*[contains(@id,"_TCSLoginUserForm") or contains(@name,"_TCSLoginUserForm")]</xpath><value></value><type>form</type></element></elements></site><site authtype="form"><url>https://github.com/login</url> <loginurl>https://github.com/login</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"login") or contains(@name,"login")]</xpath><value>muthuishere@gmail.com</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"password") or contains(@name,"password")]</xpath><value>Gangster1</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"commit") or contains(@name,"commit")]</xpath><value></value><type>button</type></element></elements></site><site authtype="form"><url>http://127.0.0.1:9999/auto.html</url> <loginurl>http://127.0.0.1:9999/auto.html</loginurl><enabled>true</enabled><elements><element><event/><xpath>//input[contains(@id,"Username") or contains(@name,"Username")]</xpath><value>user</value><type>text</type></element><element><event/><xpath>//input[contains(@id,"Password") or contains(@name,"Password")]</xpath><value>password</value><type>password</type></element><element><event>click</event><xpath>//*[contains(@id,"mybutton") or contains(@name,"mybutton")]</xpath><value></value><type>button</type></element><element><event>submit</event><xpath>//*[contains(@id,"_TCSLoginUserForm") or contains(@name,"_TCSLoginUserForm")]</xpath><value></value><type>form</type></element></elements></site></root>'
-		
-		localStorage["autologinxml"]=Helper.encrypt(rawxml)
-		
-	},
-
-	
-	
-	printraw:function(){
-		
-		var rawxml=Helper.decrypt(localStorage["autologinxml"])
-		console.log(rawxml)
-	},	
 	addAutoLoginElements:function(obj,authtype){
 	
 
@@ -55,7 +34,7 @@ var globalAutologinHandler = {
 			var hasParentXpath=false
 			var hasValidElems=false
 			
-			//console.log("elems",elems)
+			console.log("elems",elems)
 			for (index = 0, len = elems.length; index < len; ++index) {
 				var field=elems[index]
 				if(field.type === "password" && field.value == "" &&  "" != field.parentxpath ){
@@ -757,7 +736,7 @@ var Utils={
 //globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
 
 globalAutologinHandler.initExtension()
-globalAutologinHandler.printraw()
+//globalAutologinHandler.printraw()
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
  
