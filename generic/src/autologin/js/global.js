@@ -132,13 +132,11 @@ var globalAutologinHandler = {
 	
 			if(usebasicauth){
 			
+				vAPI.onAuthRequired.addListener(globalAutologinHandler.retrieveautologinsites) 
 			
-				chrome.webRequest.onAuthRequired.addListener(globalAutologinHandler.retrieveautologinsites, {
-						urls : ["http://*/*","https://*/*"]
-						}, ['asyncBlocking']);
 		
 			}else{
-					chrome.webRequest.onAuthRequired.removeListener(globalAutologinHandler.retrieveautologinsites)
+					vAPI.onAuthRequired.removeListener(globalAutologinHandler.retrieveautologinsites)
 			}
 	
 	},	
@@ -344,27 +342,7 @@ while (i--) {
 		}
 	},
 	
-	/*
-	  
-	  set autologinXMLList
-	  genrate  jsonlist
-	  
-	*/
-	loadXMLDoc:function(dname) { 
-
-
-	  xhttp=new XMLHttpRequest(); 
-
-	xhttp.open("GET",dname,false); 
-	xhttp.send(); 
 	
-	
-	localStorage["autologinxml"] =Helper.encrypt(xhttp.responseText);
-	//globalAutologinHandler.loadDoc();
-	}, 
-	/*
-	  Load details from storage  to xml
-	*/
 	
 	try_count : 0,
 	last_request_id:null,
@@ -504,10 +482,10 @@ while (i--) {
 					
 					globalAutologinHandler.authpopup=null;
 				//TODO handle close
-				chrome.windows.create({
+				vAPI.windows.open({
 					type: 'popup',
 					 focused: true,
-					url: chrome.extension.getURL('auth.html'),
+					url: vAPI.getURL('auth.html'),
 					height: 450, width:450
 				
 				
@@ -538,14 +516,14 @@ while (i--) {
 	
 	//validate and set logged in
 	storage.init()
-	var credential=localStorage["credential"]
-	var promptrequired=localStorage["promptrequired"]
+	var credential=storage.getCredential();
+	var promptrequired=storage.getPromptRequired()
 	
 	if(undefined == credential || null == credential || undefined == promptrequired || null == promptrequired ||  promptrequired === 'false'){
 		
 		globalAutologinHandler.loggedIn=true
 		if(promptrequired === 'true')
-				localStorage["promptrequired"]='false'
+				storage.getPromptRequired()='false'
 		
 	}		
 	else
@@ -553,7 +531,7 @@ while (i--) {
 			
 		
 
-			var usebasicauth= (localStorage["usebasicauth"] === 'true')
+			var usebasicauth= (storage.getUseBasicAuth() === 'true')
 		globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 		
 			//console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
@@ -565,12 +543,12 @@ while (i--) {
 	injectCapture:function(tabId){
 		
 			//console.log("Attempting capture")
-			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
+			var jscode='var extnid="'+ vAPI.getURL("/") + '"';
 		
-						chrome.tabs.executeScript(tabId, {file:"js/captureUI.js"}, function() {
+						vAPI.tabs.injectScript(tabId, {file:"js/captureUI.js"}, function() {
 					
 								
-								chrome.tabs.executeScript(tabId, {file:"js/capture.js"}, function() {
+								vAPI.tabs.injectScript(tabId, {file:"js/capture.js"}, function() {
 									//script injected
 								//	console.log("got autoLoginCapture" +tabId)
 								});
@@ -592,20 +570,20 @@ while (i--) {
 		
 			if(globalAutologinHandler.loggedIn==false){
 			
-				chrome.tabs.executeScript(tabId, {file:"js/validate.js"}, function(details) {
+				vAPI.tabs.injectScript(tabId, {file:"js/validate.js"}, function(details) {
 						//script injected
 						//console.log("Inserted validate module")
 					});
 				
 			}else{
 			
-			var jscode='var extnid="'+ chrome.extension.getURL("/") + '"';
+			var jscode='var extnid="'+ vAPI.getURL("/") + '"';
 		
 		
 			
-						chrome.tabs.executeScript(tabId, {file:"js/userselect.js"}, function() {
+						vAPI.tabs.injectScript(tabId, {file:"js/userselect.js"}, function() {
 							
-							chrome.tabs.executeScript(tabId, {file:"js/automate.js"}, function() {
+							vAPI.tabs.injectScript(tabId, {file:"js/automate.js"}, function() {
 										//script injected
 										console.log("Inserted autoLogin")
 									});
@@ -662,52 +640,25 @@ var Utils={
 		
 		var domainName=Utils.getdomainName(tab.url)
 		
-		chrome.pageAction.setIcon({tabId:tab.id,path:"images/autologin-19-capture.png"} , function() {
-		
-				chrome.pageAction.setTitle({tabId :tab.id,title:"Capture in progress for" + domainName})
-				
-				chrome.tabs.executeScript(tab.id, {code:"initAutoLoginCapture()",allFrames :false}, function() {
+		vAPI.tabs.injectScript(tab.id, {code:"initAutoLoginCapture()",allFrames :false}, function() {
 						//script injected
 				});
-		
-		})
+				
+	
 		
 	},
 	setCaptureReady:function( tab){
 		
 		var domainName=Utils.getdomainName(tab.url)
-		chrome.pageAction.setIcon({tabId :tab.id,path:"images/autologin-19.png"} , function() {
 		
-		
-				chrome.pageAction.setTitle({tabId :tab.id,title:"Add AutoLogin for " +domainName })
-				
-				
-				chrome.tabs.executeScript(tab.id, {code:"removeAutoLoginCapture()",allFrames :false}, function() {
+		vAPI.tabs.injectScript(tab.id, {code:"removeAutoLoginCapture()",allFrames :false}, function() {
 				//script injected
 				});
 				
-		
-		})
+	
 		
 	},
-	handleClick:function(tab){
-	
 
-		chrome.pageAction.getTitle({tabId :tab.id}, function (result){
-			if(result.indexOf("Add AutoLogin") >=0){
-				//
-				PageActionHandler.setCaptureInProgress(tab)
-			}else{
-				PageActionHandler.setCaptureReady(tab)
-			
-			}
-
-		});
-
-	
-
-	
-	},
 	injectscripts:function(obj,index){
 		
 		var tabId=obj.tabId
@@ -722,7 +673,7 @@ var Utils={
 			
 			}
 		
-		chrome.tabs.executeScript(tabId, {file:scripts[index]}, function() {
+		vAPI.tabs.injectScript(tabId, {file:scripts[index]}, function() {
 						//script injected
 						index++
 						PageActionHandler.injectscripts(obj,index)
@@ -733,15 +684,17 @@ var Utils={
 
   };
 
-//globalAutologinHandler.loadXMLDoc(chrome.extension.getURL('autologin.xml'))
+  
+  vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
 
-globalAutologinHandler.initExtension()
-//globalAutologinHandler.printraw()
+    if ( !tab.url || tab.url === '' ) {
+        return;
+    }
+    if ( !changeInfo.url ) {
+        return;
+    }
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
- 
-    if(tab.url !== undefined && changeInfo.status == "complete" ){
-	
+
 	 if(tab.url.indexOf("http") == 0 || tab.url.indexOf("www") == 0  ){
 	  
 			
@@ -751,33 +704,36 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   
 		
 			globalAutologinHandler.processScripts(tab)
-	}
-});
+			
+
+
+};
+
+//globalAutologinHandler.loadXMLDoc(vAPI.getURL('autologin.xml'))
+
+globalAutologinHandler.initExtension()
+//globalAutologinHandler.printraw()
 
 
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
+
+
+
+
+
+var handleGlobalMsg= function(request, sender, sendResponse) {
     // console.log(sender.tab ?
                 // "from a content script:" + sender.tab.url :
                 // "from the extension");
 				
 				
-	 if (request.action == "captureautologin"){
-	
-			PageActionHandler.setCaptureReady(sender.tab)
-			chrome.pageAction.show(sender.tab.id);
-			 // Return nothing to let the connection be cleaned up.
-		  sendResponse({});
-	
-	
-	}else if (request.action == "getData"){
+ if (request.action == "getData"){
 	
 	
 			var site= storage.get("form",request.domain)
 			
 			
-			sendResponse({"site": site,"extnid":chrome.extension.getURL("/")});
+			sendResponse({"site": site,"extnid":vAPI.getURL("/")});
 	
 	
 	}else if (request.action == "injectAutoLogin"){
@@ -815,7 +771,7 @@ chrome.runtime.onMessage.addListener(
 			// Check in storage
 			var site=storage.get("form",request.url)
 			var data={"hiddencapture":(site !=null)}
-			data.extnid=chrome.extension.getURL("/") 
+			data.extnid=vAPI.getURL("/") 
 			
 			sendResponse(data);	
 		
@@ -884,7 +840,7 @@ chrome.runtime.onMessage.addListener(
 	
 			var userCredential=request.info;
 			
-			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			var savedCredential= storage.getCredential();
 			
 	
 			if(userCredential == savedCredential){
@@ -904,9 +860,13 @@ chrome.runtime.onMessage.addListener(
 	
 			var credential=request.info;
 			
-			localStorage["credential"]= Helper.encrypt(credential);
+			storage.setCredential(credential,function(){
+				
+				sendResponse({"valid":true });	
+			})
 			
-				sendResponse({"valid":true });
+			
+			
 			
 	
 	
@@ -916,11 +876,17 @@ chrome.runtime.onMessage.addListener(
 			
 			var newCredential=request.newCredential;
 			
-			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			var savedCredential= storage.getCredential();
 			
 			if(credential == savedCredential){
-				localStorage["credential"]= Helper.encrypt(newCredential);
-				sendResponse({"valid":"true" });
+				
+				storage.setCredential(newCredential,function(){
+				
+				
+					sendResponse({"valid":true });	
+				})
+			
+				
 				}
 			else
 				sendResponse({"valid":"false" });
@@ -930,7 +896,7 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "getPromptAtStartup"){
 	
 			
-			promptrequired=localStorage["promptrequired"]
+			promptrequired=storage.getPromptRequired()
 			
 			
 				sendResponse({"promptrequired":(promptrequired === 'true') });
@@ -941,7 +907,7 @@ chrome.runtime.onMessage.addListener(
 	
 			
 			
-			localStorage["promptrequired"]= request.promptrequired;
+			storage.getPromptRequired()= request.promptrequired;
 			
 			
 			
@@ -961,10 +927,14 @@ chrome.runtime.onMessage.addListener(
 	}else if (request.action == "updateBasicAuthHandlers"){
 	
 		
-			localStorage["usebasicauth"]= request.usebasicAuth;
-				var usebasicauth= localStorage["usebasicauth"]
-			globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
+			storage.setUseBasicAuth(request.usebasicAuth,function(){
+				
+				var usebasicauth= storage.getUseBasicAuth()
+				globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 				sendResponse({"valid":true });
+				
+			});
+				
 			
 	
 	
@@ -972,7 +942,7 @@ chrome.runtime.onMessage.addListener(
 	
 			
 			
-			var savedCredential= Helper.decrypt(localStorage["credential"] );
+			var savedCredential= storage.getCredential();
 			
 			var result=(savedCredential != "")
 			//console.log("result",result)
@@ -1022,21 +992,39 @@ chrome.runtime.onMessage.addListener(
 	
 	}
      
-  });
+  };
   
+  
+  
+// Default handler
+
+(function() {
+
+'use strict';
+
+/******************************************************************************/
+
+var onMessage = function(request, sender, callback) {
+    var µb = µBlock;
+
+	console.log("Message listener")
+	 if(undefined == request  || undefined == request.action){
+		 
+		 console.log("Invalid request" , request )
+		 return;
+	 }
+	 
+	 handleGlobalMsg(request, sender, callback)
+	 
+
+};
+
+
+vAPI.messaging.setup(onMessage);
+
+/******************************************************************************/
+
+})();
   
 
-chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install"){
-        console.log("This is a first install!");
-		
-		localStorage["usebasicauth"] =true
-		localStorage["usedefaultautologin"] =true
-		
-    }else if(details.reason == "update"){
-			console.log("migrating")
-			
-        var thisVersion = chrome.runtime.getManifest().version;
-		storage.migrateautologinsites()      
-    }
-});
+

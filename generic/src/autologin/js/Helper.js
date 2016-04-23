@@ -32,6 +32,20 @@ decrypt:function(encryptedtxt){
     }
 	return result;
 	
+},
+migrantdecrypt:function(encryptedtxt){
+
+
+	
+    var result="";    
+	if(undefined == encryptedtxt || null == encryptedtxt )
+	return result
+    for(i=0; i<encryptedtxt.length; i++)
+    {
+        result += String.fromCharCode(Helper.key^encryptedtxt.charCodeAt(i));
+    }
+	return result;
+	
 }
 
 }

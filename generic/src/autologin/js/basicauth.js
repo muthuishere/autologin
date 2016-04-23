@@ -36,7 +36,7 @@ var basicauth={
 		else
 			document.querySelector("#realm").innerHTML="Sign In "
 		 
-		var extnid=chrome.extension.getURL("/") 
+		var extnid=vAPI.getURL("/") 
 		
 		//autoLoginCaptureIcon.init(extnid,basicauth.onCaptureAutoLogin)
 	

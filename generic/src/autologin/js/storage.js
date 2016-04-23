@@ -2,16 +2,125 @@
 var storage = {
 
 	autologinsites : [],
-
-	getExportData:function(){
+	credential:null,
+	promptrequired:'false',
+	usebasicauth:'false',
+	getExportData:function(callback){
 		
-		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== ""){
-				
+		
+		vAPI.storage.get("autologinsites", function (localStorageObject)
+			{
+
+					callback(localStorageObject["autologinsites"])
 			
-			return localStorage["autologinsites"]
 			
-			}
-			return "";
+			});
+			
+	},
+	
+	getUseBasicAuth:function(){
+		
+		return storage.usebasicauth;
+	},
+	setUseBasicAuth:function(flgUseBasicAuth,callback){
+		
+			var data={'usebasicauth':flgUseBasicAuth}
+		var response={}
+		vAPI.storage.set(response, function ()
+					{
+						
+						
+						var lastError = vAPI.lastError();
+						if (lastError)
+						{
+							//details.error = 'Error: ' + lastError.message;
+							Utils.logerror('save usebasicauth error:' + lastError.message);
+							response={'status':1,"msg":"Unable to save information ,Storage error "}
+						
+								
+						}else{
+							
+							storage.usebasicauth=	flgUseBasicAuth
+							response={"status":0,"msg":"Success"}
+						}
+						
+						if(typeof callback === 'function') {
+							callback(response)
+						}
+						
+					});
+					
+		
+	},
+	getCredential:function(){
+		
+		return Helper.decrypt(storage.credential)
+	},
+	getPromptRequired:function(){
+		
+		
+		return storage.promptrequired
+	},
+	setCredential:function(pwd,callback){
+		
+		var data={'credential':Helper.encrypt(pwd)}
+		
+		var response={}
+		
+		vAPI.storage.set(response, function ()
+					{
+						
+						
+						var lastError = vAPI.lastError();
+						if (lastError)
+						{
+							//details.error = 'Error: ' + lastError.message;
+							Utils.logerror('save credential error:' + lastError.message);
+							
+							response={'status':1,"msg":"Unable to save credential ,Storage error "}
+								
+						}else{
+							
+							storage.credential=	Helper.encrypt(pwd)
+							response={"status":0,"msg":"Success"}
+						}
+						
+						if(typeof callback === 'function') {
+							callback(response)
+						}
+					});
+		
+		
+	},
+	setPromptRequired:function(flgPromptRequired,callback){
+		
+			var data={'promptrequired':flgPromptRequired}
+		var response={}
+		vAPI.storage.set(response, function ()
+					{
+						
+						
+						var lastError = vAPI.lastError();
+						if (lastError)
+						{
+							//details.error = 'Error: ' + lastError.message;
+							Utils.logerror('save promptrequired error:' + lastError.message);
+							response={'status':1,"msg":"Unable to save information ,Storage error "}
+						
+								
+						}else{
+							
+							storage.promptrequired=	flgPromptRequired
+							response={"status":0,"msg":"Success"}
+						}
+						
+						if(typeof callback === 'function') {
+							callback(response)
+						}
+						
+					})
+					
+		
 	},
 	importdata:function(rawdata){
 		
@@ -39,24 +148,41 @@ var storage = {
 		storage.updatestorage();
 		return true;
 	},
-	migrateautologinsites : function () {
+		migrateautologinsites : function () {
 
 		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")
 			return
 
 		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== ""){
 				
-			storage.autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
+				//Migrate storage only 
+			storage.autologinsites = JSON.parse(Helper.migrantdecrypt(localStorage["autologinsites"]));
+			
+			//set credential
+			if (localStorage["credential"] !== undefined && localStorage["credential"] !== "")
+				storage.setCredential(Helper.migrantdecrypt(localStorage["credential"]))
+				
+			
+			//set prompt required
+			if (localStorage["promptrequired"] !== undefined && localStorage["promptrequired"] !== "")
+				storage.setPromptRequired(localStorage["promptrequired"])
+			
+			
+			//set use basic auth
+			if (localStorage["usebasicauth"] !== undefined && localStorage["usebasicauth"] !== "")
+				storage.setUseBasicAuth(localStorage["usebasicauth"])
+			
+			
+			storage.updatestorage();
+			localStorage["autologinsites"]=""
 			return
 			
 			}
 			
 			
 			
-			
-			localStorage["autologinsites"] = []
 
-			var rawxml = Helper.decrypt(localStorage["autologinxml"])
+			var rawxml = Helper.migrantdecrypt(localStorage["autologinxml"])
 
 				var parser = new DOMParser();
 		var docxml = parser.parseFromString(rawxml, "text/xml");
@@ -154,10 +280,46 @@ var storage = {
 		localStorage["autologinxml"] = ""
 
 	},
+	
+saveitem:function(response){
+	
+			vAPI.storage.set(response, function ()
+					{
+						
+						
+						var lastError = vAPI.lastError();
+						if (lastError)
+						{
+							//details.error = 'Error: ' + lastError.message;
+							Utils.logerror('save Item error:' + lastError.message);
+						
+								
+						}
+						
+						Utils.log('ad definitions stored in local storage');
+						});
+				
+					
+					
+	},
+	getitem:function(item,callbackFunction){
+		
+		vAPI.storage.get(item, function (localStorageObject)
+			{
 
+				if (typeof callbackFunction === 'function')
+				{
+					callbackFunction(localStorageObject[item]);
+				}
+			});
+	},
 	updatestorage : function () {
 
-		localStorage["autologinsites"] = Helper.encrypt(JSON.stringify(storage.autologinsites));
+		var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
+		
+		var data={'autologinsites':localStorage_autologinsites}
+		
+		storage.saveitem(data)
 
 	},
 	getCredentialAtIndex : function (index) {
@@ -526,12 +688,45 @@ var storage = {
 
 	},
 
-	init : function () {
+	init : function (callback) {
 
-		if (localStorage["autologinsites"] == undefined || localStorage["autologinsites"] == "") {
-			localStorage["autologinsites"] = []
-		} else
-			storage.autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
+
+		
+		vAPI.storage.get(null, function (localStorageObject)
+		{
+			//go through each storage entry
+			for (var key in localStorageObject)
+			{
+				
+				if(key == "autologinsites")
+					storage.autologinsites=JSON.parse(Helper.decrypt(localStorageObject["autologinsites"]));
+				else if(key == "usebasicauth")
+					storage.usebasicauth=localStorageObject['usebasicauth'];
+				else if(key == "credential")
+					storage.credential=localStorageObject['credential'];
+				else if(key == "promptrequired")
+					storage.promptrequired=localStorageObject['promptrequired'];
+				
+				
+			}
+			
+			if(typeof callback === 'function') 
+				callback();
+			
+		});
+		
+	
+			
+		
+		/*
+		var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
+		
+		var data={'autologinsites':localStorage_autologinsites}
+		
+		storage.saveitem(data)
+		*/
+		
+		
 
 	}
 }

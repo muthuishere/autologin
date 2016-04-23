@@ -53,8 +53,8 @@ var storage = {
 			
 			
 			
+			vAPI.storage.set({ 'autologinsites': [] });
 			
-			localStorage["autologinsites"] = []
 
 			var rawxml = Helper.decrypt(localStorage["autologinxml"])
 
@@ -150,6 +150,9 @@ var storage = {
 		//delete localStorage["autologinxml"]
 		storage.autologinsites = autologinsites
 			storage.updatestorage();
+			
+		
+			
 			localStorage["backupautologinxml"]=localStorage["autologinxml"]
 		localStorage["autologinxml"] = ""
 
@@ -157,7 +160,9 @@ var storage = {
 
 	updatestorage : function () {
 
-		localStorage["autologinsites"] = Helper.encrypt(JSON.stringify(storage.autologinsites));
+		
+		
+		vAPI.storage.set({ 'autologinsites': Helper.encrypt(JSON.stringify(storage.autologinsites)) });
 
 	},
 	getCredentialAtIndex : function (index) {
@@ -527,11 +532,23 @@ var storage = {
 	},
 
 	init : function () {
-
-		if (localStorage["autologinsites"] == undefined || localStorage["autologinsites"] == "") {
-			localStorage["autologinsites"] = []
-		} else
-			storage.autologinsites = JSON.parse(Helper.decrypt(localStorage["autologinsites"]));
+	
+			vAPI.storage.get('autologinsites', function(store){
+			
+			if(store.autologinsites){
+				
+				
+				storage.autologinsites=JSON.parse(Helper.decrypt(store.autologinsites));
+				
+			}else{
+				
+				storage.autologinsites=[]
+			}
+				
+			});
+			
+		
+			 
 
 	}
 }

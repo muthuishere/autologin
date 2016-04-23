@@ -52,7 +52,7 @@ var userselect={
 								
 								
 								
-									var myString = '<div style="position:fixed;z-index:1000;border:2px solid;border-radius:25px;border-color:#000;background-color: #A2BCD0;right:0px;top:50px;height:155px;width:340px;font-family: Calibri, Verdana, sans-serif">   <table id="" style="width:100%" > <tbody> <tr><td rowspan="4"><img src="'+ chrome.extension.getURL("/images/autologin-128.png")   +'" title="AutoLogin"/></td></tr> <tr> <th style="font-size:12px;color:black;font-face:Verdana"> Select User:</th></tr><tr> <th> ' + selectstr +' </th> </tr><tr>   <th colspan="2">  <input type="button" value="go" id="autologinselectuserbtn">  </th>   </tr> </tbody> </table> </div>'
+									var myString = '<div style="position:fixed;z-index:1000;border:2px solid;border-radius:25px;border-color:#000;background-color: #A2BCD0;right:0px;top:50px;height:155px;width:340px;font-family: Calibri, Verdana, sans-serif">   <table id="" style="width:100%" > <tbody> <tr><td rowspan="4"><img src="'+ vAPI.getURL("/images/autologin-128.png")   +'" title="AutoLogin"/></td></tr> <tr> <th style="font-size:12px;color:black;font-face:Verdana"> Select User:</th></tr><tr> <th> ' + selectstr +' </th> </tr><tr>   <th colspan="2">  <input type="button" value="go" id="autologinselectuserbtn">  </th>   </tr> </tbody> </table> </div>'
 									
 
 									/*

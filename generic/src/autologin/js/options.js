@@ -404,7 +404,7 @@ var autoLoginOptions = {
 				
 						});
 						
-			var usebasicauth= (localStorage["usebasicauth"] === 'true')
+			var usebasicauth= (storage.getUseBasicAuth() === 'true')
 			
 			if(usebasicauth)
 				document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
@@ -412,15 +412,7 @@ var autoLoginOptions = {
 				document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
 							
 			
-			/*
-			var usedefaultautologin= (localStorage["usedefaultautologin"] === 'true')
-			
-			if(usedefaultautologin)
-				document.querySelector('#chkdefaultAutoLogin').setAttribute("CHECKED","CHECKED")
-			else
-				document.querySelector('#chkdefaultAutoLogin').removeAttribute("CHECKED")
-				
-			*/
+
 			
 							
 			document.querySelector('#chkpromptBasicAuth').addEventListener('click', function(event){
@@ -435,43 +427,10 @@ var autoLoginOptions = {
 					
 			}, false);
 			
-			/*
-			var usemultiplecreds= (localStorage["usemultiplecreds"] === 'true')
-			
-			if(usemultiplecreds)
-				document.querySelector('#chkpromptMultiplecreds').setAttribute("CHECKED","CHECKED")
-			else
-				document.querySelector('#chkpromptMultiplecreds').removeAttribute("CHECKED")
-				
-				
-			document.querySelector('#chkpromptMultiplecreds').addEventListener('click', function(event){
-					
-					if(!event.target.checked){
-						
-						if(confirm("All existing Multiple credentials will be removed , Do you want to continue ?")){
-						
-						
-						localStorage["usemultiplecreds"] =event.target.checked
-						}
-					}
-					else
-						localStorage["usemultiplecreds"] =event.target.checked
-					
-					
-			}, false);
-			
-			document.querySelector('#chkdefaultAutoLogin').addEventListener('click', function(event){
-					
-						
-						localStorage["usedefaultautologin"] =event.target.checked
-						
-					
-					
-			}, false);
-				*/
+		
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
-					var credential=localStorage["credential"]
+					var credential=storage.getCredential()
 					if(undefined == credential || null == credential ){
 						if(event.target.checked == true){
 							
@@ -497,15 +456,19 @@ var autoLoginOptions = {
 					
 					//Download from localStorage
 					
-					
-					 var a = document.createElement('a');
-					var blob = new Blob([ storage.getExportData() ], {type : "text/plain;charset=UTF-8"});
+					storage.getExportData(function(expdata){
+						
+					var a = document.createElement('a');
+					var blob = new Blob([ expdata ], {type : "text/plain;charset=UTF-8"});
 					a.href = window.URL.createObjectURL(blob);
 					a.download = "autologindata.bin";
 					a.style.display = 'none';
 					document.body.appendChild(a);
 					a.click(); //this is probably the key - simulating a click on a download link
-					delete a;// we don't need this anymore
+					delete a;// we don't need this anymore	
+						
+					})
+					 
 					
 					
 			}, false);
