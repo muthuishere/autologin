@@ -1,26 +1,7 @@
-/*******************************************************************************
 
-    µBlock - a browser extension to block requests.
-    Copyright (C) 2014 The µBlock authors
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see {http://www.gnu.org/licenses/}.
-
-    Home: https://github.com/chrisaljoudi/uBlock
-*/
 
 /* jshint esnext: true, bitwise: false */
-/* global self, Components, punycode, µBlock */
+/* global self, Components, punycode, AppExtn */
 
 // For background page
 
@@ -58,9 +39,6 @@ vAPI.app.restart = function() {
 };
 
 /******************************************************************************/
-
-// Set default preferences for user to find in about:config
-vAPI.localStorage.setDefaultBool("forceLegacyToolbarButton", false);
 
 /******************************************************************************/
 
@@ -310,11 +288,8 @@ var windowWatcher = {
             } else if ( tabBrowser.tabContainer ) {
                 // desktop Firefox
                 tabContainer = tabBrowser.tabContainer;
-				console.log("******************** Updating tab ")
-                vAPI.contextMenu.register(window.document);
-                if (vAPI.toolbarButton.attachToNewWindow) {
-                    vAPI.toolbarButton.attachToNewWindow(window);
-                }
+				
+				
             } else {
                 return;
             }
@@ -355,8 +330,11 @@ var windowWatcher = {
             tabContainer = tabBrowser.tabContainer;
         }
 		
-		if(!tabContainer)
+		if(!tabContainer){
+		
+		console.log("No tab container identified")
 			return
+			}
 
         tabContainer.removeEventListener('TabClose', tabWatcher.onTabClose);
         tabContainer.removeEventListener('TabSelect', tabWatcher.onTabSelect);
@@ -393,7 +371,7 @@ var tabWatcher = {
         // target is tab in Firefox, browser in Fennec
         var tabId = vAPI.tabs.getTabId(target);
         vAPI.tabs.onClosed(tabId);
-        delete vAPI.toolbarButton.tabs[tabId];
+        
         vAPI.tabs.tabLookup.delete(tabId);
     },
 
@@ -522,7 +500,7 @@ vAPI.tabs.registerListeners = function() {
     cleanupTasks.push(function() {
         Services.ww.unregisterNotification(windowWatcher);
 
-        vAPI.contextMenu.removeAll();
+      
 
         for ( var win of vAPI.tabs.getWindows() ) {
             windowWatcher.onClosed(win);
@@ -831,13 +809,18 @@ vAPI.tabs.select = function(tab) {
 /******************************************************************************/
 
 vAPI.tabs.injectScript = function(tabId, details, callback) {
+	
+	console.log(tabId + "Injecting script ",details)
     var tab = this.get(tabId);
 
     if ( !tab ) {
+		console.log("no tab ")
         return;
     }
 
 	if(details.file ==undefined && details.code != undefined ){
+		
+		console.log("Injecting code  ")
 		
 		getBrowserForTab(tab).messageManager.sendAsyncMessage(
 				location.host + ':broadcast',
@@ -855,8 +838,11 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 	}else{
 		
 			if ( typeof details.file !== 'string' ) {
+				console.log("err Injecting code  ")
 				return;
 			}
+			
+			console.log(" Injecting file   ")
 
 			details.file = vAPI.getURL(details.file);
 			getBrowserForTab(tab).messageManager.sendAsyncMessage(
@@ -877,27 +863,6 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
     }
 };
 
-/******************************************************************************/
-
-vAPI.setIcon = function(tabId, iconStatus, badge) {
-    // If badge is undefined, then setIcon was called from the TabSelect event
-    var win = badge === undefined
-        ? iconStatus
-        : Services.wm.getMostRecentWindow('navigator:browser');
-    var curTabId = vAPI.tabs.getTabId(getTabBrowser(win).selectedTab);
-    var tb = vAPI.toolbarButton;
-
-    // from 'TabSelect' event
-    if ( tabId === undefined ) {
-        tabId = curTabId;
-    } else if ( badge !== undefined ) {
-        tb.tabs[tabId] = { badge: badge, img: iconStatus === 'on' };
-    }
-
-    if ( tabId === curTabId ) {
-        tb.updateState(win, tabId);
-    }
-};
 
 /******************************************************************************/
 
@@ -1194,43 +1159,17 @@ var httpObserver = {
     },
 
     handleRequest: function(channel, URI, details) {
-        var onBeforeRequest = vAPI.net.onBeforeRequest;
-        var type = this.typeMap[details.type] || 'other';
-
-        if ( onBeforeRequest.types.has(type) === false ) {
-            return false;
-        }
-
-        var result = onBeforeRequest.callback({
-            frameId: details.frameId,
-            hostname: URI.asciiHost,
-            parentFrameId: details.parentFrameId,
-            tabId: details.tabId,
-            type: type,
-            url: URI.asciiSpec
-        });
-
-        if ( !result || typeof result !== 'object' ) {
-            return false;
-        }
-
-        if ( result.cancel === true ) {
-            channel.cancel(this.ABORT);
-            return true;
-        }
-
-        /*if ( result.redirectUrl ) {
-            channel.redirectionLimit = 1;
-            channel.redirectTo(
-                Services.io.newURI(result.redirectUrl, null, null)
-            );
-            return true;
-        }*/
-
-        return false;
+		
+		return false;
+		
+		
     },
 
     observe: function(channel, topic) {
+		
+		if(1 == 1)
+			return;
+		
         if ( channel instanceof Ci.nsIHttpChannel === false ) {
             return;
         }
@@ -1265,13 +1204,8 @@ var httpObserver = {
                 result = null;
             }
 
-            result = vAPI.net.onHeadersReceived.callback({
-                hostname: URI.asciiHost,
-                parentFrameId: channelData[1],
-                responseHeaders: result ? [{name: topic, value: result}] : [],
-                tabId: channelData[3],
-                url: URI.asciiSpec
-            });
+            result =null
+			
 
             if ( result ) {
                 channel.setResponseHeader(
@@ -1393,10 +1327,12 @@ vAPI.net = {};
 /******************************************************************************/
 
 vAPI.net.registerListeners = function() {
+	
+	console.log("listeners registered ")
     // Since it's not used
     this.onBeforeSendHeaders = null;
 
-    this.onBeforeRequest.types = new Set(this.onBeforeRequest.types);
+  //  this.onBeforeRequest.types = new Set(this.onBeforeRequest.types);
 
     var shouldLoadListenerMessageName = location.host + ':shouldLoad';
     var shouldLoadListener = function(e) {
@@ -1453,27 +1389,34 @@ vAPI.net.registerListeners = function() {
         var details = e.data;
         var browser = e.target;
         
+		   console.log("locationChangedListener:" ,details.url);
+		   /*
         if (details.noRefresh && details.url === browser.currentURI.asciiSpec) { // If the location changed message specified not to refresh, and the URL is the same, no need to do anything
-            //console.debug("nsIWebProgressListener: ignoring onLocationChange: " + details.url);
+           console.log("nsIWebProgressListener: ignoring onLocationChange: " + details.url);
             return;
         }
-
+			*/
         var tabId = vAPI.tabs.getTabId(browser);
         if (tabId === vAPI.noTabId) {
+			
+			console.log("No tab data ")
             return; // Do not navigate for behind the scenes
         }
-        //console.debug("nsIWebProgressListener: onLocationChange: " + details.url + " (" + details.flags + ")");        
+        console.log("nsIWebProgressListener: onLocationChange: " + details.url + " (" + details.flags + ")" + tabId);        
 
         // LOCATION_CHANGE_SAME_DOCUMENT = "did not load a new document"
-        if ( details.flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_SAME_DOCUMENT ) {
+        //if ( details.flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_SAME_DOCUMENT ) {
+			
             vAPI.tabs.onUpdated(tabId, {url: details.url}, {
                 frameId: 0,
                 tabId: tabId,
+				id: tabId,
                 url: browser.currentURI.asciiSpec
             });
-            return;
-        }
+          //  return;
+        //}
 
+		/*
         // https://github.com/chrisaljoudi/uBlock/issues/105
         // Allow any kind of pages
         vAPI.tabs.onNavigation({
@@ -1481,6 +1424,8 @@ vAPI.net.registerListeners = function() {
             tabId: tabId,
             url: details.url,
         });
+		
+		*/
     };
 
     vAPI.messaging.globalMessageManager.addMessageListener(
@@ -1503,1091 +1448,6 @@ vAPI.net.registerListeners = function() {
 
         httpObserver.unregister();
     });
-};
-
-/******************************************************************************/
-
-vAPI.toolbarButton = {
-    id: location.host + '-button',
-    type: 'button',
-   // viewId: location.host + '-panel',
-    label: vAPI.app.name,
-    tooltiptext: vAPI.app.name,
-    tabs: {/*tabId: {badge: 0, img: boolean}*/}
-};
-
-/******************************************************************************/
-
-// Toolbar button UI for desktop Firefox
-vAPI.toolbarButton.init = function() {
-    if ( vAPI.fennec ) {
-		console.log("*******************fennec")
-        // Menu UI for Fennec
-        var tb = {
-            menuItemIds: new WeakMap(),
-            label: vAPI.app.name,
-            tabs: {}
-        };
-        vAPI.toolbarButton = tb;
-
-        tb.getMenuItemLabel = function(tabId) {
-            var label = this.label;
-            if ( tabId === undefined ) {
-                return label;
-            }
-            var tabDetails = this.tabs[tabId];
-            if ( !tabDetails ) {
-                return label;
-            }
-            if ( !tabDetails.img ) {
-                label += ' (' + vAPI.i18n('fennecMenuItemBlockingOff') + ')';
-            } else if ( tabDetails.badge ) {
-                label += ' (' + tabDetails.badge + ')';
-            }
-            return label;
-        };
-
-        tb.onClick = function() {
-			//TODO 
-			console.log("******************* toolbar clicked")
-			var win = Services.wm.getMostRecentWindow('navigator:browser');
-            var curTabId = vAPI.tabs.getTabId(getTabBrowser(win).selectedTab);
-			var tab = vAPI.tabs.tabFromTabId(curTabId)
-			
-			vAPI.toolbarButton.events.handleClick(tab)
-           /*
-
-		   var win = Services.wm.getMostRecentWindow('navigator:browser');
-            var curTabId = vAPI.tabs.getTabId(getTabBrowser(win).selectedTab);
-            vAPI.tabs.open({
-                url: 'popup.html?tabId=' + curTabId,
-                index: -1,
-                select: true
-            });
-			*/
-        };
-
-        tb.updateState = function(win, tabId) {
-            var id = this.menuItemIds.get(win);
-            if ( !id ) {
-                return;
-            }
-            win.NativeWindow.menu.update(id, {
-                name: this.getMenuItemLabel(tabId)
-            });
-        };
-
-        // Only actually expecting one window under Fennec (note, not tabs, windows)
-        for ( var win of vAPI.tabs.getWindows() ) {
-            var label = tb.getMenuItemLabel();
-            var id = win.NativeWindow.menu.add({
-                name: label,
-                callback: tb.onClick
-            });
-            tb.menuItemIds.set(win, id);
-        }
-
-        cleanupTasks.push(function() {
-            for ( var win of vAPI.tabs.getWindows() ) {
-                var id = tb.menuItemIds.get(win);
-                if ( id ) {
-                    win.NativeWindow.menu.remove(id);
-                    tb.menuItemIds.delete(win);
-                }
-            }
-        });
-
-        return;
-    }
-
-	
-	/*
-    vAPI.messaging.globalMessageManager.addMessageListener(
-        location.host + ':closePopup',
-        vAPI.toolbarButton.onPopupCloseRequested
-    );
-*/
-    cleanupTasks.push(function() {
-
-	/*
-       vAPI.messaging.globalMessageManager.removeMessageListener(
-            location.host + ':closePopup',
-            vAPI.toolbarButton.onPopupCloseRequested
-        );
-		*/
-    });
-
-    var CustomizableUI;
-
-    var forceLegacyToolbarButton = vAPI.localStorage.getBool("forceLegacyToolbarButton");
-    if (!forceLegacyToolbarButton) {
-        try {
-            CustomizableUI = Cu.import('resource:///modules/CustomizableUI.jsm', null).CustomizableUI;
-        } catch (ex) {
-        }
-    }
-
-    if (!CustomizableUI) {
-	
-	console.log("not CustomizableUI")
-        // Create a fallback non-customizable UI button
-        var sss = Cc["@mozilla.org/content/style-sheet-service;1"].getService(Ci.nsIStyleSheetService);
-        var styleSheetUri = Services.io.newURI(vAPI.getURL("css/legacy-toolbar-button.css"), null, null);
-        var legacyButtonId = "uBlock-legacy-button"; // NOTE: must match legacy-toolbar-button.css
-        this.id = legacyButtonId;
-        this.viewId = legacyButtonId + "-panel";
-                
-        if (!sss.sheetRegistered(styleSheetUri, sss.AUTHOR_SHEET)) {
-            sss.loadAndRegisterSheet(styleSheetUri, sss.AUTHOR_SHEET); // Register global so it works in all windows, including palette
-        }
-
-        var addLegacyToolbarButton = function(window) {
-		
-		console.log("Adding addLegacyToolbarButton button")
-            var document = window.document;
-            var toolbox = document.getElementById('navigator-toolbox') || document.getElementById('mail-toolbox');
-            
-            if (toolbox) {
-                var palette = toolbox.palette;
-
-                if (!palette) {
-                    // palette might take a little longer to appear on some platforms, give it a small delay and try again
-                    window.setTimeout(function() {
-                        if (toolbox.palette) {
-                            addLegacyToolbarButton(window);
-                        }
-                    }, 250);
-                    return;
-                }
-
-                var toolbarButton = document.createElement('toolbarbutton');
-                toolbarButton.setAttribute('id', legacyButtonId);
-                toolbarButton.setAttribute('type', 'button'); // type = panel would be more accurate, but doesn't look as good
-				console.log("Adding toolbar button")
-                toolbarButton.setAttribute('removable', 'true');
-                toolbarButton.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional');
-                toolbarButton.setAttribute('label', vAPI.toolbarButton.label);
-				toolbarButton.setAttribute('tooltiptext', vAPI.toolbarButton.label);
-				
-				
-				  toolbarButton.addEventListener('click', vAPI.toolbarButton.onCommand);
-		
-				/*
-                var toolbarButtonPanel = document.createElement("panel");
-                // toolbarButtonPanel.setAttribute('level', 'parent'); NOTE: Setting level to parent breaks the popup for PaleMoon under linux (mouse pointer misaligned with content). For some reason.
-                vAPI.toolbarButton.populatePanel(document, toolbarButtonPanel);
-                toolbarButtonPanel.addEventListener('popupshowing', vAPI.toolbarButton.onViewShowing);
-                toolbarButtonPanel.addEventListener('popuphiding', vAPI.toolbarButton.onViewHiding);
-                toolbarButton.appendChild(toolbarButtonPanel);
-                
-               
-
-                vAPI.toolbarButton.closePopup = function() {
-                    toolbarButtonPanel.hidePopup();
-                }
-				*/
-					palette.appendChild(toolbarButton);
-					
-                if (!vAPI.localStorage.getBool('legacyToolbarButtonAdded')) {
-                    // No button yet so give it a default location. If forcing the button, just put in in the palette rather than on any specific toolbar (who knows what toolbars will be available or visible!)
-                    var toolbar = !forceLegacyToolbarButton && document.getElementById('nav-bar');
-                    if (toolbar) {
-                        toolbar.appendChild(toolbarButton);
-                        toolbar.setAttribute('currentset', toolbar.currentSet);
-                        document.persist(toolbar.id, 'currentset');
-                    }
-                    vAPI.localStorage.setBool('legacyToolbarButtonAdded', 'true');
-                } else {
-                    // Find the place to put the button
-                    var toolbars = toolbox.externalToolbars.slice();
-                    for (var child of toolbox.children) {
-                        if (child.localName === 'toolbar') {
-                            toolbars.push(child);
-                        }
-                    }
-
-                    for (var toolbar of toolbars) {
-                        var currentsetString = toolbar.getAttribute('currentset');
-                        if (currentsetString) {
-                            var currentset = currentsetString.split(',');
-                            var index = currentset.indexOf(legacyButtonId);
-                            if (index >= 0) {
-                                // Found our button on this toolbar - but where on it?
-                                var before = null;
-                                for (var i = index + 1; i < currentset.length; i++) {
-                                    before = document.getElementById(currentset[i]);
-                                    if (before) {
-                                        toolbar.insertItem(legacyButtonId, before);
-                                        break;
-                                    }
-                                }
-                                if (!before) {
-                                    toolbar.insertItem(legacyButtonId);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        vAPI.toolbarButton.attachToNewWindow = function(win) {
-            addLegacyToolbarButton(win);
-        }
-
-        cleanupTasks.push(function() {
-            for ( var win of vAPI.tabs.getWindows() ) {
-                var toolbarButton = win.document.getElementById(legacyButtonId);
-                if (toolbarButton) {
-                    toolbarButton.parentNode.removeChild(toolbarButton);
-                }
-            }
-
-            if (sss.sheetRegistered(styleSheetUri, sss.AUTHOR_SHEET)) {
-                sss.unregisterSheet(styleSheetUri, sss.AUTHOR_SHEET);
-            }
-        }.bind(this));
-        return;
-    }else{
-		console.log("CustomizableUI")
-	}
-
-    this.CustomizableUI = CustomizableUI;
-
-    this.defaultArea = CustomizableUI.AREA_NAVBAR;
-    this.styleURI = [
-        '#' + this.id + '.whitelist {',
-            'list-style-image: url(',
-                vAPI.getURL('img/browsericons/autologinwhitelist16.png'),
-            ');',
-        '}',
-		'#' + this.id + '.active {',
-            'list-style-image: url(',
-                vAPI.getURL('img/browsericons/autologinLogo16.png'),
-            ');',
-        '}',
-		'#' + this.id + '.init {',
-            'list-style-image: url(',
-                vAPI.getURL('img/browsericons/autologinLogoInit16.png'),
-            ');',
-        '}',
-		'#' + this.id + '.off {',
-            'list-style-image: url(',
-                vAPI.getURL('img/browsericons/autologinLogoRed16.png'),
-            ');',
-        '}',
-        '#' + this.id + ' {',
-            'list-style-image: url(',
-                vAPI.getURL('img/browsericons/autologinLogo16.png'),
-            ');',
-        '}',
-        '#' + this.viewId + ' {',
-            'width: 160px;',
-            'height: 290px;',
-            'overflow: hidden !important;',
-        '}'
-    ];
-
-    var platformVersion = Services.appinfo.platformVersion;
-
-    if ( Services.vc.compare(platformVersion, '36.0') < 0 ) {
-        this.styleURI.push(
-            '#' + this.id + '[badge]:not([badge=""])::after {',
-                'position: absolute;',
-                'margin-left: -16px;',
-                'margin-top: 3px;',
-                'padding: 1px 2px;',
-                'font-size: 9px;',
-                'font-weight: bold;',
-                'color: #fff;',
-                'background: #666;',
-                'content: attr(badge);',
-            '}'
-        );
-    } else {
-        this.CUIEvents = {};
-        var updateBadge = function() {
-            var wId = vAPI.toolbarButton.id;
-            var buttonInPanel = CustomizableUI.getWidget(wId).areaType === CustomizableUI.TYPE_MENU_PANEL;
-
-            for ( var win of vAPI.tabs.getWindows() ) {
-                var button = win.document.getElementById(wId);
-                if ( buttonInPanel ) {
-                    button.classList.remove('badged-button');
-                    continue;
-                }
-                if ( button === null ) {
-                    continue;
-                }
-                button.classList.add('badged-button');
-            }
-
-            if ( buttonInPanel ) {
-                return;
-            }
-
-            // Anonymous elements need some time to be reachable
-            setTimeout(this.updateBadgeStyle, 250);
-        }.bind(this.CUIEvents);
-        this.CUIEvents.onCustomizeEnd = updateBadge;
-        this.CUIEvents.onWidgetUnderflow = updateBadge;
-
-        this.CUIEvents.updateBadgeStyle = function() {
-            var css = [
-                'background: #666',
-                'color: #fff'
-            ].join(';');
-			
-			console.log("*******************",vAPI.toolbarButton.id);
-
-            for ( var win of vAPI.tabs.getWindows() ) {
-                var button = win.document.getElementById(vAPI.toolbarButton.id);
-                if ( button === null ) {
-                    continue;
-                }
-                var badge = button.ownerDocument.getAnonymousElementByAttribute(
-                    button,
-                    'class',
-                    'toolbarbutton-badge'
-                );
-                if ( !badge ) {
-                    return;
-                }
-
-                badge.style.cssText = css;
-            }
-        };
-
-        this.onCreated = function(button) {
-            button.setAttribute('badge', '');
-            setTimeout(updateBadge, 250);
-        };
-
-        CustomizableUI.addListener(this.CUIEvents);
-    }
-
-    this.styleURI = Services.io.newURI(
-        'data:text/css,' + encodeURIComponent(this.styleURI.join('')),
-        null,
-        null
-    );
-
-	/*
-    this.closePopup = function(tabBrowser) {
-        CustomizableUI.hidePanelForNode(
-            tabBrowser.ownerDocument.getElementById(vAPI.toolbarButton.viewId)
-        );
-		
-    };
-	*/
-
-    CustomizableUI.createWidget(this);
-    
-
-    cleanupTasks.push(function() {
-        if ( this.CUIEvents ) {
-            CustomizableUI.removeListener(this.CUIEvents);
-        }
-
-        CustomizableUI.destroyWidget(this.id);
-        
-        for ( var win of vAPI.tabs.getWindows() ) {
-		
-            var panel = win.document.getElementById(this.viewId);
-            panel.parentNode.removeChild(panel);
-            win.QueryInterface(Ci.nsIInterfaceRequestor)
-                .getInterface(Ci.nsIDOMWindowUtils)
-                .removeSheet(this.styleURI, 1);
-				
-        }
-    }.bind(this));
-
-    this.init = null;
-};
-
-/******************************************************************************/
-
-vAPI.toolbarButton.onPopupCloseRequested = function({target}) {
-    if (vAPI.toolbarButton.closePopup) {
-        vAPI.toolbarButton.closePopup(target);
-    }
-}
-
-
-vAPI.toolbarButton.onCommand = function({target}) {
-   console.log("onCommand")
-   
-   
-			var win = Services.wm.getMostRecentWindow('navigator:browser');
-            var curTabId = vAPI.tabs.getTabId(getTabBrowser(win).selectedTab);
-			var tab = vAPI.tabs.tabFromTabId(curTabId)
-			
-			vAPI.toolbarButton.events.handleClick(tab)
-			
-};
-
-vAPI.toolbarButton.onClick = function({target}) {
-   
-};
-
-
-/******************************************************************************/
-
-vAPI.toolbarButton.onBeforeCreated = function(doc) {
-console.log("before created")
-
-  var panel = doc.createElement('panelview');
-    
-  //  vAPI.toolbarButton.populatePanel(doc, panel);
-
-    doc.getElementById('PanelUI-multiView').appendChild(panel);
-
-    doc.defaultView.QueryInterface(Ci.nsIInterfaceRequestor)
-        .getInterface(Ci.nsIDOMWindowUtils)
-        .loadSheet(this.styleURI, 1);
-		
-};
-
-vAPI.toolbarButton.populatePanel = function(doc, panel) {
-    panel.setAttribute('id', this.viewId);
-
-	/*
-    var iframe = doc.createElement('iframe');
-    iframe.setAttribute('type', 'content');
-
-    panel.appendChild(iframe);
-
-	*/
-    var updateTimer = null;
-    var delayedResize = function(attempts) {
-        if ( updateTimer ) {
-            return;
-        }
-
-        // Sanity check
-        attempts = (attempts || 0) + 1;
-        if (attempts > 1000) {
-            console.error('uBlock> delayedResize: giving up after too many attemps');
-            return;
-        }
-
-       // updateTimer = setTimeout(resizePopup, 10, attempts);
-    };
-    var resizePopup = function(attempts) {
-        updateTimer = null;
-        var body = iframe.contentDocument.body;
-        panel.parentNode.style.maxWidth = 'none';
-        // https://github.com/chrisaljoudi/uBlock/issues/730
-        // Voodoo programming: this recipe works
-        var toPixelString = pixels => pixels.toString() + 'px';
-
-        var clientHeight = body.clientHeight;
-        iframe.style.height = toPixelString(clientHeight);
-        panel.style.height = toPixelString(clientHeight + (panel.boxObject.height - panel.clientHeight));
-
-        var clientWidth = body.clientWidth;
-        iframe.style.width = toPixelString(clientWidth);
-        panel.style.width = toPixelString(clientWidth + (panel.boxObject.width - panel.clientWidth));
-
-        if ( iframe.clientHeight !== body.clientHeight || iframe.clientWidth !== body.clientWidth ) {
-            delayedResize(attempts);
-        }
-    };
-
-    var CustomizableUI = this.CustomizableUI;
-    var widgetId = this.id;
-    var onPopupReady = function() {
-        var win = this.contentWindow;
-
-        if ( !win || win.location.host !== location.host ) {
-            return;
-        }
-
-        if (CustomizableUI) {
-            var placement = CustomizableUI.getPlacementOfWidget(widgetId);
-            if (placement.area === CustomizableUI.AREA_PANEL) {
-                // Add some overrides for displaying the popup correctly in a panel
-                win.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils)
-                    .loadSheet(Services.io.newURI(vAPI.getURL("css/popup-vertical.css"), null, null), Ci.nsIDOMWindowUtils.AUTHOR_SHEET);
-            }
-        }
-
-        new win.MutationObserver(delayedResize).observe(win.document.body, {
-            attributes: true,
-            characterData: true,
-            subtree: true
-        });
-
-        delayedResize();
-    };
-
-   // iframe.addEventListener('load', onPopupReady, true);
-	
-};
-
-/******************************************************************************/
-
-vAPI.toolbarButton.onViewShowing = function({target}) {
-    //target.firstChild.setAttribute('src', vAPI.getURL('popup.html'));
-};
-
-/******************************************************************************/
-
-vAPI.toolbarButton.onViewHiding = function({target}) {
-    //target.parentNode.style.maxWidth = '';
-    //target.firstChild.setAttribute('src', 'about:blank');
-};
-
-/******************************************************************************/
-
-vAPI.toolbarButton.updateState = function(win, tabId) {
-    var button = win.document.getElementById(this.id);
-
-    if ( !button ) {
-        return;
-    }
-
-    var icon = this.tabs[tabId];
-
-    button.setAttribute('badge', icon && icon.badge || '');
-
-    if ( !icon || !icon.img ) {
-        button.classList.add('off');
-    }
-    else {
-        button.classList.remove('off');
-    }
-};
-
-/******************************************************************************/
-
-vAPI.toolbarButton.init();
-
-/******************************************************************************/
-
-vAPI.contextMenu = {
-    contextMap: {
-        frame: 'inFrame',
-        link: 'onLink',
-        image: 'onImage',
-        audio: 'onAudio',
-        video: 'onVideo',
-        editable: 'onEditableArea'
-    },
-	menus:[],	
-	disabledmenus:[],	
-	getMenuIndex:function(menuId){
-		for(var  i=0;i<vAPI.contextMenu.menus.length;i++){
-		
-				var details=vAPI.contextMenu.menus[i]["details"]
-				if(details.id == menuId)
-					return i
-		}
-		return -1;
-	
-	},
-	
-	remove: function(menuId) {
-	
-	var index=vAPI.contextMenu.getMenuIndex(menuId)
-		if(index > -1)
-			 vAPI.contextMenu.menus.splice(index,1);
-			 
-	},	
-	getDisabledMenuIndex:function(menuId){
-		for(var i=0;i<vAPI.contextMenu.disabledmenus.length;i++){
-			var details=vAPI.contextMenu.disabledmenus[i]["details"]
-				
-				if(details.id == menuId)
-					return i
-		}
-		return -1;
-	
-	},
-	changeLabel: function(menuId,label) {
-	
-		var index=vAPI.contextMenu.getMenuIndex(menuId)
-		
-		if(index > -1){
-			
-			var menu=vAPI.contextMenu.menus[index]
-			var details=menu["details"]
-			details.title=label
-			var callback=menu["callback"]			
-			vAPI.contextMenu.remove(menuId)		
-			vAPI.contextMenu.create(details, callback)
-		}
-	},
-	hide: function(menuId) {
-	
-		var index=vAPI.contextMenu.getMenuIndex(menuId)
-		if(index > -1){
-			
-			vAPI.contextMenu.disabledmenus.push(vAPI.contextMenu.menus[index])
-			this.remove(menuId)
-		}
-	},
-	show: function(menuId) {
-	
-		var index=this.getDisabledMenuIndex(menuId)
-		if(index > -1){
-			
-			//vAPI.contextMenu.disabledmenus.push(vAPI.contextMenu.menus[index])
-			//this.remove(menuId)
-			var menu=vAPI.contextMenu.disabledmenus[index]
-			var details=menu["details"]
-			var callback=menu["callback"]
-			vAPI.contextMenu.create(details, callback)
-			 vAPI.contextMenu.disabledmenus.splice(index,1);
-		}
-		
-	}
-};
-
-vAPI.contextMenu.displayMenuItems = function({target}) {
-
-
-  var doc = target.ownerDocument;
-  
-  
-		for(var k = 0; k < vAPI.contextMenu.menus.length; k++) {
-			
-				var menu=vAPI.contextMenu.menus[k]
-				
-			
-				var details=vAPI.contextMenu.menus[k]["details"]
-				var contexts=menu["contexts"]
-				var menuItemId =details.id
-				
-				
-				vAPI.contextMenu.displayMenuItem(doc,menuItemId,contexts)
-				
-				}
-}
-/******************************************************************************/
-
-
-vAPI.contextMenu.displayMenuItem = function(doc,menuItemId,ctx) {
-   
-    var gContextMenu = doc.defaultView.gContextMenu;
-
-    if ( !gContextMenu.browser ) {
-        return;
-    }
-
-    var menuitem = doc.getElementById(menuItemId);
-    var currentURI = gContextMenu.browser.currentURI;
-
-    // https://github.com/chrisaljoudi/uBlock/issues/105
-    // TODO: Should the element picker works on any kind of pages?
-    if ( !currentURI.schemeIs('http') && !currentURI.schemeIs('https') ) {
-        menuitem.hidden = true;
-        return;
-    }
-
-
-
-    if ( !ctx ) {
-		console.log( "EMPTY context  showing " + menuItemId,ctx)
-        menuitem.hidden = false;
-        return;
-    }
-
-    var ctxMap = vAPI.contextMenu.contextMap;
-
-    for ( var context of ctx ) {
-        if ( context === 'page' && !gContextMenu.onLink && !gContextMenu.onImage
-            && !gContextMenu.onEditableArea && !gContextMenu.inFrame
-            && !gContextMenu.onVideo && !gContextMenu.onAudio ) {
-				
-				console.log("SHOW page showing " + menuItemId)
-            menuitem.hidden = false;
-            return;
-        }
-
-        if ( gContextMenu[ctxMap[context]] ) {
-			console.log("SHOW  " + context + " showing " + menuItemId)
-            menuitem.hidden = false;
-            return;
-        }
-    }
-
-	console.log( "SHOW  hiding " + menuItemId,ctx)
-    menuitem.hidden = true;
-};
-
-
-
-
-vAPI.contextMenu.createContextGroupMenu= function(doc,menu) {
-    var menuitem = doc.createElement('menu');
-	
-	
-
-	
-				var details=menu["details"]
-			
-				var menuItemId =details.id
-				var menuLabel =details.title
-	
-	
-				
-    menuitem.setAttribute('id', menuItemId);
-    menuitem.setAttribute('label', menuLabel);
-	
-	//if(menu["parentId"] != undefined)
-	//	menuitem.setAttribute('parentId', menu["parentId"]);
-		
-		
-    menuitem.setAttribute('image', vAPI.getURL('img/browsericons/autologinLogo16.png'));
-    menuitem.setAttribute('class', 'menuitem-iconic');
-	
-	 var menupopup = doc.createElement('menupopup');
-	  menupopup.setAttribute('id',"popup"+  menuItemId);
-	menuitem.appendChild(menupopup);
-    return menuitem;
-}
-
-/******************************************************************************/
-
-vAPI.contextMenu.createContextMenuItem = function(doc,menu) {
-    var menuitem = doc.createElement('menuitem');
-		
-	
-			var details=menu["details"]
-				
-				var menuItemId =details.id
-				var menuLabel =details.title
-	
-	
-    menuitem.setAttribute('id', menuItemId);
-    menuitem.setAttribute('label', menuLabel);
-	
-	//if(menu["parentId"] != undefined)
-	//	menuitem.setAttribute('parentId', menu["parentId"]);
-		
-		
-    menuitem.setAttribute('image', vAPI.getURL('img/browsericons/autologinLogo16.png'));
-    menuitem.setAttribute('class', 'menuitem-iconic');
-    return menuitem;
-}
-
-vAPI.contextMenu.register = function(doc) {
-    
-	if(1 == 1){
-		
-		return;
-	}
-	//Iterate all
-	console.log("vAPI.contextMenu.menus.length",vAPI.contextMenu.menus.length)
-	for(var k = 0; k < vAPI.contextMenu.menus.length; k++) {
-			
-				var menu=vAPI.contextMenu.menus[k]
-				var details=menu["details"]
-				
-				var menuItemId =details.id
-				var menuTitle =details.title
-				
-				var contexts=menu["contexts"]
-				
-				
-				var isParent =details.isParent
-				var parentId =details.parentId
-				
-				
-	
-	
-	
-	
-			
-		if (doc.getElementById(menuItemId)) {
-			// Context menu already registered for this window
-			return;
-		}
-
-    var contextMenu = doc.getElementById('contentAreaContextMenu');
-    if (contextMenu) {
-	
-	if(isParent === true){
-		
-		
-				var menuitem = this.createContextGroupMenu(doc,menu);
-				
-				contextMenu.insertBefore(menuitem, doc.getElementById('inspect-separator'));
-				
-				
-		
-		}else{
-			var menuitem = this.createContextMenuItem(doc,menu);
-			
-			menuitem.addEventListener('command', vAPI.contextMenu.onCommand);
-			
-			console.log("event listener set")
-			
-			if(parentId == "" &&  null != doc.getElementById(parentId))					
-					doc.getElementById(parentId).appendChild(menuitem);
-			else
-					contextMenu.insertBefore(menuitem, doc.getElementById('inspect-separator'));
-			
-			//
-			
-		
-		}
-			contextMenu.addEventListener('popupshowing', this.displayMenuItems);
-	
-    }
-	
-	}
-};
-
-
-/******************************************************************************/
-
-vAPI.contextMenu.unregister = function(doc) {
- 
-	//remove Callbacks
-	for(var k = 0; k < vAPI.contextMenu.menus.length; k++) {
-			
-				var menu=vAPI.contextMenu.menus[k]
-				
-				var details=menu["details"]
-				
-				var menuItemId =details.id
-				
-				if ( vAPI.fennec ) {
-					// TODO
-					return;
-				}
-
-				var menuitem = doc.getElementById(menuItemId);
-					if(null != menuitem ){
-						var contextMenu = menuitem.parentNode;
-						menuitem.removeEventListener('command', this.onCommand);
-						contextMenu.removeEventListener('popupshowing', this.displayMenuItems);
-						
-		
-					}
-				}
-
-			//remove parent elements 
-			for(var k = 0; k < vAPI.contextMenu.menus.length; k++) {
-			
-				var menu=vAPI.contextMenu.menus[k]
-				
-				var details=menu["details"]
-				
-				var menuItemId =details.id
-				var isParent =details.isParent
-				
-				var menuitem = doc.getElementById(menuItemId);
-					if(null != menuitem && isParent){
-						var contextMenu = menuitem.parentNode;
-					
-						contextMenu.removeChild(menuitem);
-		
-					}
-				}
-    
-};
-
-/******************************************************************************/
-
-// vAPI.contextMenu.registerForWebInspector = function(eventName, toolbox, panel) {
-    // var menuPopup = panel.panelDoc.getElementById("inspector-node-popup");
-    // var deleteMenuItem = panel.panelDoc.getElementById("node-menu-delete");
-    // var tiltButton = toolbox.toolboxButtons.filter(tool => tool.id === "command-button-tilt")[0];
-    // tiltButton = tiltButton && tiltButton.button;
-
-    // if (menuPopup && deleteMenuItem) {
-        // var menuitem = vAPI.contextMenu.createContextMenuItem(panel.panelDoc);
-        // menuitem.addEventListener('command', function() {
-            // var selectedNodeFront = panel.selection.nodeFront;
-            // while (selectedNodeFront && selectedNodeFront.baseURI !== panel.walker.rootNode.baseURI) {
-             //   This is an iFrame, so we can't select it directly. Walk up the parent stack until we do
-                // selectedNodeFront = selectedNodeFront.parentNode();
-            // }
-            // if (selectedNodeFront) {
-                // selectedNodeFront.getUniqueSelector().then(selector => µBlock.elementPickerExec(vAPI.tabs.getTabId(panel.browser), { type: 'element', value: selector}));
-
-            //    Turn off 3D view, if it's turned on.
-                // if (tiltButton && tiltButton.checked) {
-                    // tiltButton.click();
-                // }
-            // }
-        // });
-
-        // menuPopup.insertBefore(menuitem, deleteMenuItem);
-    // }
-// }
-
-// vAPI.contextMenu.registerForNetMonitor = function(eventName, toolbox, panel) {
-    // var doc = panel.panelWin.document;
-    // var menuPopup = doc.getElementById("network-request-popup");
-    // var insertBeforeMenuItem = doc.getElementById("request-menu-context-separator");
-    
-    // if (menuPopup && insertBeforeMenuItem) {
-        // var menuitem = vAPI.contextMenu.createContextMenuItem(doc);
-        // menuitem.addEventListener('command', function() {
-            // var selectedRequest = panel.panelWin.NetMonitorView.RequestsMenu.selectedAttachment;
-            // if (selectedRequest) {
-                // µBlock.elementPickerExec(vAPI.tabs.getTabId(toolbox.target.tab), { type: 'url', value: selectedRequest.url });
-            // }
-        // });
-
-        // menuPopup.insertBefore(menuitem, insertBeforeMenuItem);
-    // }
-// }
-
-
-
-
-    vAPI.contextMenu.onCommand = function({target}) {
-	
-		console.log("vAPI.contextMenu.onCommand",target)
-		var menuId=target.id
-        var gContextMenu = getOwnerWindow(this).gContextMenu;
-        var details = {
-            menuItemId: menuId
-        };
-			var index = vAPI.contextMenu.getMenuIndex(menuId)
-
-		var callback=null
-		
-		if(index > -1)
-			callback=vAPI.contextMenu.menus[index]["callback"]
-			
-        if ( gContextMenu.inFrame ) {
-            details.tagName = 'iframe';
-            // Probably won't work with e10s
-            details.frameUrl = gContextMenu.focusedWindow.location.href;
-        } else if ( gContextMenu.onImage ) {
-            details.tagName = 'img';
-            details.srcUrl = gContextMenu.mediaURL;
-        } else if ( gContextMenu.onAudio ) {
-            details.tagName = 'audio';
-            details.srcUrl = gContextMenu.mediaURL;
-        } else if ( gContextMenu.onVideo ) {
-            details.tagName = 'video';
-            details.srcUrl = gContextMenu.mediaURL;
-        } else if ( gContextMenu.onLink ) {
-            details.tagName = 'a';
-            details.linkUrl = gContextMenu.linkURL;
-        }
-
-		if ( null != callback &&  typeof callback === 'function'  ) {
-		
-			callback(details, {
-				id: vAPI.tabs.getTabId(gContextMenu.browser),
-				url: gContextMenu.browser.currentURI.asciiSpec
-			});
-		}
-		
-    }
-	
-/******************************************************************************/
-
-vAPI.contextMenu.create = function(details, callback) {
-  
-/*  this.menuItemId = details.id;
-    this.menuLabel = details.title;
-   
-	*/
-	var contexts = details.contexts;
-	
-
-    if ( Array.isArray(contexts) && contexts.length ) {
-        contexts = contexts.indexOf('all') === -1 ? contexts : null;
-    } else {
-        // default in Chrome
-        contexts = ['page'];
-    }
-
-	var menu={"details":details,"contexts":contexts,"callback":callback}
-	vAPI.contextMenu.menus.push(menu)	
-	
-	 for ( var win of vAPI.tabs.getWindows() ) {
-				
-				var doc =win.document
-				var menuItemId =details.id
-				var menuTitle =details.title
-				
-				
-				
-				var isParentMenu =details.isParent
-				var parentId =details.parentId
-				
-				
-	
-	
-	
-	
-			
-		if (doc.getElementById(menuItemId)) {
-			// Context menu already registered for this window
-			//console.log("doc.getElementById(menuItemId) already registered",menuItemId,doc.getElementById(menuItemId))
-			return;
-		}
-
-		
-    var contextMenu = doc.getElementById('contentAreaContextMenu');
-	//console.log("MENU checking " + menuItemId + "exists " +contextMenu.innerHTML)
-    if (contextMenu) {
-	
-	if(isParentMenu){
-		
-		
-				var menuitem = this.createContextGroupMenu(doc,menu);
-				
-				contextMenu.insertBefore(menuitem, doc.getElementById('inspect-separator'));
-				
-				
-		
-		}else{
-		
-			var menuitem = this.createContextMenuItem(doc,menu);
-			
-			menuitem.addEventListener('command', this.onCommand);
-			
-			if(parentId != ""){
-				
-				var mnupopupid="popup" +parentId
-				
-				
-				
-				if(null != doc.getElementById( mnupopupid))
-					doc.getElementById(mnupopupid).appendChild(menuitem);
-				
-			} 	
-			else
-					contextMenu.insertBefore(menuitem, doc.getElementById('inspect-separator'));
-			
-			//
-			
-		
-		}
-		contextMenu.addEventListener('popupshowing', this.displayMenuItems);
-    }
-	
-	
-	 }
-/*
-    for ( var win of vAPI.tabs.getWindows() ) {
-        this.register(win.document);
-    }
-	*/
-};
-
-/******************************************************************************/
-
-vAPI.contextMenu.removeAll = function() {
-    for ( var win of vAPI.tabs.getWindows() ) {
-        this.unregister(win.document);
-    }
-
-	vAPI.contextMenu.menus=[]
-    //this.onCommand = null;
-	
-	
 };
 
 /******************************************************************************/
@@ -2646,7 +1506,8 @@ vAPI.lastError = function() {
 // the web pages before uBlock was ready.
 
 vAPI.onLoadAllCompleted = function() {
-    var µb = µBlock;
+    var µb = AppExtn;
+	console.log("VAPI onLoadAllCompleted")
     for ( var tab of this.tabs.getAll() ) {
         // We're insterested in only the tabs that were already loaded
         if ( !vAPI.fennec && tab.hasAttribute('pending') ) {
@@ -2660,6 +1521,21 @@ vAPI.onLoadAllCompleted = function() {
         browser.messageManager.sendAsyncMessage(
             location.host + '-load-completed'
         );
+		
+		console.log("Injecting vapi client ")
+		
+		//Injecting scripts for all tabs 
+		vAPI.tabs.injectScript(tab.id, {
+            file: 'js/vapi-client.js',
+            allFrames: false,
+            runAt: 'document_start'
+        }, function(){
+
+			console.log("Start process scripts ")
+			globalAutologinHandler.processScripts(tab)
+		});
+		
+		
     }
 };
 
@@ -2668,11 +1544,11 @@ vAPI.onLoadAllCompleted = function() {
 // Likelihood is that we do not have to punycode: given punycode overhead,
 // it's faster to check and skip than do it unconditionally all the time.
 
-var punycodeHostname = punycode.toASCII;
+var punycodeHostname = "";
 var isNotASCII = /[^\x21-\x7F]/;
 
 vAPI.punycodeHostname = function(hostname) {
-    return isNotASCII.test(hostname) ? punycodeHostname(hostname) : hostname;
+    return hostname;
 };
 
 vAPI.punycodeURL = function(url) {

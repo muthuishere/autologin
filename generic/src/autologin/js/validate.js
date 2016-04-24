@@ -1,5 +1,9 @@
 if (undefined == validate){
 
+	var  messager= vAPI.messaging.channel('validate.js');
+	vAPI.messager=messager
+
+	
 var validate={
 
 	
@@ -23,9 +27,9 @@ var validate={
 		
 		document.querySelector("span#autologinmsg").innerHTML="";
 		var curpwd=document.getElementById("txtaskpassword").value;
-	 	chrome.extension.sendMessage({action: "validateCredential",info:curpwd}, function(response) {
+	 	messager.send({action: "validateCredential",info:curpwd}, function(response) {
 				if(response.valid){
-					chrome.extension.sendMessage({action: "injectAutoLogin"}, function(response) {});
+					messager.send({action: "injectAutoLogin"}, function(response) {});
 				
 				}else{
 				

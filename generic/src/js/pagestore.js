@@ -1,26 +1,5 @@
-/*******************************************************************************
 
-    µBlock - a browser extension to block requests.
-    Copyright (C) 2014 Raymond Hill
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see {http://www.gnu.org/licenses/}.
-
-    Home: https://github.com/chrisaljoudi/uBlock
-*/
-
-/* jshint bitwise: false */
-/* global µBlock */
 
 /*******************************************************************************
 
@@ -34,13 +13,13 @@ To create a log of net requests
 /******************************************************************************/
 /******************************************************************************/
 
-µBlock.PageStore = (function() {
+AppExtn.PageStore = (function() {
 
 'use strict';
 
 /******************************************************************************/
 
-var µb = µBlock;
+var µb = AppExtn;
 
 /******************************************************************************/
 /******************************************************************************/
@@ -307,9 +286,9 @@ PageStore.prototype.init = function(tabId) {
     // Support `elemhide` filter option. Called at this point so the required
     // context is all setup at this point.
     var context = this.createContextFromPage();
-    this.skipCosmeticFiltering = µb.staticNetFilteringEngine
-                                   .matchStringExactType(context, tabContext.normalURL, 'cosmetic-filtering')
-                                   .charAt(1) === 'b';
+    this.skipCosmeticFiltering = {};
+	
+	
 
     return this;
 };
@@ -335,8 +314,7 @@ PageStore.prototype.reuse = function(context) {
     // video thumbnail would not work, because the frame hierarchy structure
     // was flushed from memory, while not really being flushed on the page.
     if ( context === 'tabUpdated' ) {
-        // As part of https://github.com/chrisaljoudi/uBlock/issues/405
-        // URL changed, force a re-evaluation of filtering switch
+       
         this.netFilteringReadTime = 0;
         return this;
     }
@@ -474,121 +452,11 @@ PageStore.prototype.toggleNetFilteringSwitch = function(url, scope, state) {
     this.netFilteringCache.empty();
 };
 
-/******************************************************************************/
-
-PageStore.prototype.filterRequest = function(context) {
-
-
-    if ( this.getNetFilteringSwitch() === false ) {
-        
-        return '';
-    }
-
-		var details={}
-							
-		details.tabId=this.tabId 
-		details.url=context.requestURL
-		details.type=context.requestType
-		
-		details.rootHostname=context.rootHostname
-		details.requestHostname=context.requestHostname
-		details.requestDomain=context.requestDomain
-		
-	return extension.handlebackgroundrequest(details);
-	
-	/*
-	
-    var entry = this.netFilteringCache.lookup(context);
-    if ( entry !== undefined ) {
-        //console.debug('cache HIT: PageStore.filterRequest("%s")', context.requestURL);
-        return entry.result;
-    }
-
-    var result = '';
-
-    // Given that:
-    // - Dynamic filtering override static filtering
-    // - Evaluating dynamic filtering is much faster than static filtering
-    // We evaluate dynamic filtering first, and hopefully we can skip
-    // evaluation of static filtering.
-    if ( µb.userSettings.advancedUserEnabled ) {
-        var df = µb.sessionFirewall.evaluateCellZY(
-            context.rootHostname,
-            context.requestHostname,
-            context.requestType
-        );
-        if ( df.mustBlockOrAllow() ) {
-            result = df.toFilterString();
-        }
-    }
-
-    // Static filtering never override dynamic filtering
-    if ( result === '' ) {
-        result = µb.staticNetFilteringEngine.matchString(context);
-    }
-
-    //console.debug('cache MISS: PageStore.filterRequest("%s")', context.requestURL);
-    if ( collapsibleRequestTypes.indexOf(context.requestType) !== -1 ) {
-        this.netFilteringCache.add(context, result);
-    }
-
-   console.log(this.tabId , 'allow [%s, %s] = "%s"', context.requestHostname, context.requestType, result);
-
-    return result;
-	
-	*/
-};
 
 // http://jsperf.com/string-indexof-vs-object
 var collapsibleRequestTypes = 'image sub_frame object';
 
 /******************************************************************************/
-
-PageStore.prototype.filterRequestNoCache = function(context) {
-    if ( this.getNetFilteringSwitch() === false ) {
-        return '';
-    }
-
-	
-		var details={}
-							
-		details.tabId=this.tabId 
-		details.url=context.requestURL
-		details.type=context.requestType
-		
-		details.rootHostname=context.rootHostname
-		details.requestHostname=context.requestHostname
-		details.requestDomain=context.requestDomain
-		
-	return extension.handlebackgroundrequest(details);
-	/*
-    var result = '';
-
-    // Given that:
-    // - Dynamic filtering override static filtering
-    // - Evaluating dynamic filtering is much faster than static filtering
-    // We evaluate dynamic filtering first, and hopefully we can skip
-    // evaluation of static filtering.
-    if ( µb.userSettings.advancedUserEnabled ) {
-        var df = µb.sessionFirewall.evaluateCellZY(
-            context.rootHostname,
-            context.requestHostname,
-            context.requestType
-        );
-        if ( df.mustBlockOrAllow() ) {
-            result = df.toFilterString();
-        }
-    }
-
-    // Static filtering never override dynamic filtering
-    if ( result === '' ) {
-        result = µb.staticNetFilteringEngine.matchString(context);
-    }
-
-    return result;
-	
-	*/
-};
 
 /******************************************************************************/
 

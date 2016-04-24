@@ -1,6 +1,9 @@
 
 if (undefined == capture) {
+	var  messager= vAPI.messaging.channel('capture.js');
+	vAPI.messager=messager
 
+	
 	var capture = {
 		form : null,
 		elems : [],
@@ -107,7 +110,7 @@ if (undefined == capture) {
 			var data ={}
 		data.url =this.getdomainName(document.location.toString().split('?')[0])
 		
-		chrome.extension.sendMessage({action: "hiddencapture",url:data.url}, function(response) {
+		messager.send({action: "hiddencapture",url:data.url}, function(response) {
 			
 				capture.extnid=response.extnid
 				 capture.hiddencapture=response.hiddencapture
@@ -230,7 +233,7 @@ if (undefined == capture) {
 								capture.elems.push(elem)
 
 								console.log("check")
-								console.log(window.getEventListeners(formelement))
+								//console.log(window.getEventListeners(formelement))
 								
 								
 								formelement.addEventListener('blur', function (e) {
@@ -376,7 +379,7 @@ if (undefined == capture) {
 					data.authtype='form'
 				
 						console.log("Sending to background")
-					chrome.extension.sendMessage({
+					messager.send({
 						action : "addAutoLoginFormElements",
 						info : data
 					}, function (response) {

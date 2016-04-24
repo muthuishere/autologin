@@ -1,25 +1,5 @@
-/*******************************************************************************
 
-    µBlock - a browser extension to block requests.
-    Copyright (C) 2014-2015 The µBlock authors
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see {http://www.gnu.org/licenses/}.
-
-    Home: https://github.com/chrisaljoudi/uBlock
-*/
-
-/* global self, µBlock */
 
 // For background page
 
@@ -222,9 +202,10 @@ vAPI.tabs.registerListeners = function() {
         onClosedClient(tabId);
     };
 
-    chrome.webNavigation.onCreatedNavigationTarget.addListener(onCreatedNavigationTarget);
-    chrome.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate);
-    chrome.webNavigation.onCommitted.addListener(onCommitted);
+    //chrome.webNavigation.onCreatedNavigationTarget.addListener(onCreatedNavigationTarget);
+    //chrome.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate);
+    //chrome.webNavigation.onCommitted.addListener(onCommitted);
+	console.log("Adding updated listener")
     chrome.tabs.onUpdated.addListener(onUpdated);
     chrome.tabs.onRemoved.addListener(onClosed);
 };
@@ -594,7 +575,7 @@ vAPI.messaging.onPortMessage = function(request, port) {
         return;
     }
 
-    console.error('µBlock> messaging > unknown request: %o', request);
+    console.error('AppExtn> messaging > unknown request: %o', request);
 
     // Unhandled:
     // Need to callback anyways in case caller expected an answer, or
@@ -713,7 +694,7 @@ vAPI.net = {};
 /******************************************************************************/
 
 vAPI.net.registerListeners = function() {
-    var µb = µBlock;
+    var µb = AppExtn;
     var µburi = µb.URI;
 
     var normalizeRequestDetails = function(details) {
@@ -949,53 +930,24 @@ vAPI.onLoadAllCompleted = function() {
 		
 		
 	
-    var scriptStart = function(tabId) {
-		/* 
+    var scriptStart = function(tab) {
+		 
 		
-        vAPI.tabs.injectScript(tabId, {
+        vAPI.tabs.injectScript(tab.id, {
             file: 'js/vapi-client.js',
-            allFrames: true,
+            allFrames: false,
             runAt: 'document_start'
-        }, function(){ });
+        }, function(){
+
+
+			globalAutologinHandler.processScripts(tab)
+		});
 		
  		// Autologin Script
 		
-		
-	  
-	     vAPI.tabs.injectScript(tabId, {
-            file: 'js/autologin-utils.js',
-            allFrames: true,
-            runAt: 'document_start'
-        },function(){
-			
-			
-					vAPI.tabs.injectScript(tabId, {
-					file: 'js/autologin-conf.js',
-					allFrames: true,
-					runAt: 'document_start'
-				},function(){
-					
-							vAPI.tabs.injectScript(tabId, {
-								file: "js/autologin-client.js",
-								allFrames: true,
-								runAt: 'document_start'
-							}, function(){
-										vAPI.tabs.injectScript(tabId, {
-										file: 'js/contentscript-start.js',
-										allFrames: true,
-										runAt: 'document_start'
-									}, function(){ scriptEnd(tabId); });
-										
-							});
-					
-					
-				});
-			
-		});
-				
+	
 		
 		
-		 */
 		
 
 							
@@ -1007,14 +959,15 @@ vAPI.onLoadAllCompleted = function() {
        
     };
     var bindToTabs = function(tabs) {
-        var µb = µBlock;
+        var µb = AppExtn;
         var i = tabs.length, tab;
         while ( i-- ) {
             tab = tabs[i];
             µb.tabContextManager.commit(tab.id, tab.url);
             µb.bindTabToPageStats(tab.id);
             // https://github.com/chrisaljoudi/uBlock/issues/129
-            scriptStart(tab.id);
+           scriptStart(tab);
+		   
         }
     };
 

@@ -1,28 +1,11 @@
-/*******************************************************************************
 
-    µBlock - a browser extension to block requests.
-    Copyright (C) 2014 Raymond Hill
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see {http://www.gnu.org/licenses/}.
-
-    Home: https://github.com/chrisaljoudi/uBlock
-*/
-
-/* global vAPI, µBlock */
+/* global vAPI, AppExtn */
 
 /******************************************************************************/
 /******************************************************************************/
+
+
 
 (function() {
 
@@ -30,13 +13,13 @@
 
 /******************************************************************************/
 
-var µb = µBlock;
+var µb = AppExtn;
 
 // https://github.com/gorhill/httpswitchboard/issues/303
 // Some kind of trick going on here:
 //   Any scheme other than 'http' and 'https' is remapped into a fake
-//   URL which trick the rest of µBlock into being able to process an
-//   otherwise unmanageable scheme. µBlock needs web page to have a proper
+//   URL which trick the rest of AppExtn into being able to process an
+//   otherwise unmanageable scheme. AppExtn needs web page to have a proper
 //   hostname to work properly, so just like the 'chromium-behind-the-scene'
 //   fake domain name, we map unknown schemes into a fake '{scheme}-scheme'
 //   hostname. This way, for a specific scheme you can create scope with
@@ -49,6 +32,11 @@ var µb = µBlock;
     if ( vAPI.isBehindTheSceneTabId(tabId) ) {
         return 'http://behind-the-scene/';
     }
+	
+	
+	return pageURL;
+	/*
+	
     var uri = this.URI.set(pageURL);
     var scheme = uri.scheme;
     if ( scheme === 'https' || scheme === 'http' ) {
@@ -64,73 +52,14 @@ var µb = µBlock;
     }
 
     return 'http://' + fakeHostname + '/';
+	*/
 };
 
-/******************************************************************************/
-/******************************************************************************
-
-To keep track from which context *exactly* network requests are made. This is
-often tricky for various reasons, and the challenge is not specific to one
-browser.
-
-The time at which a URL is assigned to a tab and the time when a network
-request for a root document is made must be assumed to be unrelated: it's all
-asynchronous. There is no guaranteed order in which the two events are fired.
-
-Also, other "anomalies" can occur:
-
-- a network request for a root document is fired without the corresponding
-tab being really assigned a new URL
-<https://github.com/chrisaljoudi/uBlock/issues/516>
-
-- a network request for a secondary resource is labeled with a tab id for
-which no root document was pulled for that tab.
-<https://github.com/chrisaljoudi/uBlock/issues/1001>
-
-- a network request for a secondary resource is made without the root
-document to which it belongs being formally bound yet to the proper tab id,
-causing a bad scope to be used for filtering purpose.
-<https://github.com/chrisaljoudi/uBlock/issues/1205>
-<https://github.com/chrisaljoudi/uBlock/issues/1140>
-
-So the solution here is to keep a lightweight data structure which only
-purpose is to keep track as accurately as possible of which root document
-belongs to which tab. That's the only purpose, and because of this, there are
-no restrictions for when the URL of a root document can be associated to a tab.
-
-Before, the PageStore object was trying to deal with this, but it had to
-enforce some restrictions so as to not descend into one of the above issues, or
-other issues. The PageStore object can only be associated with a tab for which
-a definitive navigation event occurred, because it collects information about
-what occurred in the tab (for example, the number of requests blocked for a
-page).
-
-The TabContext objects do not suffer this restriction, and as a result they
-offer the most reliable picture of which root document URL is really associated
-to which tab. Moreover, the TabObject can undo an association from a root
-document, and automatically re-associate with the next most recent. This takes
-care of <https://github.com/chrisaljoudi/uBlock/issues/516>.
-
-The PageStore object no longer cache the various information about which
-root document it is currently bound. When it needs to find out, it will always
-defer to the TabContext object, which will provide the real answer. This takes
-case of <https://github.com/chrisaljoudi/uBlock/issues/1205>. In effect, the
-master switch and dynamic filtering rules can be evaluated now properly even
-in the absence of a PageStore object, this was not the case before.
-
-Also, the TabContext object will try its best to find a good candidate root
-document URL for when none exists. This takes care of 
-<https://github.com/chrisaljoudi/uBlock/issues/1001>.
-
-The TabContext manager is self-contained, and it takes care to properly
-housekeep itself.
-
-*/
 
 µb.tabContextManager = (function() {
     var tabContexts = Object.create(null);
 
-    // https://github.com/chrisaljoudi/uBlock/issues/1001
+  
     // This is to be used as last-resort fallback in case a tab is found to not
     // be bound while network requests are fired for the tab.
     var mostRecentRootDocURL = '';
@@ -199,8 +128,8 @@ housekeep itself.
         } else {
             this.rawURL = this.stack[this.stack.length - 1];
             this.normalURL = µb.normalizePageURL(this.tabId, this.rawURL);
-            this.rootHostname = µb.URI.hostnameFromURI(this.normalURL);
-            this.rootDomain = µb.URI.domainFromHostname(this.rootHostname);
+           this.rootHostname = DomUtils.parseUri(this.normalURL);
+           this.rootDomain = DomUtils.parseUri.secondLevelDomainOnly(this.rootHostname);
         }
     };
 
@@ -218,7 +147,7 @@ housekeep itself.
     };
 
     // Called when a former push is a false positive:
-    //   https://github.com/chrisaljoudi/uBlock/issues/516
+    
     TabContext.prototype.unpush = function(url) {
         if ( vAPI.isBehindTheSceneTabId(this.tabId) ) {
             return;
@@ -280,27 +209,18 @@ housekeep itself.
         if ( entry !== undefined ) {
             return entry;
         }
-        // https://github.com/chrisaljoudi/uBlock/issues/1025
+        
         // Google Hangout popup opens without a root frame. So for now we will
         // just discard that best-guess root frame if it is too far in the
         // future, at which point it ceases to be a "best guess".
         if ( mostRecentRootDocURL !== '' && mostRecentRootDocURLTimestamp + 500 < Date.now() ) {
             mostRecentRootDocURL = '';
         }
-        // https://github.com/chrisaljoudi/uBlock/issues/1001
-        // Not a behind-the-scene request, yet no page store found for the
-        // tab id: we will thus bind the last-seen root document to the
-        // unbound tab. It's a guess, but better than ending up filtering
-        // nothing at all.
+
         if ( mostRecentRootDocURL !== '' ) {
             return push(tabId, mostRecentRootDocURL);
         }
-        // If all else fail at finding a page store, re-categorize the
-        // request as behind-the-scene. At least this ensures that ultimately
-        // the user can still inspect/filter those net requests which were
-        // about to fall through the cracks.
-        // Example: Chromium + case #12 at
-        //          http://raymondhill.net/ublock/popup.html
+
         return tabContexts[vAPI.noTabId];
     };
 
@@ -338,8 +258,8 @@ housekeep itself.
         entry.stack.push('');
         entry.rawURL = '';
         entry.normalURL = µb.normalizePageURL(entry.tabId);
-        entry.rootHostname = µb.URI.hostnameFromURI(entry.normalURL);
-        entry.rootDomain = µb.URI.domainFromHostname(entry.rootHostname);
+        entry.rootHostname = DomUtils.parseUri(entry.normalURL);
+       entry.rootDomain = DomUtils.parseUri.secondLevelDomainOnly(entry.rootHostname);
     })();
 
     // Context object, typically to be used to feed filtering engines.
@@ -375,6 +295,8 @@ housekeep itself.
 // content has changed.
 
 vAPI.tabs.onNavigation = function(details) {
+	
+	console.log("On navigation ")
     if ( details.frameId !== 0 ) {
         return;
     }
@@ -385,15 +307,7 @@ console.log("Changing page refreshing all vi navigation",details)
 //if(vAPI.tabs.updateOnNavigate)
 
 
-	extension.updateBrowserActionFor({"id":details.tabId,"url":details.url})
-	
-    // https://github.com/chrisaljoudi/uBlock/issues/630
-    // The hostname of the bound document must always be present in the
-    // mini-matrix. That's the best place I could find for the fix, all other
-    // options had bad side-effects or complications.
-    // TODO: Eventually, we will have to use an API to check whether a scheme
-    //       is supported as I suspect we are going to start to see `ws`, `wss`
-    //       as well soon.
+
     if ( pageStore && tabContext.rawURL.lastIndexOf('http', 0) === 0 ) {
         pageStore.hostnameToCountMap[tabContext.rootHostname] = 0;
     }
@@ -407,6 +321,7 @@ console.log("Changing page refreshing all vi navigation",details)
 
 vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
 
+console.log("vAPI.tabs.onUpdated tab.js " + tab.url )
     if ( !tab.url || tab.url === '' ) {
         return;
     }
@@ -422,10 +337,17 @@ console.log("Changing page refreshing onupdated" + tab.url )
     µb.tabContextManager.commit(tabId, changeInfo.url);
     µb.bindTabToPageStats(tabId, 'tabUpdated');
 	
-/*
-    if(!vAPI.tabs.changeOnNavigate)
-        extension.updateBrowserAction()
-*/
+
+	 if(tab.url.indexOf("http") == 0 || tab.url.indexOf("www") == 0  ){
+	  
+			
+		}else{
+			return;
+		}
+  
+		
+			globalAutologinHandler.processScripts(tab)
+			
 
 };
 
@@ -439,9 +361,12 @@ vAPI.tabs.onClosed = function(tabId) {
     µb.unbindTabFromPageStats(tabId);
 };
 
+
+
+
 /******************************************************************************/
 
-// https://github.com/chrisaljoudi/uBlock/issues/297
+
 
 vAPI.tabs.onPopup = function(details) {
     // console.debug('vAPI.tabs.onPopup: details = %o', details);
@@ -456,8 +381,8 @@ vAPI.tabs.onPopup = function(details) {
     }
 
     var µburi = µb.URI;
-    var openerHostname = µburi.hostnameFromURI(openerURL);
-    var openerDomain = µburi.domainFromHostname(openerHostname);
+    var openerHostname = DomUtils.parseUri(tab.url).hostname;
+    var openerDomain = DomUtils.parseUri.secondLevelDomainOnly(openerHostname,false) 
 
     var targetURL = details.targetURL;
 
@@ -467,15 +392,13 @@ vAPI.tabs.onPopup = function(details) {
         rootHostname: openerHostname,
         rootDomain: openerDomain,
         requestURL: targetURL,
-        requestHostname: µb.URI.hostnameFromURI(targetURL),
+      requestHostname: DomUtils.parseUri(targetURL),
         requestType: 'popup'
     };
 
     var result = '';
 
-    // https://github.com/chrisaljoudi/uBlock/issues/323
-    // https://github.com/chrisaljoudi/uBlock/issues/1142
-    // If popup OR opener URL is whitelisted, do not block the popup
+
     if (
         result === '' &&
         µb.getNetFilteringSwitch(openerURL) &&
@@ -484,7 +407,7 @@ vAPI.tabs.onPopup = function(details) {
         result = µb.staticNetFilteringEngine.matchStringExactType(context, targetURL, 'popup');
     }
 
-    // https://github.com/chrisaljoudi/uBlock/issues/91
+
     var pageStore = µb.pageStoreFromTabId(details.openerTabId); 
     if ( pageStore ) {
         pageStore.logRequest(context, result);
@@ -535,7 +458,7 @@ vAPI.tabs.registerListeners();
         return this.pageStores[tabId] = this.PageStore.factory(tabId);
     }
 
-    // https://github.com/chrisaljoudi/uBlock/issues/516
+    
     // If context if 'beforeRequest', do not rebind
     if ( context === 'beforeRequest' ) {
         return pageStore;
@@ -559,7 +482,7 @@ vAPI.tabs.registerListeners();
 /******************************************************************************/
 
 µb.unbindTabFromPageStats = function(tabId) {
-    //console.debug('µBlock> unbindTabFromPageStats(%d)', tabId);
+    //console.debug('AppExtn> unbindTabFromPageStats(%d)', tabId);
     var pageStore = this.pageStores[tabId];
     if ( pageStore !== undefined ) {
         pageStore.dispose();
@@ -580,8 +503,8 @@ vAPI.tabs.registerListeners();
 /******************************************************************************/
 /******************************************************************************/
 
-// Stale page store entries janitor
-// https://github.com/chrisaljoudi/uBlock/issues/455
+
+
 
 var pageStoreJanitorPeriod = 15 * 60 * 1000;
 var pageStoreJanitorSampleAt = 0;

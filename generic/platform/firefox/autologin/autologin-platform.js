@@ -1,5 +1,5 @@
 
-Conf.EXTENSION_VERSION = vAPI.app.version;
+vAPI.EXTENSION_VERSION = vAPI.app.version;
 
 const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 const {Services} = Cu.import('resource://gre/modules/Services.jsm', null);
@@ -11,56 +11,30 @@ var getTabBrowser = function(win) {
     return vAPI.fennec && win.BrowserApp || win.gBrowser || null;
 };
 
-vAPI.setAutologinIcon = function(tabId, detail) {
-	
-	
-	var win 
-	if(detail.ownerWindow)		
-		win=detail.ownerWindow
-	else
-		win = Services.wm.getMostRecentWindow('navigator:browser');
-		
-    var curTabId = vAPI.tabs.getTabId(getTabBrowser(win).selectedTab);
-    var tb = vAPI.toolbarButton;
 
-    // from 'TabSelect' event
-    if ( tabId === undefined ) {
-        tabId = curTabId;
-    } else if ( detail.badge !== undefined ) {
-		
-        tb.tabs[tabId] = { badge: detail.badge, img:detail.status,label:detail.label  };
-    }
 
-    if ( tabId === curTabId ) {
-        tb.updateAutologinState(win, tabId);
-    }
+
+vAPI.onAuthRequired={};
+
+vAPI.onAuthRequired.addListener = function(callback) {
+   
+ 
+ 
 };
 
-vAPI.toolbarButton.updateAutologinState = function(win, tabId) {
-    var button = win.document.getElementById(this.id);
+vAPI.windows={};
 
-    if ( !button ) {
-        return;
-    }
-
-    var data = this.tabs[tabId];
-
-    button.setAttribute('badge', data && data.badge || '');
-
+vAPI.windows.open = function(details,callback) {
 	
-	if( data && data.img && button.classList.contains(data.img) == false){
-		
-		
-	button.classList.remove('off');
-	button.classList.remove('active');
-	button.classList.remove('init');
-	button.classList.remove('whitelist');
-	 button.classList.add(data.img);
-	  button.setAttribute('label', data.label);
-	}
-	
-	
+	//chrome.windows.create(details,callback)
+}
+vAPI.onAuthRequired.removeListener = function(callback) {
+   
+// chrome.webRequest.onAuthRequired.removeListener(callback)
+						
 };
+
+
 
 
 
@@ -137,148 +111,5 @@ var issueAlert = function (alertID, alertOptions, callbackFunction) {
 
 		}
 	}
-};
-
-
-var customCookies={
-
-		getAll : function (object,callbackFunction) {
-
-			
-			var cookies=[]
-
-			var cookieManager = Cc["@mozilla.org/cookiemanager;1"].getService(Ci.nsICookieManager);
-
-		
-
-
-			var count = cookieManager.enumerator;
-			while (count.hasMoreElements()) {
-				var cookie = count.getNext();
-				
-				if (cookie instanceof Ci.nsICookie) {
-			
-			
-			
-				if(cookie.host.toString().indexOf(object.domain) >=0 && cookie.name.toString() == object.name ){
-					//console.log( cookie.name + " domain" + cookie.host.toString())
-		
-					
-					cookies.push(cookie)
-					}
-				}
-			}
-
-			// 
-			if (typeof callbackFunction === 'function') {
-						callbackFunction(cookies);
-				}
-		},
-		set:function(object,callbackFunction){
-		
-		
-			
-			
-			this.remove(object);
-			
-				var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-				var cookieUri = ios.newURI(object.url, null, null);
-				var cookieSvc = Cc["@mozilla.org/cookieService;1"].getService(Ci.nsICookieService);
-				cookieSvc.setCookieString(cookieUri, null,object.name + "=" + object.value +";", null);
-				
-				if (typeof callbackFunction === 'function') {
-				var cookie=cookieSvc.getCookieString(cookieUri, null)
-				
-						callbackFunction(cookie);
-				}
-
-		},
-		remove:function(object){
-		
-				
-		
-		var cookieManager = Cc["@mozilla.org/cookiemanager;1"].getService(Ci.nsICookieManager);
-			var count = cookieManager.enumerator;
-			while (count.hasMoreElements()) {
-				var cookie = count.getNext();
-				
-				if (cookie instanceof Ci.nsICookie) {
-			
-				if(cookie.host.toString().indexOf(object.domain) >=0 && cookie.name.toString() == object.name ){
-					
-					cookieManager.remove(cookie.host,cookie.name,cookie.path,false)
-					//Utils.log("removing cookie " + object )
-					}
-				}
-			}
-
-			
-			
-		}
-
-
-}
-
-/**************************************************************************************************
- * Purpose:
- *	Checks the refresh_client_data cookie to determine if the extension and data should be
- *	re-initialized.
- *
- * Params: None.
- *
- * Returns: None.
- **************************************************************************************************/
-var checkRefreshCookies = function () {
-	var cookieCallback = function (cookies) {
-		//ensure cookie was returned
-		if (cookies && cookies.length > 0) {
-			cookies.forEach(function (cookie) {
-				//check cookie value
-				if (cookie.host == Conf.DOMAIN && cookie.value == '1') {
-					
-					Utils.log('refresh cookie found! refreshing data from api');
-					//reset the cookie
-					customCookies.set({
-						url : 'https://api' + Conf.DOMAIN + '/',
-						domain : cookie.host,
-						path : '/',
-						name : 'refresh_client_data',
-						value : '0'
-					}, function (updatedCookies) {
-						//refresh api data
-						initApiData(function () {
-							
-							Utils.log('cookie data refresh complete');
-							//init the extension
-							if (!extension.autologinActive) {
-								extension.initAutologinExtension();
-								
-							} else {
-								//just refresh the context menus
-								//refreshContextMenus();
-								//updateContextMenus()
-							}
-							extension.autologinInitializing = false;
-						//	updateExtensionBadge();
-						vAPI.tabs.get(null, function(tab) {
-							if ( tab )
-							   extension.updateBadge(tab)
-							
-						});
-						
-
-						});
-
-					});
-				}
-			});
-		}
-	};
-	//check if refresh cookie exists
-	customCookies.getAll({
-		domain : Conf.DOMAIN,
-		path : '/',
-		name : 'refresh_client_data'
-	}, cookieCallback);
 };
 

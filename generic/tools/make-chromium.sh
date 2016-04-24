@@ -28,12 +28,13 @@ rm -rf $DES
 mkdir -p $DES
 
 
+echo "*** autologin.chromium: Copying css"
 cp -R src/css $DES/
+echo "*** autologin.chromium: Copying css"
 cp -R src/img $DES/
 cp -R src/images $DES/
 cp -R src/js $DES/
-cp -R src/lib $DES/
-cp -R src/js $DES/
+
 
 
 cp src/autologin/env/env.json $DES/

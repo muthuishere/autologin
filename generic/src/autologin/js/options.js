@@ -1,3 +1,7 @@
+	var  messager= vAPI.messaging.channel('options.js');
+	vAPI.messager=messager
+
+	
 var autoLoginOptions = {    
     autologinXMLList: null,
 	changedDomains:new Array(),
@@ -69,7 +73,7 @@ var autoLoginOptions = {
 	
 	 
 	 
-	 	chrome.extension.sendMessage({action: "validateCredential",info:curpwd}, function(response) {
+	 	messager.send({action: "validateCredential",info:curpwd}, function(response) {
 				
 				if(response.valid){
 				
@@ -155,7 +159,7 @@ var autoLoginOptions = {
 	},
 	changePassword:function(pwd){
 	
-		chrome.extension.sendMessage({action: "addCredential",info:document.querySelector("#txtnewpassword").value}, function(response) {
+		messager.send({action: "addCredential",info:document.querySelector("#txtnewpassword").value}, function(response) {
 					
 					if(response.valid){
 						
@@ -204,7 +208,7 @@ var autoLoginOptions = {
 	
 	if(autoLoginOptions.hasPassword==true){
 	
-		chrome.extension.sendMessage({action: "validateCredential",info:document.querySelector("#txtoldpassword").value}, function(response) {
+		messager.send({action: "validateCredential",info:document.querySelector("#txtoldpassword").value}, function(response) {
 					
 					if(response.valid){
 						
@@ -308,7 +312,7 @@ var autoLoginOptions = {
 	init:function(){
 	
 	
-				chrome.extension.sendMessage({action: "hasCredential"}, function(response) {
+				messager.send({action: "hasCredential"}, function(response) {
 				
 				//console.log("option hasCredential ",response)
 				if(response.valid){
@@ -395,7 +399,7 @@ var autoLoginOptions = {
 			
 			
 			
-			chrome.extension.sendMessage({action: "getPromptAtStartup"}, function(response) {
+			messager.send({action: "getPromptAtStartup"}, function(response) {
 				
 						if(response.promptrequired == true)
 							document.querySelector('#chkpromptAutologin').setAttribute("CHECKED","CHECKED")
@@ -419,7 +423,7 @@ var autoLoginOptions = {
 					
 					
 					
-					chrome.extension.sendMessage({action: "updateBasicAuthHandlers",usebasicAuth:event.target.checked}, function(response) {
+					messager.send({action: "updateBasicAuthHandlers",usebasicAuth:event.target.checked}, function(response) {
 				
 				
 				
@@ -443,7 +447,7 @@ var autoLoginOptions = {
 					}
 					
 					
-					chrome.extension.sendMessage({action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {
+					messager.send({action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {
 				
 				
 				
@@ -753,7 +757,7 @@ setdefaultuser:function(event){
 	 return false;
 },
 reloadStorage:function(){
-	chrome.extension.sendMessage({action: "reloadStorage"}, function(response) {
+	messager.send({action: "reloadStorage"}, function(response) {
 				
 				
 				

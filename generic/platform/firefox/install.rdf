@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.mozilla.org/2004/em-rdf#">
     <r:Description about="urn:mozilla:install-manifest">
-        <id>jid1-uu3gdWEcFsp4Eg-{env}@jetpack</id>
+        <id>autologin-uu3gdWEcFsp4Eg-{env}@jetpack</id>
         <version>{version}</version>
         <name>{name}</name>
         <description>{description}</description>
-        <homepageURL>{homepage}</homepageURL>
-		 {updateurl}
+        <homepageURL>{homepage}</homepageURL>		
 		
         <creator>{author}</creator>
         <type>2</type>

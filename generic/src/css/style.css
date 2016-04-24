@@ -1,0 +1,384 @@
+/*--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+--*/
+/* start editing from here */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
+ol,ul{list-style:none;margin:0;padding:0;}
+blockquote,q{quotes:none;}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+table{border-collapse:collapse;border-spacing:0;}
+/* start editing from here */
+a{text-decoration:none;}
+.txt-rt{text-align:right;}/* text align right */
+.txt-lt{text-align:left;}/* text align left */
+.txt-center{text-align:center;}/* text align center */
+.float-rt{float:right;}/* float right */
+.float-lt{float:left;}/* float left */
+.clear{clear:both;}/* clear float */
+.pos-relative{position:relative;}/* Position Relative */
+.pos-absolute{position:absolute;}/* Position Absolute */
+.vertical-base{	vertical-align:baseline;}/* vertical align baseline */
+.vertical-top{	vertical-align:top;}/* vertical align top */
+.underline{	padding-bottom:5px;	border-bottom: 1px solid #eee; margin:0 0 20px 0;}/* Add 5px bottom padding and a underline */
+nav.vertical ul li{	display:block;}/* vertical menu */
+nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
+img{max-width:100%;}
+/*end reset*/
+/*--header start here--*/
+body{
+   background: url(../images/bg(2).png);
+   padding:100px 0px 50px 0px;
+   font-family: 'Open Sans', sans-serif;
+   font-size: 100%;
+   min-height: 900px;
+}
+.login-top{
+  background: url(../images/log.png)no-repeat;
+  width: 460px;
+  height: 460px;
+  display: block;
+  margin: 0 auto;
+}
+.login-top h1 {
+  font-size: 27px;
+  font-weight: 600;
+  color: #BA0303;
+  text-align: center;
+  padding: 43px 0px;
+}
+.login-top input[type="text"] {
+  background: url(../images/u.png)no-repeat 0px 0px;
+  outline: none;
+  font-size: 15px;
+  font-weight: 400;
+  color: #000;
+  padding: 12px 13px 10px 62px;
+  border-style: inset;
+  border: 1px ridge;
+  width: 50%;
+  border-radius: 10px;
+  margin: 0px 0px 18px 75px;
+  display: inline-block;
+}
+.login-top input[type="password"]{
+   background: url(../images/key.png)no-repeat 0px 0px;
+  outline: none;
+  font-size: 15px;
+  font-weight: 400;
+  color: #000;
+  border-style: inset;
+  border: 1px ridge;
+  padding: 12px 13px 10px 62px;
+  width: 50%;
+  border-radius: 10px;
+  margin: 0px 0px 18px 75px;
+  display:block;
+}
+.login-top input[type="checkbox"] {
+  display: none;
+}
+.login-top.checkbox input {
+	position: absolute;
+	left: -9999px;
+}
+.login-top.checkbox i {
+	border-color: #fff;
+	transition: border-color 0.3s;
+	-o-transition: border-color 0.3s;
+	-ms-transition: border-color 0.3s;
+	-moz-transition: border-color 0.3s;
+	-webkit-transition: border-color 0.3s;
+	
+}
+.login-top.checkbox i:hover {
+	border-color:red;
+	
+}
+.login-top  i:before {
+	background-color: #2da5da;	
+}
+.login-top  .rating label {
+	color: #ccc;
+	transition: color 0.3s;
+	-o-transition: color 0.3s;
+	-ms-transition: color 0.3s;
+	-moz-transition: color 0.3s;
+	-webkit-transition: color 0.3s;
+}
+.login-top .checkbox input + i:after {
+	position: absolute;
+	opacity: 0;
+	transition: opacity 0.1s;
+	-o-transition: opacity 0.1s;
+	-ms-transition: opacity 0.1s;
+	-moz-transition: opacity 0.1s;
+	-webkit-transition: opacity 0.1s;
+}
+.login-top .checkbox input + i:after {
+	content: url(../images/tick.png) no-repeat 7px 1px;
+	top: 0px;
+	left: 0px;
+	width: 15px;
+	height: 15px;
+}
+.login-top  .checkbox {
+	float: left;
+	margin-right: 30px;
+}
+.login-top .checkbox {
+	margin-top: 20px;
+	padding-left: 97px;
+	font-size: 14px;
+   font-weight: 400;
+	line-height: 5px;
+	color: #333;
+	cursor: pointer;
+}
+.login-top .checkbox:hover {
+	text-decoration: none;
+}
+.login-top .checkbox {
+	position: relative;
+	display: block;
+	float: left;
+}
+.login-top  .checkbox i {
+	position: absolute;
+	top: -6px;
+	left:70px;
+	display: block;
+	width: 20px;
+	height: 20px;
+	outline: none;
+  border: 1px ridge;
+  border-style: inset;
+  border-radius: 5px;
+	background: rgba(204, 204, 204, 0.16);
+
+}
+.login-top  .checkbox input + i:after {
+	position: absolute;
+	opacity: 0;
+	transition: opacity 0.1s;
+	-o-transition: opacity 0.1s;
+	-ms-transition: opacity 0.1s;
+	-moz-transition: opacity 0.1s;
+	-webkit-transition: opacity 0.1s;
+}
+.login-top .checkbox input + i:after {
+	color: #2da5da;
+}
+.login-top.checkbox input:checked + i,
+.login-top . input:checked + i {
+	border-color: #2da5da;	
+}
+.login-top .rating input:checked ~ label {
+	color: #2da5da;	
+}
+
+.login-top .checkbox input:checked + i:after {
+	opacity: 1;
+}
+.log-bwn {
+  text-align: center;
+  margin: 25px 0px;
+}
+.log-bwn {
+  text-align: center;
+  margin: 40px 0px 6px 0px;
+}
+.log-bwn a {
+  font-size: 19px;
+  font-weight: 500;
+  color: #fff;
+  background: url(../images/button.png)no-repeat;
+  padding: 10px 34px;
+  border-radius: 10px;
+}
+.log-bwn a:hover{
+	opacity: 0.8;
+      filter: alpha(opacity=100); 
+      transition: all 0.3s ease; 
+     -webkit-transition: all 0.3s ease;
+     -moz-transition: all 0.3s ease;
+     -o-transition: all 0.3s ease;
+}
+.login-top h4 {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  text-align: center;
+  padding: 25px 0px 0px 0px ;
+}
+.login-top h4 a{
+	color:#BA0303;
+}
+.login-top h4 a:hover{
+	color:#000;
+	transition: 0.5s all;
+  -webkit-transition: 0.5s all;
+  -moz-transition: 0.5s all;
+  -o-transition: 0.5s all;
+}
+.login-top p {
+  float: right;
+  padding: 13px 50px 0px 0px;
+}
+.login-top p a {
+  font-size: 14px;
+  font-weight: 400;
+  color: #BA0303;
+  text-decoration: underline;
+}
+.login-top p a:hover{
+ color:#000;
+ transition: 0.5s all;
+  -webkit-transition: 0.5s all;
+  -moz-transition: 0.5s all;
+  -o-transition: 0.5s all;
+}
+.copyright{
+  padding: 115px 0px 0px 0px;
+  text-align: center;
+}
+.copyright p{
+  font-size: 14px;
+  font-weight: 400;
+  color: #fff;
+}
+.copyright p a{
+  color: #BA0303;
+}
+.copyright p a:hover{
+  color: #fff;
+  transition: 0.5s all;
+  -webkit-transition: 0.5s all;
+  -moz-transition: 0.5s all;
+  -o-transition: 0.5s all;
+}
+h2 {
+  font-size: 30px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+  padding: 0px 0px 53px 0px;
+}
+/*--meadia quiries start here--*/
+@media(max-width:768px){
+body {
+  min-height: 765px;
+}	
+}
+@media(max-width:640px){
+.copyright {
+  padding: 50px 0px 0px 0px;
+}
+body{
+  min-height: 650px;
+  padding: 38px 0px 0px 0px;
+}
+ h2 {
+  padding: 0px 0px 25px 0px;
+}
+}
+@media(max-width:480px){
+.login-top h1 {
+  font-size: 23px;
+  padding: 35px 0px;
+}
+.log-bwn a {
+  font-size: 16px;
+  padding: 10px 28px;
+}	
+.login-top {
+  width: 420px;
+  height: 415px;
+  background-size: 100%;
+}
+.log-bwn {
+  margin: 26px 0px 6px 0px;
+}
+body{
+  min-height: 550px;
+}
+.copyright {
+  padding: 30px 0px 0px 0px;
+}
+ h2 {
+  font-size: 23px;
+}
+.login-top input[type="text"] {
+  margin: 0px 0px 18px 68px;
+}
+.login-top input[type="password"]{
+  margin: 0px 0px 18px 68px;
+}
+}
+@media(max-width:320px){
+.login-top {
+  width: 290px;
+  height: 290px;
+}	
+.login-top h1 {
+  font-size: 19px;
+  padding: 23px 0px 15px 0px;
+}
+.login-top .checkbox i {
+  left: 35px;
+  width: 18px;
+  height: 18px;
+}
+.login-top .checkbox {
+  padding-left: 60px;
+  font-size: 11px;
+}
+.login-top p {
+  float: right;
+  padding: 7px 30px 0px 0px;
+}
+.login-top p a {
+  font-size: 11px;
+ }
+.log-bwn a {
+  font-size: 13px;
+  padding: 6px 21px;
+}
+.log-bwn {
+  margin: 20px 0px 6px 0px;
+}
+.login-top h4 {
+  font-size: 11px;
+  padding: 13px 0px 0px 0px;
+}
+body{
+  min-height: 399px;
+  padding: 40px 0px 0px 0px;
+}
+.copyright{
+  padding: 75px 0px 0px 0px;
+}
+.login-top input[type="text"] {
+  background: url(../images/u.png)no-repeat -1px -3px;
+  padding: 7px 13px 10px 54px;
+  font-size: 13px;
+   margin: 0px 0px 10px 40px;
+  width: 48%;
+}
+.login-top input[type="password"] {
+  padding: 5px 13px 10px 62px;
+  width: 45%;
+  margin: 1px 0px 0px 40px;
+}
+.copyright p {
+  font-size: 13px;
+}
+h2 {
+  font-size: 19px;
+  padding: 0px 0px 17px 0px;
+}
+}
+/*--media quiries end here--*/

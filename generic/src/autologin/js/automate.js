@@ -556,8 +556,9 @@ var automate = {
 
         //  alert(aMessage)
 
-      //  console.log(aMessage)
-
+		try{
+			console.log(aMessage)
+		}catch(exception){}
 
     },
 
@@ -577,7 +578,8 @@ var automate = {
 				
 			var messageResponse = {};
 		
-				Utils.log(messageData)
+				automate.logmessage(messageData);
+				
 				//if(messageData  &&  messageData.messageType)
 				
 		},

@@ -542,15 +542,17 @@ while (i--) {
 	},
 	injectCapture:function(tabId){
 		
-			//console.log("Attempting capture")
+			console.log("Attempting capture")
 			var jscode='var extnid="'+ vAPI.getURL("/") + '"';
 		
-						vAPI.tabs.injectScript(tabId, {file:"js/captureUI.js"}, function() {
+						vAPI.tabs.injectScript(tabId, {file:"js/captureUI.js", allFrames: false,
+            runAt: 'document_end'}, function() {
 					
-								
-								vAPI.tabs.injectScript(tabId, {file:"js/capture.js"}, function() {
+									console.log("got autoLoginCapture" +tabId)
+								vAPI.tabs.injectScript(tabId, {file:"js/capture.js",allFrames: false,
+            runAt: 'document_end'}, function() {
 									//script injected
-								//	console.log("got autoLoginCapture" +tabId)
+									console.log("got autoLoginCapture" +tabId)
 								});
 						
 						}); 
@@ -560,17 +562,20 @@ while (i--) {
 	processScripts:function(tab){
 		
 		var tabId=tab.id
-		
+		console.log("Checking site for tab",tab.url)
 	var  siteInfo = globalAutologinHandler.retrieveSiteInfo(tab.url)
 	var status=siteInfo.status
 	
-	//console.log("tab check",siteInfo,globalAutologinHandler.loggedIn)
+	console.log("status",status,globalAutologinHandler.loggedIn)
 	
 		if(  status == 0) {
 		
 			if(globalAutologinHandler.loggedIn==false){
 			
-				vAPI.tabs.injectScript(tabId, {file:"js/validate.js"}, function(details) {
+				console.log("Injecting validation")
+				
+				vAPI.tabs.injectScript(tabId, {file:"js/validate.js",allFrames: false,
+            runAt: 'document_end'}, function(details) {
 						//script injected
 						//console.log("Inserted validate module")
 					});
@@ -579,11 +584,13 @@ while (i--) {
 			
 			var jscode='var extnid="'+ vAPI.getURL("/") + '"';
 		
-		
+		console.log("Injecting automate js ")
 			
-						vAPI.tabs.injectScript(tabId, {file:"js/userselect.js"}, function() {
+						vAPI.tabs.injectScript(tabId, {file:"js/userselect.js",allFrames: false,
+            runAt: 'document_end'}, function() {
 							
-							vAPI.tabs.injectScript(tabId, {file:"js/automate.js"}, function() {
+							vAPI.tabs.injectScript(tabId, {file:"js/automate.js",allFrames: false,
+            runAt: 'document_end'}, function() {
 										//script injected
 										console.log("Inserted autoLogin")
 									});
@@ -595,7 +602,7 @@ while (i--) {
 	
 		}else{
 		
-
+	console.log("Injecting cAPTURE js ")
 						
 					globalAutologinHandler.injectCapture(tabId)	
 			
@@ -673,7 +680,8 @@ var Utils={
 			
 			}
 		
-		vAPI.tabs.injectScript(tabId, {file:scripts[index]}, function() {
+		vAPI.tabs.injectScript(tabId, {file:scripts[index],allFrames: false,
+            runAt: 'document_end'}, function() {
 						//script injected
 						index++
 						PageActionHandler.injectscripts(obj,index)
@@ -685,33 +693,13 @@ var Utils={
   };
 
   
-  vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
 
-    if ( !tab.url || tab.url === '' ) {
-        return;
-    }
-    if ( !changeInfo.url ) {
-        return;
-    }
-
-
-	 if(tab.url.indexOf("http") == 0 || tab.url.indexOf("www") == 0  ){
-	  
-			
-		}else{
-			return;
-		}
-  
-		
-			globalAutologinHandler.processScripts(tab)
-			
-
-
-};
 
 //globalAutologinHandler.loadXMLDoc(vAPI.getURL('autologin.xml'))
 
 globalAutologinHandler.initExtension()
+	//on extension loading first time ,make sure to inject ads on all tab
+		vAPI.onLoadAllCompleted();
 //globalAutologinHandler.printraw()
 
 
@@ -1005,7 +993,7 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 /******************************************************************************/
 
 var onMessage = function(request, sender, callback) {
-    var µb = µBlock;
+    var µb = AppExtn;
 
 	console.log("Message listener")
 	 if(undefined == request  || undefined == request.action){
@@ -1021,6 +1009,8 @@ var onMessage = function(request, sender, callback) {
 
 
 vAPI.messaging.setup(onMessage);
+
+vAPI.net.registerListeners();
 
 /******************************************************************************/
 

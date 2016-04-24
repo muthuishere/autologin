@@ -9,6 +9,10 @@ setkeypass:function(tmpKey){
 },
 encrypt:function(txt){
  
+ //	encoded = GibberishAES.enc(document.plain.text.value, document.key.text.value);
+	
+//	var dec = GibberishAES.dec(document.cipher.text.value, document.key.text.value);
+
  var result=""
  if(undefined == txt || null == txt )
 	return result

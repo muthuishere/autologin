@@ -1,5 +1,9 @@
 if (undefined == basicauth){
 
+	var  messager= vAPI.messaging.channel('basicauth.js');
+	vAPI.messager=messager
+
+	
 var basicauth={
 
 	startCapture:false,
@@ -11,7 +15,7 @@ var basicauth={
 	
 	document.querySelector("input#username").focus()
 	
-	  chrome.runtime.sendMessage({
+	  messager.send({
             action: "getauthinfo"
         }, function (response) {
 		
@@ -49,7 +53,7 @@ var basicauth={
 				data.useAutologin=document.querySelector("input#chkuseautologin").checked
 				
 				
-				chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {
+				messager.send({action: "basicauth",info:data}, function(response) {
 						window.close()
 				 });
 		
@@ -61,7 +65,7 @@ var basicauth={
 		data.cancel =true
 		
 		
-		chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {});
+		messager.send({action: "basicauth",info:data}, function(response) {});
 		
 				window.close()
 		
@@ -81,7 +85,7 @@ window.addEventListener("beforeunload", function (event) {
 		data.cancel =true
 		
 		
-		chrome.extension.sendMessage({action: "basicauth",info:data}, function(response) {});
+		messager.send({action: "basicauth",info:data}, function(response) {});
 		
 		
 });

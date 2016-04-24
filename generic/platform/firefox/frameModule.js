@@ -1,23 +1,4 @@
-/*******************************************************************************
 
-    µBlock - a browser extension to block requests.
-    Copyright (C) 2014 The µBlock authors
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see {http://www.gnu.org/licenses/}.
-
-    Home: https://github.com/chrisaljoudi/uBlock
-*/
 
 'use strict';
 
@@ -49,7 +30,10 @@ const getMessageManager = function(win) {
 
 const contentObserver = {
     classDescription: 'content-policy for ' + hostName,
-    classID: Components.ID('{e6d173c8-8dbf-4189-a6fd-189e8acffd27}'),
+    //classID: Components.ID('{e6d173c8-8dbf-4189-a6fd-189e8acffd27}'),
+	classID: Components.ID('{8723EBD8-0A21-11E6-8688-3FE676E92AEE}'),
+	
+	
     contractID: '@' + hostName + '/content-policy;1',
     ACCEPT: Ci.nsIContentPolicy.ACCEPT,
     MAIN_FRAME: Ci.nsIContentPolicy.TYPE_DOCUMENT,
@@ -288,16 +272,11 @@ const contentObserver = {
         let lss = Services.scriptloader.loadSubScript;
         let sandbox = this.initContentScripts(win, true);
 
+		//Scripts for each page 
+		
         lss(this.contentBaseURI + 'vapi-client.js', sandbox);
-        lss(this.contentBaseURI + 'contentscript-start.js', sandbox);
+       
 		
-		
-		
- 		// Autologin Script		
-		lss(this.contentBaseURI + 'autologin-utils.js', sandbox);
-		lss(this.contentBaseURI + 'autologin-conf.js', sandbox);
-		
-			lss(this.contentBaseURI + 'autologin-client.js', sandbox);
 
         let docReady = (e) => {
             let doc = e.target;
@@ -313,6 +292,7 @@ const contentObserver = {
                 });
             }
 
+			/*
             lss(this.contentBaseURI + 'contentscript-end.js', sandbox);
 			 // Autologin Script
 			lss(this.contentBaseURI + 'autologin-content.js', sandbox);
@@ -321,6 +301,7 @@ const contentObserver = {
             if ( doc.querySelector('a[href^="abp:"]') ) {
                 lss(this.contentBaseURI + 'subscriber.js', sandbox);
             }
+			*/
         };
 
         if ( doc.readyState === 'loading') {
