@@ -698,21 +698,164 @@ globalAutologinHandler.initExtension()
 
 
 
+/*
+getautologinsites
+		autologinsites
+		
+	importdata inp  "result":result
+		flgvalid
+
+		
+	updatedefaultcredential  inp "site"	:site
+		
+	
+	messager.send({module:"options",action: "removeCredential","site"	:site}
+	
+	
+	
+	messager.send({module:"options",action: "updatedefaultcredential","site"	:site}, function(response) {});
+	
+	
+	messager.send({module:"options",action: "siteupdates","sitecredentialupdates":sitecredentialupdates,"siteenabledupdates"	:siteenabledupdates}, function(response) {
+	
+
+*/
 
 
+var handleOptionMsg= function(request, tab, sendResponse) {
 
+
+console.log("== handleOptionMsg ==")
+			
+
+ if (request.action == "hasCredential"){
+	
+			var savedCredential= storage.getCredential();
+			var result=(savedCredential != "")
+			//console.log("result",result)
+				sendResponse({"valid":result});
+			
+	
+	}else if (request.action == "addCredential"){
+	
+			var credential=request.info;
+			
+			storage.setCredential(credential,function(){
+				
+				sendResponse({"valid":true });	
+			})
+			
+	
+	}else if (request.action == "getUseBasicAuth"){
+					sendResponse({"valid":true ,"usebasicauth":storage.getUseBasicAuth()});	
+	
+	}else if (request.action == "getCredential"){
+					sendResponse({"valid":true ,"credential":storage.getCredential()});	
+	
+	}else if (request.action == "getExportData"){
+		
+		storage.getExportData(function(curexpdata){
+			
+					sendResponse({"valid":true ,"expdata":curexpdata});	
+			
+		})
+			
+	
+	}else if (request.action == "getautologinsites"){
+					sendResponse({"valid":true ,"autologinsites":storage.autologinsites});	
+	
+	}else if (request.action == "importdata"){
+					var flgvalid=storage.importdata(request.result)
+					sendResponse({"valid":true ,"flgvalid":flgvalid});	
+	
+	}			
+	/*
+	
+		
+	updatedefaultcredential  inp "site"	:site
+		
+	
+	messager.send({module:"options",action: "removeCredential","site"	:site}
+	
+	
+	
+	messager.send({module:"options",action: "updatedefaultcredential","site"	:site}, function(response) {});
+	
+	
+	messager.send({module:"options",action: "siteupdates","sitecredentialupdates":sitecredentialupdates,"siteenabledupdates"	:siteenabledupdates}, function(response) {
+	
+
+	*/
+	else if (request.action == "updatedefaultcredential"){
+					var flgvalid=storage.updatedefaultcredential(request.site)
+					sendResponse({"valid":true });	
+	
+	}else if (request.action == "removeCredential"){
+					var flgvalid=storage.removeCredential(request.site)
+					sendResponse({"valid":true });	
+	
+	}else if (request.action == "removeSite"){
+					var flgvalid=storage.removeSite(request.site)
+					sendResponse({"valid":true });	
+	
+	}else if (request.action == "siteupdates"){
+		
+					
+						for (var j = 0; j < request.siteenabledupdates.length; j++){
+							
+							var site=request.siteenabledupdates[j]
+							
+							console.log("updating site enable",site);
+							storage.updatesiteenabled(site)
+						}
+						for ( j = 0; j < request.sitecredentialupdates.length; j++){
+							
+							var site=request.sitecredentialupdates[j]
+							console.log("updating site updatecredential",site);
+							storage.updatecredential(site)
+						}
+
+					
+					sendResponse({"valid":true });	
+	
+	}else if (request.action == "updatePromptAtStartup"){
+	
+			
+			
+			storage.setPromptRequired(request.promptrequired);
+			
+			
+			
+				sendResponse({"valid":true });
+			
+	
+	
+	}else if (request.action == "reloadStorage"){
+	
+		
+				storage.init()
+			
+				sendResponse({"valid":true });
+			
+	
+	
+	}
+	
+}
 
 
 var handleGlobalMsg= function(request, tab, sendResponse) {
     // console.log(sender.tab ?
                 // "from a content script:" + sender.tab.url :
                 // "from the extension");
-				console.log("====")
-				console.log(request)
-				console.log(tab)
-				console.log("====")
-				
-if (request.action == "inject"){
+		
+
+
+if (request.module && request.module == "options"){
+
+	return handleOptionMsg(request, tab, sendResponse) ;
+
+}else if (request.action == "inject"){
 
 
 }	
@@ -733,6 +876,16 @@ if (request.action == "inject"){
 			
 		sendResponse({"valid":true});
 	
+	
+	
+	}else if (request.action == "getPromptAtStartup"){
+	
+			
+			promptrequired=storage.getPromptRequired()
+			
+			
+				sendResponse({"promptrequired":(promptrequired === 'true') });
+			
 	
 	
 	}else if (request.action == "getauthinfo"){
@@ -845,20 +998,6 @@ if (request.action == "inject"){
 				}
 	
 	
-	}else if (request.action == "addCredential"){
-	
-			var credential=request.info;
-			
-			storage.setCredential(credential,function(){
-				
-				sendResponse({"valid":true });	
-			})
-			
-			
-			
-			
-	
-	
 	}else if (request.action == "updateCredential"){
 	
 			var credential=request.currentCredential;
@@ -882,37 +1021,6 @@ if (request.action == "inject"){
 			
 	
 	
-	}else if (request.action == "getPromptAtStartup"){
-	
-			
-			promptrequired=storage.getPromptRequired()
-			
-			
-				sendResponse({"promptrequired":(promptrequired === 'true') });
-			
-	
-	
-	}else if (request.action == "updatePromptAtStartup"){
-	
-			
-			
-			storage.setPromptRequired(request.promptrequired);
-			
-			
-			
-				sendResponse({"valid":true });
-			
-	
-	
-	}else if (request.action == "reloadStorage"){
-	
-		
-				storage.init()
-			
-				sendResponse({"valid":true });
-			
-	
-	
 	}else if (request.action == "updateBasicAuthHandlers"){
 	
 		console.log("changing " + request.usebasicAuth)
@@ -926,17 +1034,6 @@ if (request.action == "inject"){
 				
 			
 	
-	
-	}else if (request.action == "hasCredential"){
-	
-			
-			
-			var savedCredential= storage.getCredential();
-			
-			var result=(savedCredential != "")
-			//console.log("result",result)
-				sendResponse({"valid":result});
-			
 	
 	}else if (request.action == "refreshData"){
 	
@@ -973,10 +1070,10 @@ if (request.action == "inject"){
 	}else if (request.action == "addAutoLoginFormElements"){
 	
 	
-	globalAutologinHandler.addAutoLoginElements(request.info,"form")
-	
+		globalAutologinHandler.addAutoLoginElements(request.info,"form")
 		
-	sendResponse({});
+			
+		sendResponse({});
 	
 	
 	}

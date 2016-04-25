@@ -162,7 +162,7 @@ var storage = {
 		
 		storage.autologinsites = jsonobj
 		
-		console.log(storage.autologinsites )
+	
 		
 		storage.updatestorage();
 		return true;
@@ -620,7 +620,7 @@ saveitem:function(response){
 						for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
 
 							
-							//console.log("curcredential",curcredential)
+							
 
 								var obj = {}
 								obj.authtype = site.authtype
@@ -628,16 +628,18 @@ saveitem:function(response){
 								obj.user = storage.autologinsites[i].credentials[k].user
 
 								 var curcredential = storage.getuserdata(obj)
-								 
+								
 								
 										
 
-								//console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
+								console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
 								if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {
 
-									storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser
+										storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser
 										storage.autologinsites[i].credentials[k].elements[curcredential.pwdIndex].value = site.changedpassword
-										//console.log("Updated storage data" , site)
+										storage.autologinsites[i].credentials[k].user=site.changeduser
+										
+										
 										storage.updatestorage();
 										return;
 								}
@@ -709,16 +711,14 @@ saveitem:function(response){
 
 	init : function (callback) {
 
-
-		console.log("localStorageObject")
 		vAPI.storage.get(null, function (localStorageObject)
 		{
 			
-			console.log(localStorageObject)
+			
 			//go through each storage entry
 			for (var key in localStorageObject)
 			{
-				console.log("checking key"+ key)
+
 				
 				if(key == "autologinsites")
 					storage.autologinsites=JSON.parse(Helper.decrypt(localStorageObject["autologinsites"]));
@@ -737,7 +737,7 @@ saveitem:function(response){
 			
 		});
 		
-			console.log(storage)
+			
 	
 			
 		

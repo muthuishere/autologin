@@ -159,7 +159,7 @@ var autoLoginOptions = {
 	},
 	changePassword:function(pwd){
 	
-		messager.send({action: "addCredential",info:document.querySelector("#txtnewpassword").value}, function(response) {
+		messager.send({module:"options",action: "addCredential",info:document.querySelector("#txtnewpassword").value}, function(response) {
 					
 					if(response.valid){
 						
@@ -310,16 +310,15 @@ var autoLoginOptions = {
 		 
 	},
 	init:function(){
-		 storage.init(function(){
-			 autoLoginOptions.initdata();
-			 
-			 
-		 })
+		
+		
+		autoLoginOptions.initdata();
+		
 	},
 	initdata:function(){
 	
 	
-				messager.send({action: "hasCredential"}, function(response) {
+				messager.send({module:"options",action: "hasCredential"}, function(response) {
 				
 				//console.log("option hasCredential ",response)
 				if(response.valid){
@@ -415,12 +414,17 @@ var autoLoginOptions = {
 				
 						});
 						
-			var usebasicauth= (storage.getUseBasicAuth() === 'true')
+						
+		messager.send({action: "getUseBasicAuth"}, function(response) {
+				
+						if(response.usebasicauth == true)
+							document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
+						else	
+							document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
+				
+						});
+						
 			
-			if(usebasicauth)
-				document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
-			else
-				document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
 							
 			
 
@@ -430,7 +434,7 @@ var autoLoginOptions = {
 					
 					
 					
-					messager.send({action: "updateBasicAuthHandlers",usebasicAuth:event.target.checked}, function(response) {
+					messager.send({module:"options",action: "updateBasicAuthHandlers",usebasicAuth:event.target.checked}, function(response) {
 				
 				
 				
@@ -441,24 +445,32 @@ var autoLoginOptions = {
 		
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					
-					var credential=storage.getCredential()
-					if(undefined == credential || null == credential ){
-						if(event.target.checked == true){
+					
+						messager.send({module:"options",action: "getCredential"}, function(response) {
 							
-							event.target.checked=false;
-							alert("Error: Master Password is empty,Set Master Password and select again")
-							
-							return false;
-						}
+						if(undefined == response.credential || null == response.credential ){
+							if(event.target.checked == true){
+								
+								event.target.checked=false;
+								alert("Error: Master Password is empty,Set Master Password and select again")
+								
+								return false;
+								}
 						
-					}
+							}
 					
 					
-					messager.send({action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {
-				
-				
+								messager.send({module:"options",action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {});
+						
+						
 				
 						});
+						
+						
+					
+					
+					
+					
 					
 			}, false);
 			
@@ -467,19 +479,27 @@ var autoLoginOptions = {
 					
 					//Download from localStorage
 					
-					storage.getExportData(function(expdata){
+					
+					messager.send({module:"options",action: "getExportData"}, function(response) {
+							
 						
-					var a = document.createElement('a');
-					var blob = new Blob([ expdata ], {type : "text/plain;charset=UTF-8"});
-					a.href = window.URL.createObjectURL(blob);
-					a.download = "autologindata.bin";
-					a.style.display = 'none';
-					document.body.appendChild(a);
-					a.click(); //this is probably the key - simulating a click on a download link
-					delete a;// we don't need this anymore	
+							var expdata=response.expdata
 						
-					})
-					 
+							var a = document.createElement('a');
+							var blob = new Blob([ expdata ], {type : "text/plain;charset=UTF-8"});
+							a.href = window.URL.createObjectURL(blob);
+							a.download = "autologindata.bin";
+							a.style.display = 'none';
+							document.body.appendChild(a);
+							a.click(); //this is probably the key - simulating a click on a download link
+							delete a;// we don't need this anymore	
+						
+					
+						
+				
+						});
+						
+					
 					
 					
 			}, false);
@@ -491,7 +511,7 @@ var autoLoginOptions = {
                                 autoLoginOptions.flashdiv("statusError","Invalid autologindata file ");
                             }
 							
-							
+							var inprogress=false;
 						var readFileUpdateUI = function(file /*, element, nameElement*/ ) {
                                 var reader = new FileReader();
                                 reader.onerror = errorHandler;
@@ -508,21 +528,33 @@ var autoLoginOptions = {
 									
 									
 									 var r = confirm("All the existing data will be Overridden , Press Ok to Confirm!");
+									    inprogress=false;
 									if (r == true) {
 										txt = "You pressed OK!";
+										
 									} else {
 										
 										return;
 									}
-									var flgvalid=storage.importdata(result)
 									
-									if(flgvalid){
+									
+										messager.send({module:"options",action: "importdata","result":result}, function(response) {
+							
+											if(response.flgvalid ){
+												autoLoginOptions.reloadStorage()	
+												autoLoginOptions.flashdiv("statusSuccess","Successfully Imported Autologin data");
+
+											}else{
+													autoLoginOptions.flashdiv("statusError","Invalid autologindata contents in file");
+											
+											}
+									
 										
-										autoLoginOptions.reloadStorage()	
-										autoLoginOptions.flashdiv("statusSuccess","Successfully Imported Autologin data");
-									}										
-									else
-										autoLoginOptions.flashdiv("statusError","Invalid autologindata contents in file");
+								
+										});
+						
+									
+										
 									
 									
                                     
@@ -536,14 +568,19 @@ var autoLoginOptions = {
 			
 							var importElement = document.querySelector('#btnImport');
                             var importFileElement = document.querySelector('#fileimport');
+							
                             importFileElement.addEventListener('change', function(event) {
                                // console.log(event.target.files);
+							   
                                 if (event.target.files.length === 1) {
                                     readFileUpdateUI(event.target.files[0] /*, mod, modFileName*/ );
                                 }
                             }, false);
                             importElement.addEventListener('click', function(event) {
-                                importFileElement.click();
+								if(inprogress==false){
+									inprogress=true;
+									importFileElement.click();
+								}
                             }, false);
 							
 			
@@ -594,14 +631,32 @@ var autoLoginOptions = {
 	  
     loadOptions: function () {
 
+
 	
+
 	
+	messager.send({module:"options",action: "getautologinsites"}, function(response) {
+							
+						autoLoginOptions.loadSiteData(response.autologinsites )
+					
+						
+				
+						});
+						
+						
+	},
+	loadSiteData: function (appsites) {
+	
+		console.log("loadOptions")
+	console.log(appsites)
+							console.log("autologinsites")
+							
 	document.querySelector('#tblOptions').style.display="";
 			document.querySelector('#btnUpdate').style.display="";
-        var sites = storage.autologinsites
+        
 		
 		document.querySelector("#btnUpdate").setAttribute("class", "buttondisable");
-       var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(sites);
+       var tblCreated= autoLoginOptions.loadDocumentAndCreateTable(appsites);
         //tblOptions
 		//Add
 		if(tblCreated){
@@ -755,16 +810,21 @@ setdefaultuser:function(event){
 			else
 				site.defaultsite=true
 				
-				storage.updatedefaultcredential(site)
+			messager.send({module:"options",action: "updatedefaultcredential","site"	:site}, function(response) {
+				
+				autoLoginOptions.flashdiv("statusSuccess","Successfully Updated default  Credential");
+				autoLoginOptions.loadOptions();
+				
+			});	
+				
 			
-			autoLoginOptions.reloadStorage()		
-			autoLoginOptions.flashdiv("statusSuccess","Successfully Updated default  Credential");
-			autoLoginOptions.loadOptions();
+			//autoLoginOptions.reloadStorage()		
+			
 	 
 	 return false;
 },
 reloadStorage:function(){
-	messager.send({action: "reloadStorage"}, function(response) {
+	messager.send({module:"options",action: "reloadStorage"}, function(response) {
 				
 				
 				
@@ -786,10 +846,17 @@ removeCredential:function(event){
 			site.user=selectedoption.getAttribute("data-username")
 			
 			
-			storage.removeCredential(site)	
-			autoLoginOptions.reloadStorage()	
-			autoLoginOptions.flashdiv("statusSuccess","Successfully removed Credential");
-			autoLoginOptions.loadOptions();
+			
+			messager.send({module:"options",action: "removeCredential","site"	:site}, function(response) {
+				
+				autoLoginOptions.flashdiv("statusSuccess","Successfully removed Credential");
+				autoLoginOptions.loadOptions();
+			
+				
+			});	
+			
+	
+			
 			
 			return false;
 			
@@ -809,12 +876,18 @@ removeAutologin: function (event) {
 			site.authtype=inputElement.getAttribute("data-authtype")
 			site.url=inputElement.getAttribute("data-url")
 			
-			storage.removeSite(site)	
 			
-			autoLoginOptions.reloadStorage()	
+				
+			messager.send({module:"options",action: "removeSite","site"	:site}, function(response) {
+				
+				autoLoginOptions.flashdiv("statusSuccess","Successfully removed Site");
+				autoLoginOptions.loadOptions();
 			
-			autoLoginOptions.flashdiv("statusSuccess","Successfully removed Site");
-			autoLoginOptions.loadOptions();
+			
+				
+			});
+			
+			
 			
 	 
         return false;
@@ -839,17 +912,20 @@ removeAutologin: function (event) {
 	
 				
 			var inputElements = document.querySelectorAll('select.selectbox');
+			var siteenabledupdates=[]
+			var sitecredentialupdates=[]
+			
 			for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
 
 				if (inputElement.getAttribute("data-changed") == "true") {
-				//	console.log("Data changed")
+					console.log("Data changed" , inputElement)
 					var site = {}
 
 						site.authtype = inputElement.getAttribute("data-authtype")
 						site.url = inputElement.getAttribute("data-url")
 						site.enabled = (inputElement.getAttribute("data-enabled") == "true")
-						storage.updatesiteenabled(site)
-						
+						//storage.updatesiteenabled(site)
+						siteenabledupdates.push({"authtype":site.authtype,"url":site.url,"enabled":site.enabled})
 						
 						site.credentials = []
 						
@@ -859,7 +935,7 @@ removeAutologin: function (event) {
 
 							var optionElement = inputElement.querySelectorAll('option')[k]
 
-							
+						
 								
 								site.user = optionElement.getAttribute("data-username")
 								site.userxpath = optionElement.getAttribute("data-userxpath")
@@ -876,11 +952,13 @@ removeAutologin: function (event) {
 								
 								if(site.changeduser == "")
 									site.changeduser=site.user
-								else if(site.changedpassword !== "")
+								
+								if(site.changedpassword == "")
 										site.changedpassword=site.password
 										
 								console.log("Data changed updating",site)
-										storage.updatecredential(site)
+										//storage.updatecredential(site)
+										sitecredentialupdates.push({"authtype":site.authtype,"url":site.url,"userxpath":site.userxpath,"pwdxpath":site.pwdxpath,"user":site.user,"password":site.password,"changeduser":site.changeduser,"changedpassword":site.changedpassword})
 										hasUpdated=true
 								}
 										
@@ -904,9 +982,19 @@ removeAutologin: function (event) {
 			//autoLoginOptions.updateinputBoxStyle();
 			
 			//Update table
-			autoLoginOptions.reloadStorage()	
-			autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
-			autoLoginOptions.loadOptions();
+			
+			
+				messager.send({module:"options",action: "siteupdates","sitecredentialupdates":sitecredentialupdates,"siteenabledupdates"	:siteenabledupdates}, function(response) {
+					
+					
+						autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
+						autoLoginOptions.loadOptions();
+			
+					
+				});
+				
+				
+			
 			
 				
 						
@@ -932,7 +1020,8 @@ removeAutologin: function (event) {
 		flgTblCreated=false;
 		//console.log(sites)
 
-
+		console.log("loadDocumentAndCreateTable")
+console.log(sites)
 
         var dummyresp = '';
 
@@ -953,6 +1042,9 @@ removeAutologin: function (event) {
 
             while (i--) {
 					
+					console.log("current site ")
+	console.log(sites[i])
+	
 					var cursite=sites[i]
 					/*if(urls.indexOf(cursite.url) >=0){
 						continue
@@ -1008,7 +1100,7 @@ removeAutologin: function (event) {
 				selectbox += "<option  data-defaultsite='"+cursite.credentials[k].defaultsite+"'  data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
 				
 				
-				//console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
+				console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
 					
 					}
 					

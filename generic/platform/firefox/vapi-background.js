@@ -1453,7 +1453,7 @@ vAPI.net.registerListeners = function() {
 /******************************************************************************/
 
 var optionsObserver = {
-    addonId: '{2b10c1c8-a11f-4bad-fe9c-1c11e82cac42}',
+    addonId: 'autologin-uu3gdWEcFsp4Eg-dev@jetpack',
 
     register: function() {
         Services.obs.addObserver(this, 'addon-options-displayed', false);
@@ -1477,7 +1477,7 @@ var optionsObserver = {
         button.addEventListener('command', function() {
             vAPI.tabs.open({ url: page, index: -1 });
         });
-        button.label = vAPI.i18n(id);
+       // button.label = vAPI.i18n(id);
     },
 
     observe: function(doc, topic, addonId) {
@@ -1485,12 +1485,12 @@ var optionsObserver = {
             return;
         }
 
-      //  this.setupOptionsButton(doc, 'showDashboardButton', 'dashboard.html');
+        this.setupOptionsButton(doc, 'showAutoLoginOptions', 'options.html');
      //   this.setupOptionsButton(doc, 'showNetworkLogButton', 'devtools.html');
     }
 };
 
-//optionsObserver.register();
+optionsObserver.register();
 
 /******************************************************************************/
 
