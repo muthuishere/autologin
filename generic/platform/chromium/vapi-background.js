@@ -909,7 +909,20 @@ vAPI.onLoadAllCompleted = function() {
         }, function(){
 
 
-			globalAutologinHandler.processScripts(tab)
+				 vAPI.tabs.injectScript(tab.id, {
+				file: 'js/utils.js',
+				allFrames: false,
+				runAt: 'document_start'
+			}, function(){
+
+
+					globalAutologinHandler.processScripts(tab)
+					});
+		
+		
+		
+		
+		
 		});
 		
  		// Autologin Script

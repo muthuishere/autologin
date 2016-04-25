@@ -1126,15 +1126,7 @@ console.log(sites)
     },
 
    
-	getdomainName:function(str){
-		
-		if(str.indexOf("http") != 0)
-			return str
-		
-			var    a      = document.createElement('a');
-			 a.href = str;
-			return a.hostname
-	},
+
 	cleanTable:function(){
 	
 	

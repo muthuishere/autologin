@@ -51,7 +51,7 @@ cp platform/chromium/*.js $DES/js/
 
 
 
-cp platform/chromium/*.html $DES/
+
 
 echo "*** autologin.chromium: Generating meta..."
 python tools/make-chromium-meta.py $DES/ $ENV

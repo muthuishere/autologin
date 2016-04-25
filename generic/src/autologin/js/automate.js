@@ -601,7 +601,7 @@ var automate = {
 
         messager.send({
             action: "getData",
-			domain:this.getdomainName(document.location.toString())
+			domain:vAPI.getdomainName(document.location.toString())
         }, function (response) {
 		
 
@@ -618,25 +618,13 @@ var automate = {
 
 
 
-        if (this.getdomainName(longStr) == this.getdomainName(searchstr))
+        if (vAPI.getdomainName(longStr) == vAPI.getdomainName(searchstr))
             return true;
         else
             return false;
 
     },
 
-    getdomainName: function (str) {
-	
-	if(str.indexOf("http") != 0 )
-			return str
-		
-			var    a      = document.createElement('a');
-			 a.href = str;
-			return a.hostname
-	
-
-        //return str.replace(/\/+$/, '');
-    },
 
 
 

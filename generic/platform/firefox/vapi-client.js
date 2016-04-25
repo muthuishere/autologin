@@ -57,6 +57,9 @@ var messagingConnector = function(response) {
     }
 };
 
+
+
+
 /******************************************************************************/
 
 vAPI.messaging = {

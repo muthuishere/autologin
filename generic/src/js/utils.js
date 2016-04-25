@@ -3,20 +3,12 @@
 /* global AppExtn */
 'use strict';
 
-/******************************************************************************/
-
-// This will inserted as a module in the AppExtn object.
-
-AppExtn.utils = (function() {
 
 /******************************************************************************/
 
-var exports = {};
-
-/******************************************************************************/
-
-exports.formatCount = function(count) {
-    if ( typeof count !== 'number' ) {
+vAPI.formatCount=function (count) {
+	
+	if ( typeof count !== 'number' ) {
         return '';
     }
     var s = count.toFixed(0);
@@ -34,16 +26,18 @@ exports.formatCount = function(count) {
         }
     }
     return s;
-};
+	
 
-// https://www.youtube.com/watch?v=DyvzfyqYm_s
+}
 
-/******************************************************************************/
 
-return exports;
 
-/******************************************************************************/
+vAPI.getdomainName=function (str) {
+	
+					var   a= document.createElement('a');
+					 a.href = str;
+					 var domain = a.hostname+(a.port ? ':'+a.port : '');
+					return domain
+	
 
-})();
-
-/******************************************************************************/
+}

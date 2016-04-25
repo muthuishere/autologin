@@ -17,7 +17,7 @@
  "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["js/vapi-client.js"],
+            "js": ["js/vapi-client.js","js/utils.js"],
             "run_at": "document_start"
             
         }

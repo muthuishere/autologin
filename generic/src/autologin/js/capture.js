@@ -122,7 +122,7 @@ if (undefined == capture) {
 			console.log("client capture init")
 			
 			var data ={}
-		data.url =this.getdomainName(document.location.toString().split('?')[0])
+		data.url =vAPI.getdomainName(document.location.toString().split('?')[0])
 		
 		messager.send({action: "hiddencapture",url:data.url}, function(response) {
 			
@@ -390,13 +390,14 @@ if (undefined == capture) {
 				//console.log(autoLoginXmlInfo)
 
 				var data = {}
-					data.url = this.getdomainName(document.location.toString().split('?')[0])
+					data.domain = document.location.toString().split('?')[0];
+					data.url = vAPI.getdomainName(document.location.toString().split('?')[0])
 					data.loginurl = document.location.toString().split('?')[0]
 					data.elements = capture.elems
 					data.enabled="true"					
 					data.authtype='form'
 				
-						console.log("Sending to background")
+						
 					messager.send({
 						action : "addAutoLoginFormElements",
 						info : data
@@ -413,18 +414,7 @@ if (undefined == capture) {
 			//capture.alreadySubmitted = true;
 			return true;
 		},
-		 getdomainName: function (str) {
-	
-			if(str.indexOf("http") != 0 )
-					return str
-				
-					var    a      = document.createElement('a');
-					 a.href = str;
-					return a.hostname
-	
-
-        //return str.replace(/\/+$/, '');
-		},
+		 
 
 		addClickEvents : function (btnelems) {
 

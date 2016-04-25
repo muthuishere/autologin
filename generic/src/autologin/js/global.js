@@ -22,7 +22,7 @@ var globalAutologinHandler = {
 				//find user
 				//Set Pooling domains 
 			
-				var curdomainName=Utils.getdomainName(obj.url)
+				var curdomainName=vAPI.getdomainName(obj.url)
 				globalAutologinHandler.pushtoPool(curdomainName)
 				
 		
@@ -173,7 +173,7 @@ var globalAutologinHandler = {
   canSubmit:function(curlocation) {
   
 
-  var curdomainName=Utils.getdomainName(curlocation)
+  var curdomainName=vAPI.getdomainName(curlocation)
 
 	
   if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) > -1 ){		
@@ -186,7 +186,7 @@ var globalAutologinHandler = {
   
   },
   updateSuccessLogin: function(curlocation) {
-  var curdomainName=Utils.getdomainName(curlocation)
+  var curdomainName=vAPI.getdomainName(curlocation)
   var curTimeinMs=Date.now()
   globalAutologinHandler.pushtoPool(curdomainName)
   //globalAutologinHandler.lastloggedInDomain=curdomainName
@@ -198,7 +198,7 @@ var globalAutologinHandler = {
   },
    removefromPool: function(curlocation) {
   
-  var curdomainName=Utils.getdomainName(curlocation)
+  var curdomainName=vAPI.getdomainName(curlocation)
   
   
   	var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
@@ -220,7 +220,7 @@ var globalAutologinHandler = {
 	   result.info=null;
 	   
 	   
-	   var curdomainName=Utils.getdomainName(curlocation)
+	   var curdomainName=vAPI.getdomainName(curlocation)
 		var site=storage.get("form",curdomainName)
 	 
 			if(site== null){
@@ -307,7 +307,7 @@ while (i--) {
 		
 		iurl=globalAutologinHandler.getXMLElementval(divs[i],"loginurl");
 		
-		if(Utils.getdomainName(currentURL) == Utils.getdomainName(iurl)  && authtype ==  divs[i].getAttribute("authtype") ){
+		if(vAPI.getdomainName(currentURL) == vAPI.getdomainName(iurl)  && authtype ==  divs[i].getAttribute("authtype") ){
 					//alert(divs[i].url)
 						 // return divs[i];
 						 
@@ -639,20 +639,7 @@ while (i--) {
 	
 };
 
-var Utils={
 
-	getdomainName:function(str){
-		
-		console.log("checking str")
-		if(str.indexOf("http") != 0 )
-			return str
-		
-			var    a      = document.createElement('a');
-			 a.href = str;
-			return a.hostname
-	}
-
-};
 
 
   var PageActionHandler = {

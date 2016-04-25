@@ -1,29 +1,10 @@
 
-Multiple basic auth dialogs
-basic auth cancels
+Firefox remove basic auth in options
+
+Test Test Test 
+
+domain should host:port completed
 
 
-AUtologin page
 
-	user select
-	hidden capture & update
-	
-	
-		
-		
-	
-	
-	
-	if domain is available try autologin
-			automate.js
-			
-	if its pooling period
-			inject capture.js 
-	
-	
-	fix automate.js , changing default credential not working
-	
-	fix 
-	
-	
-	Test 
+

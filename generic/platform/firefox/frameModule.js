@@ -276,6 +276,9 @@ const contentObserver = {
 		
         lss(this.contentBaseURI + 'vapi-client.js', sandbox);
        lss(this.contentBaseURI + 'vapi-init.js', sandbox);
+	   lss(this.contentBaseURI + 'utils.js', sandbox);
+	   
+	   
 		
 
         let docReady = (e) => {
