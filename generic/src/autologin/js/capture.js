@@ -1,3 +1,17 @@
+(function() {
+
+
+
+
+if ( document instanceof HTMLDocument === false ) {
+  
+    return false;
+}
+
+if ( !vAPI ) {
+  
+    return;
+}
 
 if (undefined == capture) {
 	var  messager= vAPI.messaging.channel('capture.js');
@@ -35,7 +49,7 @@ if (undefined == capture) {
 				} else if (elm.hasAttribute('class')) {
 					segs.unshift(elm.localName.toLowerCase() + '[@class="' + elm.getAttribute('class') + '"]');
 				} else {
-					for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
+					for (var i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
 						if (sib.localName == elm.localName)
 							i++;
 					};
@@ -105,7 +119,7 @@ if (undefined == capture) {
 			}
 		},
 		init : function () {
-			
+			console.log("client capture init")
 			
 			var data ={}
 		data.url =this.getdomainName(document.location.toString().split('?')[0])
@@ -156,7 +170,7 @@ if (undefined == capture) {
 
 					elem.xpath = capture.getXPath(formelement)
 					elem.parentxpath=""
-						val = ""
+						var val = ""
 						if (formelement.value && undefined != formelement.value)
 							val = formelement.value
 
@@ -317,6 +331,9 @@ if (undefined == capture) {
 				}
 			} */
 
+			console.log("capture result "+(formcount == 1 && null != parentform && flgCaptured))
+			
+			console.log("formcount",formcount,"parentform",parentform,"flgCaptured",flgCaptured)
 			if(formcount == 1 && null != parentform && flgCaptured){
 				
 				if(parentform.innerText.toLowerCase().indexOf("picture displayed") >=0  || parentform.innerText.toLowerCase().indexOf("characters displayed") >=0  || parentform.innerText.toLowerCase().indexOf("captcha") >=0  || parentform.innerText.toLowerCase().indexOf("otp") >=0 ){
@@ -331,11 +348,12 @@ if (undefined == capture) {
 			
 			if (flgCaptured ) {
 			
+			console.log("capture.hiddencapture "+capture.hiddencapture)
 		
 			if(capture.hiddencapture == true)
 				capture.onCaptureAutoLogin(true)
 			else
-				captureUI.init(capture.extnid,capture.onCaptureAutoLogin,pwdelems)
+				vAPI.captureUI.init(capture.extnid,capture.onCaptureAutoLogin,pwdelems)
 			
 			
 		
@@ -442,62 +460,7 @@ if (undefined == capture) {
 				}, false);
 
 		}
-
-	}
-
-	function initAutoLoginCapture() {
-
-		//console.log("Starting listener" +  capture.form)
-
-		if (undefined != capture.form) {
-			//console.log("Starting listener" +  capture.form)
-			capture.form.addEventListener('submit', capture.onBeforeAutoLoginSubmit, false);
-
-			// Add enter event to password field element
-			//Verify Password field has been entered & userfield has been entered
-
-			var pwdElem = capture.form.querySelector("input[type='password']");
-			var pwdhandler = ""
-				if (pwdElem.outerHTML.toLowerCase().indexOf("onkeydown") > 0) {
-					pwdhandler = pwdElem.getAttributeNode('onkeydown').nodeValue
-						pwdElem.getAttributeNode('onkeydown').nodeValue = ""
-				}
-
-				pwdElem.addEventListener("keydown", function (event) {
-					if (event.keycode == 13) {
-
-						//if(capture.form.querySelector("input[type='password']").value !== "" )
-						capture.onBeforeAutoLoginSubmit(event)
-
-						eval(pwdhandler)
-					}
-
-				}, false);
-
-			var btnelems = capture.form.querySelectorAll("input[type='button']")
-
-				if (null !== btnelems) {
-
-					capture.addClickEvents(btnelems)
-
-				}
-
-				var aTags = capture.form.querySelectorAll("a")
-				if (null !== aTags) {
-					capture.addClickEvents(aTags)
-				}
-
-				var btnTags = capture.form.querySelectorAll('button')
-
-				if (null !== btnTags) {
-					capture.addClickEvents(btnTags)
-
-				}
-
-				//Add on click event to any <a> tag or <input> tag or <button> tag
-				//Verify Password field has been entered & userfield has been entered
-
-		}
+		
 
 	}
 
@@ -529,3 +492,5 @@ if (undefined == capture) {
 }
 
 
+console.log("Capture ")
+})();

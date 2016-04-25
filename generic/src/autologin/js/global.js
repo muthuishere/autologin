@@ -514,16 +514,29 @@ while (i--) {
 	
 	initExtension:function() { 
 	
+		storage.init(function(){
+		
+				globalAutologinHandler.initDetails();
+		
+		})
+	},
+	initDetails:function() { 
+	
 	//validate and set logged in
-	storage.init()
+	
+	
+	
 	var credential=storage.getCredential();
 	var promptrequired=storage.getPromptRequired()
 	
 	if(undefined == credential || null == credential || undefined == promptrequired || null == promptrequired ||  promptrequired === 'false'){
 		
 		globalAutologinHandler.loggedIn=true
+		
+		//No use of promptrequired as there is no credential 
 		if(promptrequired === 'true')
-				storage.getPromptRequired()='false'
+				storage.setPromptRequired('false')
+			
 		
 	}		
 	else
@@ -629,6 +642,8 @@ while (i--) {
 var Utils={
 
 	getdomainName:function(str){
+		
+		console.log("checking str")
 		if(str.indexOf("http") != 0 )
 			return str
 		
@@ -642,29 +657,8 @@ var Utils={
 
   var PageActionHandler = {
   
-  
-	setCaptureInProgress:function(tab){
-		
-		var domainName=Utils.getdomainName(tab.url)
-		
-		vAPI.tabs.injectScript(tab.id, {code:"initAutoLoginCapture()",allFrames :false}, function() {
-						//script injected
-				});
-				
-	
-		
-	},
-	setCaptureReady:function( tab){
-		
-		var domainName=Utils.getdomainName(tab.url)
-		
-		vAPI.tabs.injectScript(tab.id, {code:"removeAutoLoginCapture()",allFrames :false}, function() {
-				//script injected
-				});
-				
-	
-		
-	},
+ 
+
 
 	injectscripts:function(obj,index){
 		
@@ -709,13 +703,20 @@ globalAutologinHandler.initExtension()
 
 
 
-var handleGlobalMsg= function(request, sender, sendResponse) {
+var handleGlobalMsg= function(request, tab, sendResponse) {
     // console.log(sender.tab ?
                 // "from a content script:" + sender.tab.url :
                 // "from the extension");
+				console.log("====")
+				console.log(request)
+				console.log(tab)
+				console.log("====")
 				
-				
- if (request.action == "getData"){
+if (request.action == "inject"){
+
+
+}	
+ else if (request.action == "getData"){
 	
 	
 			var site= storage.get("form",request.domain)
@@ -727,7 +728,7 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 	}else if (request.action == "injectAutoLogin"){
 	
 	
-			globalAutologinHandler.processScripts(sender.tab)
+			globalAutologinHandler.processScripts(tab)
 			
 			
 		sendResponse({"valid":true});
@@ -895,7 +896,7 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 	
 			
 			
-			storage.getPromptRequired()= request.promptrequired;
+			storage.setPromptRequired(request.promptrequired);
 			
 			
 			
@@ -914,7 +915,7 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 	
 	}else if (request.action == "updateBasicAuthHandlers"){
 	
-		
+		console.log("changing " + request.usebasicAuth)
 			storage.setUseBasicAuth(request.usebasicAuth,function(){
 				
 				var usebasicauth= storage.getUseBasicAuth()
@@ -947,14 +948,14 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 	}else if (request.action == "cansubmit"){
 	
 		
-		var flgResponse=globalAutologinHandler.canSubmit(sender.tab.url)
+		var flgResponse=globalAutologinHandler.canSubmit(tab.url)
 		
 		if(flgResponse == true){
-			globalAutologinHandler.updateSuccessLogin(sender.tab.url)
+			globalAutologinHandler.updateSuccessLogin(tab.url)
 			
 		}else{
 			
-			globalAutologinHandler.injectCapture(sender.tab.id)	
+			globalAutologinHandler.injectCapture(tab.id)	
 			
 		}
 			
@@ -964,7 +965,7 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 	}else if (request.action == "submiterror"){
 	
 	
-		globalAutologinHandler.removefromPool(sender.tab.url)
+		globalAutologinHandler.removefromPool(tab.url)
 		
 	sendResponse({"valid":"true"});
 	
@@ -995,14 +996,37 @@ var handleGlobalMsg= function(request, sender, sendResponse) {
 var onMessage = function(request, sender, callback) {
     var µb = AppExtn;
 
-	console.log("Message listener")
+	console.log("Message listener",request)
 	 if(undefined == request  || undefined == request.action){
 		 
 		 console.log("Invalid request" , request )
 		 return;
 	 }
 	 
-	 handleGlobalMsg(request, sender, callback)
+	  var tabId = sender && sender.tab ? sender.tab.id : 0;
+	  
+	  var tab = sender && sender.tab && sender.tab.url ? sender.tab : null;
+	
+	console.log(tab)
+		//Firefox special
+	  if(null == tab){
+		  
+		
+		  
+		
+		   vAPI.tabs.get(tabId, function(curtab) {
+        
+			console.log("firefox tab")
+		  	console.log(curtab)
+			console.log("end tab")
+		
+        
+                handleGlobalMsg(request, curtab, callback)
+            });
+		
+	  }else		 
+		handleGlobalMsg(request, tab, callback)
+	 
 	 
 
 };

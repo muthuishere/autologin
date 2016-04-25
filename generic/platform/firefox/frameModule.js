@@ -275,7 +275,7 @@ const contentObserver = {
 		//Scripts for each page 
 		
         lss(this.contentBaseURI + 'vapi-client.js', sandbox);
-       
+       lss(this.contentBaseURI + 'vapi-init.js', sandbox);
 		
 
         let docReady = (e) => {
@@ -292,8 +292,11 @@ const contentObserver = {
                 });
             }
 
+			
+			
+			
 			/*
-            lss(this.contentBaseURI + 'contentscript-end.js', sandbox);
+            
 			 // Autologin Script
 			lss(this.contentBaseURI + 'autologin-content.js', sandbox);
 			

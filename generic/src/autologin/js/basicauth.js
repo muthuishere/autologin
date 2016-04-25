@@ -40,7 +40,7 @@ var basicauth={
 		else
 			document.querySelector("#realm").innerHTML="Sign In "
 		 
-		var extnid=vAPI.getURL("/") 
+		//var extnid=vAPI.getURL("/") 
 		
 		//autoLoginCaptureIcon.init(extnid,basicauth.onCaptureAutoLogin)
 	

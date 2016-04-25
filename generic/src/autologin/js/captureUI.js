@@ -1,9 +1,24 @@
-
-if (undefined == captureUI){
-
+(function() {
 
 
-var captureUI={	
+
+
+if ( document instanceof HTMLDocument === false ) {
+  
+    return false;
+}
+
+if ( !vAPI ) {
+  
+    return;
+}
+
+
+if (undefined == vAPI.captureUI){
+
+
+
+vAPI.captureUI={	
 	disableIconURL:"",
 	enableIconURL:"",
 	hoverIconURL:"",
@@ -14,14 +29,16 @@ var captureUI={
 	pwdelems:[],
 	init:function(appextnid,callback,pwdelems,isSelected){
 		
+		console.log("client capture ui init" )
+		vAPI.captureUI.callback=callback
 		
-		captureUI.callback=callback
-		//console.log(captureUI.callback)
-	captureUI.disableIconURL=appextnid +"images/capture_disable.png"
-	captureUI.enableIconURL=appextnid +"images/capture_enable.png"
-	captureUI.hoverIconURL=appextnid +"images/capture_hover.png"
-	captureUI.backgroundIconURL=appextnid +"images/bg.png"
-	captureUI.pwdelems=pwdelems
+	vAPI.captureUI.disableIconURL=appextnid +"images/capture_disable.png"
+	vAPI.captureUI.enableIconURL=appextnid +"images/capture_enable.png"
+	vAPI.captureUI.hoverIconURL=appextnid +"images/capture_hover.png"
+	vAPI.captureUI.backgroundIconURL=appextnid +"images/bg.png"
+	vAPI.captureUI.pwdelems=pwdelems
+	
+	console.log(vAPI.captureUI.disableIconURL)
 	// if form has one password field and one text field and both elements are visible
 	//call the autologin function to show
 
@@ -37,7 +54,7 @@ var captureUI={
 			
 
 			
-			var css='\n div#captureUI.disable{ \n color:black; \n background:url("'+ captureUI.disableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n div#captureUI.enable{ \n color:white; \n background:url("'+ captureUI.enableIconURL +'") no-repeat center; \n opacity:1.0; \n  }  \n div#captureUI.enable:hover{ \n /* background:url("'+ captureUI.hoverIconURL +'") no-repeat center; */ \n opacity:0.9; \n }\n  div#captureUI.disable:hover{ \n  /* background:url("'+ captureUI.hoverIconURL +'") no-repeat center;*/  opacity:1.0; \n}';
+			var css='\n div#captureUI.disable{ \n color:black; \n background:url("'+ vAPI.captureUI.disableIconURL +'") no-repeat center; \n opacity:0.7; \n } \n div#captureUI.enable{ \n color:white; \n background:url("'+ vAPI.captureUI.enableIconURL +'") no-repeat center; \n opacity:1.0; \n  }  \n div#captureUI.enable:hover{ \n /* background:url("'+ vAPI.captureUI.hoverIconURL +'") no-repeat center; */ \n opacity:0.9; \n }\n  div#captureUI.disable:hover{ \n  /* background:url("'+ vAPI.captureUI.hoverIconURL +'") no-repeat center;*/  opacity:1.0; \n}';
 		
 					style=document.createElement('style');
 					if (style.styleSheet)
@@ -55,13 +72,13 @@ var captureUI={
 						
 						
 						document.body.appendChild(divelem);
-						document.querySelector("div#captureUI").addEventListener('click', captureUI.onCaptureAutoLogin, false);
+						document.querySelector("div#captureUI").addEventListener('click', vAPI.captureUI.onCaptureAutoLogin, false);
 		
 	
 					
 						if(isSelected){
 							//Select by default
-							captureUI.onCaptureAutoLogin();
+							vAPI.captureUI.onCaptureAutoLogin();
 						}
 	
 						
@@ -85,8 +102,8 @@ var captureUI={
 							if (selected !== null ) {
 							
 							
-							captureUI.dragged++
-							//console.log("changed",captureUI.dragged)
+							vAPI.captureUI.dragged++
+							//console.log("changed",vAPI.captureUI.dragged)
 							selected.style.left = (x_pos - x_elem) + 'px';
 							selected.style.top = (y_pos - y_elem) + 'px';
 						}
@@ -111,7 +128,7 @@ var captureUI={
 					document.onmouseup = _destroy;
 
 		
-			var handler = captureUI.onVisibilityChange(captureUI.pwdelems, callback);
+			var handler = vAPI.captureUI.onVisibilityChange(vAPI.captureUI.pwdelems, callback);
 			document.addEventListener('scroll', handler, false); 
 			handler()
 			
@@ -126,7 +143,7 @@ var captureUI={
 			
 			for (l=0;l<elems.length;l++){
 				
-				if(captureUI.isElementInViewport(elems[l])){
+				if(vAPI.captureUI.isElementInViewport(elems[l])){
 					console.log("Is in viewport")
 					document.querySelector("#draggable-element").style.visibility="visible"
 					
@@ -154,9 +171,9 @@ var captureUI={
 	},	
 	onCaptureAutoLogin:function(){
 
-	if(captureUI.dragged <2 ){
+	if(vAPI.captureUI.dragged <2 ){
 	//console.log("on capture autologin")
-		if(captureUI.startCapture == false){
+		if(vAPI.captureUI.startCapture == false){
 		
 		//Change Background url
 		
@@ -169,12 +186,12 @@ var captureUI={
 		
 		//initautoLoginCaptureIcon()
 		
-		captureUI.startCapture=true
+		vAPI.captureUI.startCapture=true
 			
-		//	captureUI.captureForm.addEventListener('submit', captureUI.onBeforeAutoLoginSubmit, true);
-			if(null != captureUI.callback){
+		//	vAPI.captureUI.captureForm.addEventListener('submit', vAPI.captureUI.onBeforeAutoLoginSubmit, true);
+			if(null != vAPI.captureUI.callback){
 				
-				captureUI.callback(true)
+				vAPI.captureUI.callback(true)
 			}
 
 						
@@ -185,10 +202,10 @@ var captureUI={
 	document.querySelector("div#captureUI").setAttribute("title","Click to Capture Auto Login Information");
 	document.querySelector("div#captureUI").innerHTML="Capture";
 	//document.querySelector("a#captureUIlink").setAttribute("Title","Click to Capture Auto Login Information");
-		captureUI.startCapture=false
-			if(null != captureUI.callback){
+		vAPI.captureUI.startCapture=false
+			if(null != vAPI.captureUI.callback){
 				
-				captureUI.callback(false)
+				vAPI.captureUI.callback(false)
 			}
 		
 		
@@ -197,7 +214,7 @@ var captureUI={
 	}
 	
 
-	captureUI.dragged=0;
+	vAPI.captureUI.dragged=0;
 	
 	},
 
@@ -258,3 +275,7 @@ var captureElem={
 
 
 }
+
+
+console.log("")
+})();

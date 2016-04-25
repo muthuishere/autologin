@@ -14,6 +14,12 @@ let {contentObserver, LocationChangeListener} = Components.utils.import(
     null
 );
 
+if( !contentObserver  || !LocationChangeListener)
+	return
+
+
+
+
 let injectContentScripts = function(win) {
     if ( !win || !win.document ) {
         return;
@@ -36,11 +42,9 @@ let onLoadCompleted = function() {
 
 addMessageListener('autologin-load-completed', onLoadCompleted);
 
-console.log("setting locationChangeListener",LocationChangeListener)
-console.log(contentObserver)
 
 locationChangeListener = new LocationChangeListener(docShell);
-console.log("end setting locationChangeListener")
+
 /******************************************************************************/
 
 })();

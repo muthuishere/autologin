@@ -63,7 +63,7 @@ mv $DES/img/icon_128.png $DES/icon.png
 cp platform/firefox/vapi-*.js $DES/js/
 cp platform/firefox/bootstrap.js $DES/
 cp platform/firefox/frame*.js $DES/
-cp -R platform/firefox/img $DES/
+
 
 cp -R platform/firefox/css $DES/
 cp platform/firefox/chrome.manifest $DES/

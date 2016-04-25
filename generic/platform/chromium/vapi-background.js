@@ -734,39 +734,8 @@ vAPI.net.registerListeners = function() {
         details.type = 'object';
     };
 
-    var onBeforeRequestClient = this.onBeforeRequest.callback;
-    var onBeforeRequest = function(details) {
-        normalizeRequestDetails(details);
-        return onBeforeRequestClient(details);
-    };
-    chrome.webRequest.onBeforeRequest.addListener(
-        onBeforeRequest,
-        //function(details) {
-        //    quickProfiler.start('onBeforeRequest');
-        //    var r = onBeforeRequest(details);
-        //    quickProfiler.stop();
-        //    return r;
-        //},
-        {
-            'urls': this.onBeforeRequest.urls || ['<all_urls>'],
-            'types': this.onBeforeRequest.types || []
-        },
-        this.onBeforeRequest.extra
-    );
+   
 
-    var onHeadersReceivedClient = this.onHeadersReceived.callback;
-    var onHeadersReceived = function(details) {
-        normalizeRequestDetails(details);
-        return onHeadersReceivedClient(details);
-    };
-    chrome.webRequest.onHeadersReceived.addListener(
-        onHeadersReceived,
-        {
-            'urls': this.onHeadersReceived.urls || ['<all_urls>'],
-            'types': this.onHeadersReceived.types || []
-        },
-        this.onHeadersReceived.extra
-    );
 };
 
 /******************************************************************************/

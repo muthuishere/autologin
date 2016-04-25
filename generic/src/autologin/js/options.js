@@ -310,6 +310,13 @@ var autoLoginOptions = {
 		 
 	},
 	init:function(){
+		 storage.init(function(){
+			 autoLoginOptions.initdata();
+			 
+			 
+		 })
+	},
+	initdata:function(){
 	
 	
 				messager.send({action: "hasCredential"}, function(response) {
@@ -337,7 +344,7 @@ var autoLoginOptions = {
 	document.querySelector('a#mnuautologinsettings').addEventListener('click', autoLoginOptions.menuAutologinSettingsClicked, false);
 	document.querySelector('a#mnusupport').addEventListener('click', autoLoginOptions.showSupport, false);
 	
-		 storage.init()
+		
 		 
 	},
 	 loadChangePassword: function () {

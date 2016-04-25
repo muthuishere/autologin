@@ -45,9 +45,9 @@ var storage = {
 	},
 	setUseBasicAuth:function(flgUseBasicAuth,callback){
 		
-			var data={'usebasicauth':flgUseBasicAuth}
-		var response={}
-		vAPI.storage.set(response, function ()
+		var data={'usebasicauth':flgUseBasicAuth+""}
+		
+		vAPI.storage.set(data, function ()
 					{
 						
 						
@@ -86,9 +86,7 @@ var storage = {
 		
 		var data={'credential':Helper.encrypt(pwd)}
 		
-		var response={}
-		
-		vAPI.storage.set(response, function ()
+		vAPI.storage.set(data, function ()
 					{
 						
 						
@@ -115,9 +113,9 @@ var storage = {
 	},
 	setPromptRequired:function(flgPromptRequired,callback){
 		
-			var data={'promptrequired':flgPromptRequired}
-		var response={}
-		vAPI.storage.set(response, function ()
+			var data={'promptrequired':flgPromptRequired+""}
+		
+		vAPI.storage.set(data, function ()
 					{
 						
 						
@@ -712,12 +710,15 @@ saveitem:function(response){
 	init : function (callback) {
 
 
-		
+		console.log("localStorageObject")
 		vAPI.storage.get(null, function (localStorageObject)
 		{
+			
+			console.log(localStorageObject)
 			//go through each storage entry
 			for (var key in localStorageObject)
 			{
+				console.log("checking key"+ key)
 				
 				if(key == "autologinsites")
 					storage.autologinsites=JSON.parse(Helper.decrypt(localStorageObject["autologinsites"]));
@@ -736,6 +737,7 @@ saveitem:function(response){
 			
 		});
 		
+			console.log(storage)
 	
 			
 		

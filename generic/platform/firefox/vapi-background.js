@@ -1522,8 +1522,9 @@ vAPI.onLoadAllCompleted = function() {
             location.host + '-load-completed'
         );
 		
-		console.log("Injecting vapi client ")
+		//console.log("Injecting vapi client ")
 		
+		/*
 		//Injecting scripts for all tabs 
 		vAPI.tabs.injectScript(tab.id, {
             file: 'js/vapi-client.js',
@@ -1532,9 +1533,23 @@ vAPI.onLoadAllCompleted = function() {
         }, function(){
 
 			console.log("Start process scripts ")
-			globalAutologinHandler.processScripts(tab)
+			
+			vAPI.tabs.injectScript(tab.id, {
+            file: 'js/vapi-init.js',
+            allFrames: false,
+            runAt: 'document_end'
+				}, function(){
+					
+							globalAutologinHandler.processScripts(tab)
+			
+				});
+			
+			
+			
+			
+			
 		});
-		
+		*/
 		
     }
 };
