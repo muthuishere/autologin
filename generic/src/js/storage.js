@@ -11,6 +11,8 @@ var storage = {
 		vAPI.storage.get("autologinsites", function (localStorageObject)
 			{
 
+			
+					console.log("export rawbytes",localStorageObject["autologinsites"])
 					callback(localStorageObject["autologinsites"])
 			
 			
@@ -145,27 +147,36 @@ var storage = {
 		
 		//decrypt data
 		
+		var result={flgvalid:true,"msg":"Successfully imported data"}
+		
 		var jsonobj;
 		
 		try{
 			
-		var data =Helper.decrypt(rawdata)
+			var rawbytes=rawdata.split(',').map(Number);
+			
+			
+
+			console.log("import rawbytes",rawbytes)
+		var data =Helper.decrypt(rawbytes)
 			
 			jsonobj=JSON.parse(data);
-			
-			
-		}catch(exception){
-			
-			return false;
-		}
-		// check entries greater than zero and valid entries , return true or false
 		
 		storage.autologinsites = jsonobj
 		
 	
 		
-		storage.updatestorage();
-		return true;
+		storage.updatestorage();	
+			
+		}catch(exception){
+			
+			result.flgvalid=false;
+			result.msg="Error in importing data";
+			console.log("Error",exception)
+		}
+		// check entries greater than zero and valid entries , return true or false
+		
+		return result;
 	},
 		migrateautologinsites : function () {
 
@@ -336,6 +347,7 @@ saveitem:function(response){
 
 		var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
 		
+		console.log("Saving encrypted" , localStorage_autologinsites)
 		var data={'autologinsites':localStorage_autologinsites}
 		
 		storage.saveitem(data)
@@ -419,6 +431,7 @@ saveitem:function(response){
 				storage.autologinsites.push(currentsite)
 
 		}
+		console.log("storage.autologinsites",storage.autologinsites)
 
 		storage.updatestorage();
 
@@ -720,8 +733,14 @@ saveitem:function(response){
 			{
 
 				
-				if(key == "autologinsites")
-					storage.autologinsites=JSON.parse(Helper.decrypt(localStorageObject["autologinsites"]));
+				if(key == "autologinsites"){
+					
+					var decrypteddata=Helper.decrypt(localStorageObject["autologinsites"])
+					console.log("retreiving decrypted raw" , localStorageObject["autologinsites"])
+					console.log("after decrypted raw" , decrypteddata)
+					storage.autologinsites=JSON.parse(decrypteddata);
+				}
+					
 				else if(key == "usebasicauth")
 					storage.usebasicauth=localStorageObject['usebasicauth'];
 				else if(key == "credential")

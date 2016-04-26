@@ -540,7 +540,7 @@ var autoLoginOptions = {
 									
 										messager.send({module:"options",action: "importdata","result":result}, function(response) {
 							
-											if(response.flgvalid ){
+											if(response.flgvalid == true ){
 												autoLoginOptions.reloadStorage()	
 												autoLoginOptions.flashdiv("statusSuccess","Successfully Imported Autologin data");
 
@@ -771,7 +771,7 @@ searchdomain:function(domainname,authtype){
 					
 				
 				iurl=autoLoginOptions.getXMLElementval(sites[i],"url");
-				if(autoLoginOptions.getdomainName(iurl)  == domainname &&  authtype == sites[i].getAttribute("authtype")  ){
+				if(vAPI.getdomainName(iurl)  == domainname &&  authtype == sites[i].getAttribute("authtype")  ){
 							
 							return sites[i];
 							
@@ -1057,7 +1057,7 @@ console.log(sites)
 				//var samesites=storage.get(cursite.authtype,cursite.url)
 				//autoLoginInfo.sites=samesites
                 autoLoginInfo.enabled = cursite.enabled;				
-					autoLoginInfo.domain=autoLoginOptions.getdomainName(cursite.url);
+					autoLoginInfo.domain=vAPI.getdomainName(cursite.url);
 					
 					var mod_domain=autoLoginInfo.domain.replace(/\./g,"_") +"_" + autoLoginInfo.authtype
 					var selectbox="<select data-authtype='"+autoLoginInfo.authtype+"' data-url='"+autoLoginInfo.url+"' data-changed='' data-enabled='"+autoLoginInfo.enabled+"' data-domname='"+mod_domain+"' style='width:180px' class='selectbox' id='select"+mod_domain +"'>"

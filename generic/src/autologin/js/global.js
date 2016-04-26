@@ -752,8 +752,8 @@ console.log("== handleOptionMsg ==")
 					sendResponse({"valid":true ,"autologinsites":storage.autologinsites});	
 	
 	}else if (request.action == "importdata"){
-					var flgvalid=storage.importdata(request.result)
-					sendResponse({"valid":true ,"flgvalid":flgvalid});	
+					var importresp=storage.importdata(request.result)
+					sendResponse({"valid":true ,"flgvalid":importresp.flgvalid,"msg":importresp.msg});	
 	
 	}			
 	/*
