@@ -229,10 +229,6 @@ if (undefined == capture) {
 
 								capture.elems.push(elem)
 
-								console.log("check")
-								console.log(window.getEventListeners(formelement))
-								
-								
 								formelement.addEventListener('blur', function (e) {
 
 									//send xpath & value to background page
@@ -282,8 +278,6 @@ if (undefined == capture) {
 
 								
 								if( formelement.tagName.toLowerCase() == "button" ||  (formelement.tagName.toLowerCase() == "input" && elem.type != "text" ) ){
-								
-								
 								
 									formelement.addEventListener('click', function (e) {
 										capture.setelemevent(e.target, "click")
