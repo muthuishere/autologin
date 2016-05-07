@@ -52,6 +52,7 @@ cp -R src/images $DES/
 cp -R src/js $DES/
 cp -R src/_locales $DES/
 cp src/*.html $DES/
+cp -R faq $DES/
 
 cp src/autologin/env/env.json $DES/
 cp -R src/autologin/js/* $DES/js/

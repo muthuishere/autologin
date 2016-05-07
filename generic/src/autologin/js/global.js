@@ -716,6 +716,25 @@ vAPI.compareVersion =function(a, b) {
     return 0;
 }
 
+vAPI.openFAQ=function(){
+	console.log("opening faq")
+	
+
+	
+	vAPI.tabs.open({
+					type: 'normal',
+					 focused: true,
+					url: vAPI.getURL('faq/index.html'),
+					height: 450, width:450
+				
+				
+				}, function(win) {
+					
+					
+					
+				});
+				
+}
 vAPI.handleInstallUpgrade =function(installData){
 	
 	
@@ -725,13 +744,13 @@ vAPI.handleInstallUpgrade =function(installData){
 		//Only for chrome
 		if(installData.reason == "update" && vAPI.chrome){
 			
-			
-			
+			//Open FAQ page 
+			vAPI.openFAQ();
 		
 			if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == 0){
 				
 				//equal 
-				console.log("INSTALL Equal")
+				//console.log("INSTALL Equal")
 				
 			}else if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == 1){
 				
@@ -763,7 +782,7 @@ vAPI.handleInstallUpgrade =function(installData){
 			
 		}else if(installData.reason == "install"){
 			//Open FAQ page 
-			
+			vAPI.openFAQ();
 		}
 		// Handle 
 		 
@@ -1184,10 +1203,10 @@ if (request.module && request.module == "options"){
 var onMessage = function(request, sender, callback) {
     var µb = AppExtn;
 
-	console.log("Message listener",request)
+	
 	 if(undefined == request  || undefined == request.action){
 		 
-		 console.log("Invalid request" , request )
+		 //console.log("Invalid request" , request )
 		 return;
 	 }
 	 

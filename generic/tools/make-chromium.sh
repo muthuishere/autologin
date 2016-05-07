@@ -35,7 +35,7 @@ cp -R src/img $DES/
 cp -R src/images $DES/
 cp -R src/js $DES/
 
-
+cp -R faq $DES/
 
 cp src/autologin/env/env.json $DES/
 cp -R src/autologin/js/* $DES/js/

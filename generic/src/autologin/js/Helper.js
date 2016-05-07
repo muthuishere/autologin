@@ -61,7 +61,7 @@ var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
 var encryptedBytes = aesCtr.encrypt(textBytes);
 
 result = encryptedBytes;//aesjs.util.convertBytesToString(encryptedBytes,"hex");
-console.log("text",text,"encrypted" , encryptedBytes,"decrypted",Helper.decrypt(encryptedBytes))
+
 
 	
 return result;
@@ -85,7 +85,7 @@ var decryptedBytes = aesCtr.decrypt(encryptedBytes);
 
 result = aesjs.util.convertBytesToString(decryptedBytes);
 
-console.log("decrypted" , result)
+
 	/*
     for(i=0; i<encryptedtxt.length; i++)
     {

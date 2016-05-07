@@ -2,9 +2,22 @@
 Firefox remove basic auth in options
 
 Test Test Test 
+	host:port testing -Not don
+	Password prompt	-done
+	multiple sites -TBD
+	famous sites -TBD
+		update -check
 
 domain should host:port completed
 
 
 
 
+
+Localstorage old migrate 
+
+	less than 3.0
+			migrate from old way of html elements 
+			
+	greater than 3.0 
+			migrate storage
