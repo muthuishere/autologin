@@ -94,7 +94,9 @@ var µb = AppExtn;
 
     TabContext.prototype.onTab = function(tab) {
         if ( tab ) {
-            this.timer = setTimeout(this.onTimerCallback, gcPeriod);
+            this.timer = setTimeout(function(){
+				this.onTimerCallback
+			}, gcPeriod);
         } else {
             this.destroy();
         }
@@ -117,7 +119,9 @@ var µb = AppExtn;
         }
         this.onTabCallback = this.onTab.bind(this);
         this.onTimerCallback = this.onTimer.bind(this);
-        this.timer = setTimeout(this.onTimerCallback, gcPeriod);
+        this.timer = setTimeout(function(){
+			this.onTimerCallback
+		}, gcPeriod);
     };
 
     // Update just force all properties to be updated to match the most current
@@ -536,10 +540,14 @@ var pageStoreJanitor = function() {
     }
     pageStoreJanitorSampleAt = n;
 
-    setTimeout(pageStoreJanitor, pageStoreJanitorPeriod);
+    setTimeout(function(){
+		pageStoreJanitor()
+	}, pageStoreJanitorPeriod);
 };
 
-setTimeout(pageStoreJanitor, pageStoreJanitorPeriod);
+setTimeout(function(){
+	pageStoreJanitor
+}, pageStoreJanitorPeriod);
 
 /******************************************************************************/
 /******************************************************************************/

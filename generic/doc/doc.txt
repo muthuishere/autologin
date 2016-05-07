@@ -1,0 +1,54 @@
+Thanks for Installing AutoLogin
+
+
+Features
+		Automatically login to your sites,Save time
+		AES 256 Encryption
+		Export/Import sites
+		Credential based on host:port
+		Master Password to secure Autologin 
+		
+
+
+Setup master password 
+			Goto options
+			Click on Settings
+			Click Master Password ->Change Button
+			Enter Password and confirm again
+			Click Save
+			
+Prompt Password per session (The first Instance after browser is opened)
+			Goto options
+			Click on Settings
+			Click Prompt Password ->Turn on
+			
+
+Enable/Disable Autologin for a site 
+			Goto options
+			Look up for the  site  to enable/disable
+			Click On/Off button corresponding to site 
+			
+			
+Set default credential for site(Only applicable if site has multiple credentials)
+			Goto options
+			Look up your site 
+			Choose the appropriate user in users dropdown
+			Click the star icon  ,Next to it
+			
+Remove a specific credential for site(Only applicable if site has multiple credentials)
+			Goto options
+			Look up your site 
+			Choose the appropriate user in users dropdown
+			Click the delete icon button ,Next to it			
+			
+		
+		
+Dhana		
+Selva -> 		
+
+
+SSL Domain +hosting (1 year ) -> 12000
+
+Privacy Policy				 -> 9000
+Coding 						->
+FB API					- 3 days

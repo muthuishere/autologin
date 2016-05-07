@@ -10,6 +10,7 @@
 <link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="css/options.css" rel="stylesheet" type="text/css" media="all" />
 <script type="text/javascript" src="js/vapi-client.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
 
 <script type="text/javascript" src="js/Helper.js"></script>
 
@@ -19,7 +20,7 @@
 </head>
 <body>
 
-<div  style="background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));">
+<div  class="optionsbg" >
 <div id="header" class="container">
 	<table width="100%"><tbody><tr><td valign="middle">
 	
@@ -57,8 +58,8 @@
 			
 			
 			
-			<span id="statusError" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
-				<span id="statusSuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			<span id="statusError" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"><p/></span>
+				<span id="statusSuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"><p/></span>
 				</th>			
 				</tr></tbody></table>
 				
@@ -98,7 +99,7 @@
 			<th> <input type="password" id="txtaskpassword" class="inptxt" /> </th>			
 			<th>
 				
-				<button id="btnaskpassword" class="button" >Show</button> 
+				<button id="btnaskpassword" class="buttongeneric" >Show</button> 
 						
 				</th>			
 			</tr>
@@ -132,15 +133,15 @@
 			
 			<tr>
 		
-			<td style="text-align:left">
-			Prompt Password
+			<td style="text-align:left">			
+			Prompt on startup?			
 			</td>
 			<td>
-			<div class="onoffswitch">
-				<input type="checkbox" name="chkpromptAutologin" class="onoffswitch-checkbox" id="chkpromptAutologin" checked>
-				<label class="onoffswitch-label" for="chkpromptAutologin">
-					<span class="onoffswitch-inner"></span>
-					<span class="onoffswitch-switch"></span>
+			<div class="bigonoffswitch">
+				<input type="checkbox" name="chkpromptAutologin" class="bigonoffswitch-checkbox" id="chkpromptAutologin" checked>
+				<label class="bigonoffswitch-label" for="chkpromptAutologin">
+					<span class="bigonoffswitch-inner"></span>
+					<span class="bigonoffswitch-switch"></span>
 				</label>
 			</div>
 			
@@ -176,7 +177,7 @@
 			</table>
     
     </td><td valign="top">
-    <table class="tblsubsettings"  cellpadding="10">
+    <table class="tblsubsettings" id="tblbasicauth" style="visibility:hidden"  cellpadding="10">
 			<tbody>
 			<tr>
 			
@@ -190,11 +191,11 @@
               <td style="text-align:left"> Use Basic Auth </td>			
 		
 			<td style="text-align:left"> 
-			<div class="onoffswitch">
-				<input type="checkbox" name="chkpromptBasicAuth" class="onoffswitch-checkbox" id="chkpromptBasicAuth" checked>
-				<label class="onoffswitch-label" for="chkpromptBasicAuth">
-					<span class="onoffswitch-inner"></span>
-					<span class="onoffswitch-switch"></span>
+			<div class="bigonoffswitch">
+				<input type="checkbox" name="chkpromptBasicAuth" class="bigonoffswitch-checkbox" id="chkpromptBasicAuth" checked>
+				<label class="bigonoffswitch-label" for="chkpromptBasicAuth">
+					<span class="bigonoffswitch-inner"></span>
+					<span class="bigonoffswitch-switch"></span>
 				</label>
 			</div>
 			
@@ -230,7 +231,7 @@
 		
 			<td style="text-align:left">Export Data </td><td  style="text-align:right">
 			
-			<button id="btnExport" href="#" class="buttonred">Export</button>
+			<button id="btnExport" href="#" class="button">Export</button>
 			
 			
 			</td>			
@@ -241,7 +242,7 @@
 		
 			<td style="text-align:left">Import Data </td><td>  
 			<input type="file" id="fileimport" style="visibility:hidden;width:100px" value="Import" accept=".bin"/> 
-			<button  style="text-align:right" id="btnImport" href="#" class="buttongreen">Import</button>
+			<button  style="text-align:right" id="btnImport" href="#" class="button">Import</button>
 			
 			</td>
 			
@@ -295,12 +296,12 @@
 
 			<tr>
 			<th align="left">
-				<button id="btncancelchangepassword" class="buttonred" >Cancel</button> 
+				<button id="btncancelchangepassword" class="buttongrey" >Cancel</button> 
 			
 			 </th>
 			<th align="right">
 			
-				<button id="btnchangepassword" class="button" >Change</button> 
+				<button id="btnchangepassword" class="button" >Save</button> 
 			
 			</th>			
 			
@@ -372,5 +373,6 @@
 <div id="copyright">
 	&nbsp;
 </div>
+<div class="corner-ribbon bottom-right sticky red shadow"><a href="faq.html" target="_blank">FAQ</a></div>
 </body>
 </html>

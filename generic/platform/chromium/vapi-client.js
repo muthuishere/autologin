@@ -26,7 +26,7 @@ vAPI.vapiClientInjected = true;
 vAPI.sessionId = String.fromCharCode(Date.now() % 25 + 97) +
     Math.random().toString(36).slice(2);
 vAPI.chrome = true;
-
+vAPI.supportsbasicAuth = true;
 
 		
 /******************************************************************************/

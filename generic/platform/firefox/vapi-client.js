@@ -11,10 +11,11 @@
 'use strict';
 
 /******************************************************************************/
-console.log("Vapi client ")
+
 
 var vAPI = self.vAPI = self.vAPI || {};
 vAPI.firefox = true;
+vAPI.supportsbasicAuth = false;
 vAPI.sessionId = String.fromCharCode(Date.now() % 25 + 97) +
     Math.random().toString(36).slice(2);
 
@@ -69,7 +70,7 @@ vAPI.messaging = {
 
     setup: function() {
 		
-		console.log("client: message setup started")
+		
         this.connector = function(msg) {
             messagingConnector(JSON.parse(msg));
         };
@@ -79,7 +80,7 @@ vAPI.messaging = {
         this.channels['vAPI'] = {};
         this.channels['vAPI'].listener = function(msg) {
 			
-			console.log("client received message from content",msg)
+			
             if ( msg.cmd === 'injectScript' ) {
                 var details = msg.details;
 
@@ -122,7 +123,7 @@ vAPI.messaging = {
             listener: typeof callback === 'function' ? callback : null,
             send: function(message, callback) {
 					
-					console.log("client: message setup started")
+					//console.log("client: message setup started")
                 if ( !vAPI.messaging.connector ) {
                     vAPI.messaging.setup();
                 }
@@ -151,7 +152,7 @@ vAPI.messaging = {
 
     toggleListener: function({type, persisted}) {
 		
-		console.log("client toggle listener")
+		
         if ( !vAPI.messaging.connector ) {
             return;
         }

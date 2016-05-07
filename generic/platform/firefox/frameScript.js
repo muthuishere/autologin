@@ -36,6 +36,7 @@ let injectContentScripts = function(win) {
 };
 
 let onLoadCompleted = function() {
+	
     removeMessageListener('autologin-load-completed', onLoadCompleted);
     injectContentScripts(content);
 };

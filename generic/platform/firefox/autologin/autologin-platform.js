@@ -95,9 +95,8 @@ var issueAlert = function (alertID, alertOptions, callbackFunction) {
 
 			} catch (e) {
 				// This can fail on Mac OS X
-				console.log(e)
-
-				Utils.log("Unable to show notification api  " + alertOptions.alert + ", Using acive window alert");
+			
+				
 				//TODO alert
 			//	extension.window.showalert(alertOptions.alert)
 					var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);

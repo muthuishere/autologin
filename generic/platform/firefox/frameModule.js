@@ -275,8 +275,9 @@ const contentObserver = {
 		//Scripts for each page 
 		
         lss(this.contentBaseURI + 'vapi-client.js', sandbox);
+		lss(this.contentBaseURI + 'utils.js', sandbox);
        lss(this.contentBaseURI + 'vapi-init.js', sandbox);
-	   lss(this.contentBaseURI + 'utils.js', sandbox);
+	   
 	   
 	   
 		

@@ -585,8 +585,7 @@ while (i--) {
 		
 			if(globalAutologinHandler.loggedIn==false){
 			
-				console.log("Injecting validation")
-				
+		
 				vAPI.tabs.injectScript(tabId, {file:"js/validate.js",allFrames: false,
             runAt: 'document_end'}, function(details) {
 						//script injected
@@ -678,9 +677,107 @@ while (i--) {
 
 //globalAutologinHandler.loadXMLDoc(vAPI.getURL('autologin.xml'))
 
+// Return 1 if a > b
+// Return -1 if a < b
+// Return 0 if a == b
+vAPI.compareVersion =function(a, b) {
+    if (a === b) {
+       return 0;
+    }
+
+    var a_components = a.split(".");
+    var b_components = b.split(".");
+
+    var len = Math.min(a_components.length, b_components.length);
+
+    // loop while the components are equal
+    for (var i = 0; i < len; i++) {
+        // A bigger than B
+        if (parseInt(a_components[i]) > parseInt(b_components[i])) {
+            return 1;
+        }
+
+        // B bigger than A
+        if (parseInt(a_components[i]) < parseInt(b_components[i])) {
+            return -1;
+        }
+    }
+
+    // If one's a prefix of the other, the longer one is greater.
+    if (a_components.length > b_components.length) {
+        return 1;
+    }
+
+    if (a_components.length < b_components.length) {
+        return -1;
+    }
+
+    // Otherwise they are the same.
+    return 0;
+}
+
+vAPI.handleInstallUpgrade =function(installData){
+	
+	
+
+		var data=installData.data
+		
+		//Only for chrome
+		if(installData.reason == "update" && vAPI.chrome){
+			
+			
+			
+		
+			if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == 0){
+				
+				//equal 
+				console.log("INSTALL Equal")
+				
+			}else if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == 1){
+				
+				
+				console.log("Upgrade detected")
+				
+				var majorversion=parseInt(data.existingVersion.split(".")[0])
+				//Check major 
+				if(majorversion < 3){
+					
+					console.log("Upgrade autologinsites ")
+					storage.migrateautologinsites();
+					
+					//upgrade xml elements
+				}else if(majorversion < 4){
+					
+					//upgrade storage
+					console.log("Upgrade storage ")
+					
+					storage.migratestorage();
+				}
+			}else if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == -1){
+				//??Downgrade
+				console.log("INSTALL Downgrade")
+			}
+			
+			
+			
+			
+		}else if(installData.reason == "install"){
+			//Open FAQ page 
+			
+		}
+		// Handle 
+		 
+		console.log("INSTALL DATA Listener" , data)
+
+}
+
+
+
+
 globalAutologinHandler.initExtension()
-	//on extension loading first time ,make sure to inject ads on all tab
-		vAPI.onLoadAllCompleted();
+
+vAPI.onLoadAllCompleted();
+
 //globalAutologinHandler.printraw()
 
 
@@ -784,6 +881,13 @@ console.log("== handleOptionMsg ==")
 	}else if (request.action == "removeSite"){
 					var flgvalid=storage.removeSite(request.site)
 					sendResponse({"valid":true });	
+	
+	}else if (request.action == "modifysiteenabled"){
+		
+					
+					var flgvalid=storage.updatesiteenabled(request.site)
+					sendResponse({"valid":true });	
+					
 	
 	}else if (request.action == "siteupdates"){
 		
@@ -1091,7 +1195,7 @@ var onMessage = function(request, sender, callback) {
 	  
 	  var tab = sender && sender.tab && sender.tab.url ? sender.tab : null;
 	
-	console.log(tab)
+	//console.log(tab)
 		//Firefox special
 	  if(null == tab){
 		  

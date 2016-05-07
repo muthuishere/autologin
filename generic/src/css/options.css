@@ -244,3 +244,220 @@
     background-color: #286090;
     border-color: #204d74;
 }
+
+
+
+.smallonoffswitch {
+    position: relative; width: 53px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.smallonoffswitch-checkbox {
+    display: none;
+}
+.smallonoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #E3E7EA; border-radius: 26px;
+}
+.smallonoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.smallonoffswitch-inner:before, .smallonoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;
+    font-size: 8px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.smallonoffswitch-inner:before {
+    content: "ON";
+    padding-left: 10px;
+    background-color: #EEEEEE; color: #213F56;
+	text-align: left;
+	
+}
+.smallonoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.smallonoffswitch-switch {
+    display: block; width: 15px; margin: 2.5px;
+    background: #A1A1A1;
+    position: absolute; top: 0; bottom: 0;
+    right: 29px;
+    border: 2px solid #E3E7EA; border-radius: 26px;
+    transition: all 0.3s ease-in 0s; 
+}
+.smallonoffswitch-checkbox:checked + .smallonoffswitch-label .smallonoffswitch-inner {
+    margin-left: 0;
+}
+.smallonoffswitch-checkbox:checked + .smallonoffswitch-label .smallonoffswitch-switch {
+    right: 0px; 
+    background-color: #213F56; 
+}
+
+
+.bigonoffswitch {
+    position: relative; width: 67px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.bigonoffswitch-checkbox {
+    display: none;
+}
+.bigonoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #E3E7EA; border-radius: 26px;
+}
+.bigonoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.bigonoffswitch-inner:before, .bigonoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 22px; padding: 0; line-height: 22px;
+    font-size: 10px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.bigonoffswitch-inner:before {
+    content: "ON";
+    padding-left: 10px;
+    background-color: #EEEEEE; color: #213F56;
+	text-align: left;
+}
+.bigonoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.bigonoffswitch-switch {
+    display: block; width: 18px; margin: 2px;
+    background: #A1A1A1;
+    position: absolute; top: 0; bottom: 0;
+    right: 41px;
+    border: 2px solid #E3E7EA; border-radius: 26px;
+    transition: all 0.3s ease-in 0s; 
+}
+.bigonoffswitch-checkbox:checked + .bigonoffswitch-label .bigonoffswitch-inner {
+    margin-left: 0;
+}
+.bigonoffswitch-checkbox:checked + .bigonoffswitch-label .bigonoffswitch-switch {
+    right: 0px; 
+    background-color: #213F56; 
+}
+
+
+
+
+@import url('http://fonts.googleapis.com/css?family=Noto+Sans:400,700');
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background: #f0f0f0;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+h1{
+  width: 500px;
+  height: 100px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -275px;
+  font-size: 3.2em;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 100px;
+  color: #aaa;
+}
+
+h2{
+  width: 500px;
+  height: 100px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: 0 0 0 -225px;
+  font-size: 1.6em;
+  font-weight: 400;
+  text-align: center;
+  line-height: 100%;
+  color: #bbb;
+}
+
+/* The ribbons */
+
+.corner-ribbon{
+  width: 200px;
+  background: #e43;
+  position: absolute;
+  top: 25px;
+  left: -50px;
+  text-align: center;
+  line-height: 50px;
+  letter-spacing: 1px;
+  color: #f0f0f0;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+/* Custom styles */
+
+.corner-ribbon.sticky{
+  position: fixed;
+}
+
+.corner-ribbon.shadow{
+  box-shadow: 0 0 3px rgba(0,0,0,.3);
+}
+
+/* Different positions */
+
+.corner-ribbon.top-left{
+  top: 25px;
+  left: -50px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.corner-ribbon.top-right{
+  top: 25px;
+  right: -50px;
+  left: auto;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.corner-ribbon.bottom-left{
+  top: auto;
+  bottom: 25px;
+  left: -50px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.corner-ribbon.bottom-right{
+  top: auto;
+  right: -50px;
+  bottom: 25px;
+  left: auto;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+/* Colors */
+
+.corner-ribbon.white{background: #f0f0f0; color: #555;}
+.corner-ribbon.black{background: #333;}
+.corner-ribbon.grey{background: #999;}
+.corner-ribbon.blue{background: #39d;}
+.corner-ribbon.green{background: #2c7;}
+.corner-ribbon.turquoise{background: #1b9;}
+.corner-ribbon.purple{background: #95b;}
+.corner-ribbon.red{background: #e43;}
+.corner-ribbon.orange{background: #e82;}
+.corner-ribbon.yellow{background: #ec0;}

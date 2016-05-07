@@ -24,6 +24,8 @@ vAPI.fennec = Services.appinfo.ID === '{aa3c5121-dab2-40e2-81ca-7ea25febc110}';
 
 /******************************************************************************/
 
+
+
 vAPI.app = {
     name: 'Autologin',
     version: location.hash.slice(1)
@@ -810,7 +812,7 @@ vAPI.tabs.select = function(tab) {
 
 vAPI.tabs.injectScript = function(tabId, details, callback) {
 	
-	console.log(tabId + "Injecting script ",details)
+
     var tab = this.get(tabId);
 
     if ( !tab ) {
@@ -820,7 +822,7 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 
 	if(details.file ==undefined && details.code != undefined ){
 		
-		console.log("Injecting code  ")
+		
 		
 		getBrowserForTab(tab).messageManager.sendAsyncMessage(
 				location.host + ':broadcast',
@@ -842,7 +844,7 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 				return;
 			}
 			
-			console.log(" Injecting file   ")
+			
 
 			details.file = vAPI.getURL(details.file);
 			getBrowserForTab(tab).messageManager.sendAsyncMessage(
@@ -859,7 +861,9 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 
 	}
     if ( typeof callback === 'function' ) {
-        setTimeout(callback, 13);
+        setTimeout(function(){
+			callback()
+		}, 13);
     }
 };
 
@@ -1552,6 +1556,26 @@ vAPI.onLoadAllCompleted = function() {
 		*/
 		
     }
+	
+	
+
+		 let appShell = Components.classes['@mozilla.org/appshell/appShellService;1']
+				.getService(Components.interfaces.nsIAppShellService);
+		let hiddenDoc = appShell.hiddenDOMWindow.document.documentElement;
+				
+		//console.log(document,"BAckground Autologin",location.hash,hiddenDoc,appShell.hiddenDOMWindow)
+
+		var extensionstartupdata=appShell.hiddenDOMWindow.sessionStorage.getItem('extensionstartupdata')
+		if(extensionstartupdata){			
+			
+
+			vAPI.handleInstallUpgrade(JSON.parse(extensionstartupdata))
+			appShell.hiddenDOMWindow.sessionStorage.removeItem('extensionstartupdata');		
+			
+		}
+
+
+
 };
 
 /******************************************************************************/

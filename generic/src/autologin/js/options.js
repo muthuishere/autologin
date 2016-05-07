@@ -8,62 +8,9 @@ var autoLoginOptions = {
 	hasPassword:true,
 	validated:false,
 
-	createXMLElement:function(node,elemName){
+
 	
-	var xmldoc=autoLoginOptions.autologinXMLList;
-	
-	newel=xmldoc.createElement(elemName);
-		
-		
-		newtext=xmlDoc.createTextNode('');
-		newel.appendChild(newtext);
-		node.appendChild(newel);
 
-
-	},
-	
-	setXMLElementval:function(node,elemName,val){
-		
-		try{
-		
-		if(node.getElementsByTagName(elemName) == null)
-			return false;
-
-		
-		
-		
-			node.getElementsByTagName(elemName)[0].firstChild.nodeValue=val;
-			return true;
-		}catch(exception){
-				
-		}
-	},
-	setXMLPathval : function (node, xpath, val) {
-
-		try {
-
-			if (node.getElementsByTagName("element") == null)
-				return false;
-
-			var elems = node.getElementsByTagName("element");
-
-			for (k = 0; k < elems.length; k++) {
-
-				if (autoLoginOptions.getXMLElementval(elems[k], "xpath") == xpath) {
-
-					autoLoginOptions.setXMLElementval(elems[k], "value", val)
-					return true;
-					
-				}
-
-			}
-
-		} catch (exception) {
-			
-			console.log(exception)
-		}
-		return false;
-	},	
 	validateViewOptions:function(event){
 	 
 	 document.querySelector("#validatepwdstatus").innerHTML=""
@@ -163,7 +110,7 @@ var autoLoginOptions = {
 					
 					if(response.valid){
 						
-							autoLoginOptions.flashdiv("statusSuccess","Successfully changed Password");
+							autoLoginOptions.flashsuccess("Successfully changed Password");
 								
 								autoLoginOptions.viewSettings();
 								
@@ -171,7 +118,7 @@ var autoLoginOptions = {
 					}else{
 						//show sites
 							
-								autoLoginOptions.flashdiv("statusError","Error in Updating Password Password");
+								autoLoginOptions.flasherror("Error in Updating Password Password");
 								document.querySelector("#txtnewpassword").focus(); 
 								return;
 					}
@@ -182,12 +129,30 @@ var autoLoginOptions = {
 					
 	
 	},
-	flashdiv:function(divid,txt){
-	
-	document.querySelector("#"+divid).innerHTML=txt;
+flashsuccess:function(txt){
+									
+									
+	document.querySelector("#statusSuccess").style.visibility="visible"
+	document.querySelector("#statusSuccess").innerHTML=txt;
 	
 	setTimeout(function() {	
-	document.querySelector("#"+divid).innerHTML=""
+	
+	document.querySelector("#statusSuccess").style.visibility="hidden"
+	
+	}, 5000);
+
+
+	},
+	flasherror:function(txt){
+									
+									
+	document.querySelector("#statusError").style.visibility="visible"
+	document.querySelector("#statusError").innerHTML=txt;
+	
+	setTimeout(function() {	
+	
+	document.querySelector("#statusError").style.visibility="hidden"
+	
 	}, 5000);
 
 
@@ -200,7 +165,7 @@ var autoLoginOptions = {
 	
 	if(document.querySelector("#txtnewpassword").value != document.querySelector("#txtrepeatnewpassword").value){
 	
-			autoLoginOptions.flashdiv("statusError","Both Passwords should be same");
+			autoLoginOptions.flasherror("Both Passwords should be same");
 			document.querySelector("#txtnewpassword").focus(); 
 			return;
 	
@@ -216,7 +181,7 @@ var autoLoginOptions = {
 						
 					}else{
 						//show sites
-					autoLoginOptions.flashdiv("statusError","Invalid Old Password");
+					autoLoginOptions.flasherror("Invalid Old Password");
 								
 								document.querySelector("#txtoldpassword").focus(); 
 								return;
@@ -312,6 +277,12 @@ var autoLoginOptions = {
 	init:function(){
 		
 		
+		if(vAPI.supportsbasicAuth)		  
+			document.querySelector("#tblbasicauth").style.visibility="visible"
+		else
+			document.querySelector("#tblbasicauth").style.visibility="hidden"
+		
+		
 		autoLoginOptions.initdata();
 		
 	},
@@ -376,13 +347,18 @@ var autoLoginOptions = {
 		
 		 
 			 if(autoLoginOptions.hasPassword == false ){
+				 
+				 document.querySelector("#btnchangepassword").innerHTML="Save"
 					document.querySelector("#rowoldpassword").style.display="none";
 					document.querySelector("#txtnewpassword").focus(); 
 					
 				}else{
 				
+				document.querySelector("#btnchangepassword").innerHTML="Update"
 				document.querySelector("#rowoldpassword").style.display="";
 				document.querySelector("#txtoldpassword").focus(); 
+				
+				
 				}
 	
 	 },
@@ -508,7 +484,7 @@ var autoLoginOptions = {
 			
 						function errorHandler(domError) {
                                 console.error(domError);
-                                autoLoginOptions.flashdiv("statusError","Invalid autologindata file ");
+                                autoLoginOptions.flasherror("Invalid autologindata file ");
                             }
 							
 							var inprogress=false;
@@ -519,7 +495,7 @@ var autoLoginOptions = {
 									
 									if(file.name.indexOf(".bin") <0){
 										
-										autoLoginOptions.flashdiv("statusError","Invalid autologindata file ");
+										autoLoginOptions.flasherror("Invalid autologindata file ");
 										return;
 									}
                                     
@@ -542,10 +518,10 @@ var autoLoginOptions = {
 							
 											if(response.flgvalid == true ){
 												autoLoginOptions.reloadStorage()	
-												autoLoginOptions.flashdiv("statusSuccess","Successfully Imported Autologin data");
+												autoLoginOptions.flashsuccess("Successfully Imported Autologin data");
 
 											}else{
-													autoLoginOptions.flashdiv("statusError","Invalid autologindata contents in file");
+													autoLoginOptions.flasherror("Invalid autologindata contents in file");
 											
 											}
 									
@@ -647,12 +623,11 @@ var autoLoginOptions = {
 	},
 	loadSiteData: function (appsites) {
 	
-		console.log("loadOptions")
-	console.log(appsites)
-							console.log("autologinsites")
+
 							
 	document.querySelector('#tblOptions').style.display="";
 			document.querySelector('#btnUpdate').style.display="";
+				document.querySelector('#sitechangedstatus').innerHTML="";
         
 		
 		document.querySelector("#btnUpdate").setAttribute("class", "buttondisable");
@@ -690,7 +665,28 @@ var autoLoginOptions = {
             //work with element
 			
             inputElement.addEventListener('change', autoLoginOptions.infoChanged, false);
+			//Handle keypress
+			inputElement.addEventListener('keypress', function(event){
+		
 			 
+					 var domname=this.getAttribute("data-domname")
+					
+					if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1){
+							document.querySelector("#select"+domname).className += ' inputChanged'
+										
+						document.querySelector("#btnUpdate").setAttribute("class","button") ;
+						
+						}
+			
+			
+				 if (event.which == 13 || event.keyCode == 13) {
+					 autoLoginOptions.infoChanged(event)
+				   autoLoginOptions.updateAutologin()
+					return false;
+				}
+				return true;
+				 }, false);	 
+		
 		
         }
 		
@@ -713,29 +709,20 @@ var autoLoginOptions = {
         }
 		
 		
-		 
-		 
-		 
-		 document.querySelector("input.inp").addEventListener('keypress', function(event){
 		
-			 
-			 var domname=this.getAttribute("data-domname")
-			
-			if(document.querySelector("#select"+domname).className.indexOf("inputChanged")  == -1){
-					document.querySelector("#select"+domname).className += ' inputChanged'
-								
-				document.querySelector("#btnUpdate").setAttribute("class","button") ;
-				
-				}
-	
-	
-		 if (event.which == 13 || event.keyCode == 13) {
-			 autoLoginOptions.infoChanged(event)
-           autoLoginOptions.updateAutologin()
-            return false;
+		removeElements = document.querySelectorAll('input.modifysiteenabled');
+        for (var i = 0, removeElement; removeElement = removeElements[i]; i++) {
+            //work with element
+            removeElement.addEventListener('click', autoLoginOptions.modifysiteenabled, false);
+
         }
-        return true;
-		 }, false);
+		
+		 
+		 
+		 
+		 
+		 
+		 //document.querySelector("input.inp")
 		
 		
 		 var buttonUpdate = document.querySelector('#btnUpdate');
@@ -812,7 +799,7 @@ setdefaultuser:function(event){
 				
 			messager.send({module:"options",action: "updatedefaultcredential","site"	:site}, function(response) {
 				
-				autoLoginOptions.flashdiv("statusSuccess","Successfully Updated default  Credential");
+				autoLoginOptions.flashsuccess("Successfully Updated default  Credential");
 				autoLoginOptions.loadOptions();
 				
 			});	
@@ -849,7 +836,7 @@ removeCredential:function(event){
 			
 			messager.send({module:"options",action: "removeCredential","site"	:site}, function(response) {
 				
-				autoLoginOptions.flashdiv("statusSuccess","Successfully removed Credential");
+				autoLoginOptions.flashsuccess("Successfully removed Credential");
 				autoLoginOptions.loadOptions();
 			
 				
@@ -863,6 +850,37 @@ removeCredential:function(event){
 
 },
 
+modifysiteenabled: function (event) {
+
+	
+	var domname = event.target.getAttribute("data-domname")
+	
+	var inputElement= document.querySelector("#select"+domname)
+	 
+	 var site={}
+			
+			site.authtype=inputElement.getAttribute("data-authtype")
+			site.url=inputElement.getAttribute("data-url")
+			 site.enabled=event.target.checked
+			
+			
+				
+			messager.send({module:"options",action: "modifysiteenabled","site"	:site}, function(response) {
+				
+				autoLoginOptions.flashsuccess("Successfully Changed site status");
+				//autoLoginOptions.loadOptions();
+			
+			
+				
+			});
+			
+			
+			
+	 
+        return false;
+		
+		
+    },
 
 removeAutologin: function (event) {
 
@@ -880,7 +898,7 @@ removeAutologin: function (event) {
 				
 			messager.send({module:"options",action: "removeSite","site"	:site}, function(response) {
 				
-				autoLoginOptions.flashdiv("statusSuccess","Successfully removed Site");
+				autoLoginOptions.flashsuccess("Successfully removed Site");
 				autoLoginOptions.loadOptions();
 			
 			
@@ -956,7 +974,7 @@ removeAutologin: function (event) {
 								if(site.changedpassword == "")
 										site.changedpassword=site.password
 										
-								console.log("Data changed updating",site)
+							
 										//storage.updatecredential(site)
 										sitecredentialupdates.push({"authtype":site.authtype,"url":site.url,"userxpath":site.userxpath,"pwdxpath":site.pwdxpath,"user":site.user,"password":site.password,"changeduser":site.changeduser,"changedpassword":site.changedpassword})
 										hasUpdated=true
@@ -987,7 +1005,7 @@ removeAutologin: function (event) {
 				messager.send({module:"options",action: "siteupdates","sitecredentialupdates":sitecredentialupdates,"siteenabledupdates"	:siteenabledupdates}, function(response) {
 					
 					
-						autoLoginOptions.flashdiv("statusSuccess","Successfully Updated Information");
+						autoLoginOptions.flashsuccess("Successfully Updated Information");
 						autoLoginOptions.loadOptions();
 			
 					
@@ -1018,11 +1036,9 @@ removeAutologin: function (event) {
     loadDocumentAndCreateTable: function (sites) {
 
 		flgTblCreated=false;
-		//console.log(sites)
+	
 
-		console.log("loadDocumentAndCreateTable")
-console.log(sites)
-
+	
         var dummyresp = '';
 
 
@@ -1030,10 +1046,7 @@ console.log(sites)
 		var urls=[];
 		autoLoginOptions.cleanTable();
 
-     //   try {
 
-            //autoLoginOptions.logmessage(docxml );
-         
                 i = sites.length;
            
             if (i == 0)
@@ -1042,8 +1055,6 @@ console.log(sites)
 
             while (i--) {
 					
-					console.log("current site ")
-	console.log(sites[i])
 	
 					var cursite=sites[i]
 					/*if(urls.indexOf(cursite.url) >=0){
@@ -1100,7 +1111,7 @@ console.log(sites)
 				selectbox += "<option  data-defaultsite='"+cursite.credentials[k].defaultsite+"'  data-userxpath='"+datainfo.userxpath+"' data-changed-username='' data-changed-password='' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  "+ selectedstr +">"+datainfo.username+"</option>"
 				
 				
-				console.log("<option data-userxpath='"+datainfo.userxpath+"' data-username='"+datainfo.username+"' data-pwdxpath='"+datainfo.pwdxpath+"' data-password='"+datainfo.password+"'  >"+datainfo.username+"</option>")
+			
 					
 					}
 					
@@ -1130,7 +1141,10 @@ console.log(sites)
 	cleanTable:function(){
 	
 	
-			
+			//remove all event listeners
+				var el = document.querySelector("#tblOptions"),	elClone = el.cloneNode(true);
+				
+				el.parentNode.replaceChild(elClone, el);
 			
            
  
@@ -1165,7 +1179,8 @@ console.log(sites)
 	if(autoLoginInfo.credentialcount == 1)
 		credentialcss="visibility:hidden"
 	
-			row.innerHTML =	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
+			
+			var txthtml=	 "<td style='text-align:left;max-width:150px;overflow:hidden' title='"+autoLoginInfo.domain+"'>"+ autoLoginInfo.domain+"</td>"+
 				"<td style='text-align:center'><img src='images/"+ imagename+"' title='"+authtype+"' class='btnDelete'/> </td>"+	
 					"<td style='text-align:left'><table><tr><td>"+
 					
@@ -1173,11 +1188,20 @@ console.log(sites)
 					
 					"<a  style='"+credentialcss+"' id='lnkdefault"+autoLoginInfo.domname+"'   data-domname='"+autoLoginInfo.domname+"' data-enabled='false' class='setdefault' href='#'><img  data-domname='"+autoLoginInfo.domname+"' src='images/default-false.png' title='Remove from default' class='btnDelete'/></a>" +" </td><td>"+ "<a    style='"+credentialcss+"' id='lnkremoveuser"+autoLoginInfo.domname+"' data-domname='"+autoLoginInfo.domname+"' class='removecredential' href='#'><img  data-domname='"+autoLoginInfo.domname+"' title='Remove user' src='images/remove-user.png' class='btnDelete'/></a>" +" </td></tr></table></td>"+
 					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='user"+autoLoginInfo.domname+"' type='text'  value=''/></td>"+
-					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='pwd"+autoLoginInfo.domname+"' type='password'   value=''/></td>"+
-					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' type='checkbox' value='1' "+autologinChecked +"  /></td>"+
+					"<td><input class='inp' data-domname='"+autoLoginInfo.domname+"' id='pwd"+autoLoginInfo.domname+"' type='password'   value=''/></td>"+	
+					"<td>"+
+					"<div class='smallonoffswitch'>"+
+					"<input type='checkbox' data-domname='"+autoLoginInfo.domname+"'  name='chk"+autoLoginInfo.domname+"' class='modifysiteenabled smallonoffswitch-checkbox' id='chk"+autoLoginInfo.domname+"' "+autologinChecked +"> "+
+					"<label class='smallonoffswitch-label' for='chk"+autoLoginInfo.domname+"'>"+
+					"	<span class='smallonoffswitch-inner'></span>"+
+					"	<span class='smallonoffswitch-switch'></span>"+
+					"</label>"+
+					"</div>"+
+					//"<input class='inp' data-domname='"+autoLoginInfo.domname+"' type='checkbox' value='1' "+autologinChecked +"  />"+
+					"</td>"+
 					"<td> <a  data-domname='"+autoLoginInfo.domname+"' class='remove' href='#'><img  data-domname='"+autoLoginInfo.domname+"' src='images/delete.png' class='btnDelete'/></a> </td>";
 					
-					
+					row.innerHTML =txthtml
 	
 	}
 

@@ -179,9 +179,7 @@ NetFilteringResultCache.prototype.prune = function() {
 /******************************************************************************/
 
 NetFilteringResultCache.prototype.pruneAsync = function() {
-    if ( this.timer === null ) {
-        this.timer = setTimeout(this.boundPruneAsyncCallback, this.shelfLife * 2);
-    }
+   
 };
 
 NetFilteringResultCache.prototype.pruneAsyncCallback = function() {

@@ -12,7 +12,7 @@ var storage = {
 			{
 
 			
-					console.log("export rawbytes",localStorageObject["autologinsites"])
+					
 					callback(localStorageObject["autologinsites"])
 			
 			
@@ -157,7 +157,7 @@ var storage = {
 			
 			
 
-			console.log("import rawbytes",rawbytes)
+			
 		var data =Helper.decrypt(rawbytes)
 			
 			jsonobj=JSON.parse(data);
@@ -178,10 +178,9 @@ var storage = {
 		
 		return result;
 	},
-		migrateautologinsites : function () {
+	migratestorage : function () {
 
-		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")
-			return
+	
 
 		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== ""){
 				
@@ -209,6 +208,16 @@ var storage = {
 			
 			}
 			
+			
+			
+
+	},
+		migrateautologinsites : function () {
+
+		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")
+			return
+
+		
 			
 			
 
@@ -735,9 +744,7 @@ saveitem:function(response){
 				
 				if(key == "autologinsites"){
 					
-					var decrypteddata=Helper.decrypt(localStorageObject["autologinsites"])
-					console.log("retreiving decrypted raw" , localStorageObject["autologinsites"])
-					console.log("after decrypted raw" , decrypteddata)
+					var decrypteddata=Helper.decrypt(localStorageObject["autologinsites"])				
 					storage.autologinsites=JSON.parse(decrypteddata);
 				}
 					

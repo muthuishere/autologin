@@ -12,6 +12,19 @@
 let bgProcess;
 let version;
 const hostName = 'autologin';
+let extensionstartupdata;
+
+/*
+const APP_STARTUP = 1	
+const APP_SHUTDOWN = 2	
+const ADDON_ENABLE = 3	
+const ADDON_DISABLE = 4	
+const ADDON_INSTALL=5	
+const ADDON_UNINSTALL=6	
+const ADDON_UPGRADE=7	
+const ADDON_DOWNGRADE=8	//The add-on is being downgraded.
+*/
+
 const restartListener = {
     get messageManager() {
         return Components.classes['@mozilla.org/parentprocessmessagemanager;1']
@@ -35,6 +48,7 @@ function startup(data, reason) {
         .getService(Components.interfaces.nsIAppShellService);
 
     let onReady = function(e) {
+		
         if ( e ) {
             this.removeEventListener(e.type, onReady);
         }
@@ -53,6 +67,15 @@ function startup(data, reason) {
             'src',
             'chrome://' + hostName + '/content/background.html#' + version
         );
+		
+		if(extensionstartupdata){
+			
+			console.log(extensionstartupdata , "INSTALL Bootstrap",reason)
+			 
+			appShell.hiddenDOMWindow.sessionStorage.setItem('extensionstartupdata',JSON.stringify(extensionstartupdata));
+			extensionstartupdata=null;
+		}
+		
 
         restartListener.messageManager.addMessageListener(
             hostName + '-restart',
@@ -60,6 +83,7 @@ function startup(data, reason) {
         );
     };
 
+	
     if ( reason !== APP_STARTUP ) {
         onReady();
         return;
@@ -108,15 +132,72 @@ function shutdown(data, reason) {
 
 /******************************************************************************/
 
-function install() {
-    // https://bugzil.la/719376
-    Components.classes['@mozilla.org/intl/stringbundle;1']
+
+
+function install(aData, aReason) {
+	
+	 Components.classes['@mozilla.org/intl/stringbundle;1']
         .getService(Components.interfaces.nsIStringBundleService)
         .flushBundles();
+		
+		
+		
+	 
+			var installData=aData || {}
+			
+			installData.installedVersion=installData.version
+			
+			if(installData.oldVersion){
+				
+					installData.existingVersion=installData.oldVersion
+				  delete  installData.oldVersion;
+				  
+			}
+						
+		
+	  
+		 
+			 if (aReason == ADDON_INSTALL) {
+				   
+				   installData.reason == "install" 
+	   
+				
+		
+				 extensionstartupdata={
+						"reason":"install",
+					  "data":installData
+					  
+				  }
+				  
+				  console.log("INSTALL DATA",extensionstartupdata)
+			
+			 } else if (aReason == ADDON_UPGRADE || aReason == ADDON_DOWNGRADE) {
+				 
+				 
+				  installData.reason == "update" 
+				 extensionstartupdata={
+						"reason":"update",
+					  "data":installData
+					  
+				  }
+				  console.log("INSTALL DATA",extensionstartupdata)
+			 }
+	 
 }
+
+
+
 
 /******************************************************************************/
 
-function uninstall() {}
+function uninstall(aData, aReason) {
+     if (aReason == ADDON_UNINSTALL) {
+          console.log('really uninstalling');
+     } else {
+          console.log('not a permanent uninstall, likely an upgrade or downgrade');
+     }
+}
+
+
 
 /******************************************************************************/

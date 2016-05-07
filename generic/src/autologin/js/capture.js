@@ -428,10 +428,15 @@ if (undefined == capture) {
 		},
 		addClickEventHandler : function (btnelem) {
 
-			if (null == btnelem || null == btnelem.outerHTML || btnelem.outerHTML.ispartof("clear,cancel,reset") == true)
+			if (null == btnelem || null == btnelem.outerHTML || capture.ispartof(btnelem.outerHTML,"clear,cancel,reset") == true)
 				return;
 
 			var btnhandler = ""
+
+		
+
+
+
 
 				//console.log(btnelem.outerHTML.toLowerCase())
 
@@ -446,36 +451,39 @@ if (undefined == capture) {
 
 				btnelem.addEventListener("click", function (event) {
 					capture.onBeforeAutoLoginSubmit(event)
-					eval(btnhandler)
+					/*
+					
+					var clickEvt = document.createEvent("MouseEvents");
+					clickEvt.initEvent("click");
+					element.dispatchEvent(clickEvt);
+					
+					*/
+
+
 				}, false);
 
-		}
-		
-
-	}
-
-	if (typeof String.prototype.isEqual != 'function') {
-		String.prototype.isEqual = function (str) {
-			return this.toUpperCase() == str.toUpperCase();
-		};
-	}
-
-	if (typeof String.prototype.ispartof != 'function') {
-		String.prototype.ispartof = function (str) {
-			//Split comma delimeted strings and verify
-
+		},
+		ispartof:function(orig,str){
+			
 			var lst = str.split(",")
 
 				for (i = 0; i < lst.length; i++) {
 
-					if (this.toUpperCase().indexOf(lst[i].toUpperCase()) >= 0)
+					if (orig.toUpperCase().indexOf(lst[i].toUpperCase()) >= 0)
 						return true;
 
 				}
 
 				return false;
-		};
+			
+		}
+		
+
 	}
+
+
+
+
 
 	capture.init()
 

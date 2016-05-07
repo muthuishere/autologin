@@ -1,62 +1,48 @@
 {
+	"name": "_TO_BE_UPDATED_",
+	"short_name": "_TO_BE_UPDATED_",
+	"homepage_url": "_TO_BE_UPDATED_",
+	"version": "_TO_BE_UPDATED_",
     "manifest_version": 2,
-
-    "name": "uBlock",
-    "version": "0.9.2.4",
-
     "default_locale": "en",
-    "description": "__MSG_extShortDesc__",
-    "icons": {
-        "16": "img/icon_16.png",
-        "128": "img/icon_128.png"
-    },
-
-    "browser_action": {
-        "default_icon": {
-            "19": "img/browsericons/autologinLogoRed19.png",
-            "38": "img/browsericons/autologinLogoRed38.png"
-        },
-        "default_title": "uBlock",
-        "default_popup": "popup.html"
-    },
-
-    "author": "The uBlock Development Team",
-    "background": {
-        "page": "background.html"
-    },
-    "content_scripts": [
+    "description": "Automatically login to your favourite websites without clicking button, Now automated Basic Authentication as well",	
+	"permissions":["tabs","webRequest","webRequestBlocking","storage", "http://*/*", "https://*/*"],
+	
+	
+	"icons": { 
+	   "48" : "images/autologin-48.png",
+	   "64" : "images/autologin-64.png",
+		"128" : "images/autologin-128.png"
+	},
+ "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["js/vapi-client.js", "js/contentscript-start.js","js/autologin-utils.js","js/autologin-conf.js","js/autologin-client.js"],
-            "run_at": "document_start",
-            "all_frames": true
-        },
-        {
-            "matches": ["http://*/*", "https://*/*"],
-			
-            "js": ["js/contentscript-end.js","js/autologin-content.js"],
-            "run_at": "document_end",
-            "all_frames": true
-        },
-        {
-            "matches": [
-                "https://*.adblockplus.org/*",
-                "https://*.adblockplus.me/*",
-                "https://www.fanboy.co.nz/*"
-            ],
-            "js": ["js/subscriber.js"],
-            "run_at": "document_idle"
+            "js": ["js/vapi-client.js","js/utils.js"],
+            "run_at": "document_start"
+            
         }
     ],
-    "minimum_chrome_version": "22.0",  
-    "permissions": [
-        "contextMenus",
-        "storage",
-        "tabs",
-        "webNavigation",
-        "webRequest",
-        "http://*/*",
-        "https://*/*"
-    ],
-    "short_name": "uBlock"
+	"web_accessible_resources": [
+	"manifest.json",
+    "images/*.png",  
+	"images/*.jpg", 
+	"css/*.css",
+	"auth.html",
+	"js/*.js"
+  ],
+
+	"options_page": "options.html",
+	
+	
+
+    "browser_action": {
+	
+        
+    },
+
+    "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
+    "background": {
+        "page": "background.html"
+    }
+   
 }

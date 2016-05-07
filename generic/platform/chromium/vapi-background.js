@@ -947,7 +947,7 @@ vAPI.onLoadAllCompleted = function() {
             tab = tabs[i];
             µb.tabContextManager.commit(tab.id, tab.url);
             µb.bindTabToPageStats(tab.id);
-            // https://github.com/chrisaljoudi/uBlock/issues/129
+         
            scriptStart(tab);
 		   
         }
@@ -966,6 +966,38 @@ vAPI.punycodeHostname = function(hostname) {
 vAPI.punycodeURL = function(url) {
     return url;
 };
+
+
+
+
+
+///Install update listeners
+chrome.runtime.onInstalled.addListener(function(details){
+	 
+	 var vAPI = self.vAPI = self.vAPI || {};
+	  
+	  var installData=details || {}
+	  
+	 
+    if((details.reason == "install"  || details.reason == "update" ) ){
+      
+	  
+	  if(installData.previousVersion){
+		  
+		 
+		  installData.existingVersion=installData.previousVersion
+		  delete  installData.previousVersion;
+	  }
+			
+		
+		installData.installedVersion=manifest.version
+
+		vAPI.handleInstallUpgrade({reason:details.reason,data:installData})
+		
+		
+    }
+});
+
 
 /******************************************************************************/
 
