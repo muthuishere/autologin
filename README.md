@@ -1,12 +1,13 @@
 Auto Login
 =========
 
-A Chrome Extension
+AUtologin Extension for Firefox & Chrome 
 
 	To Login  to your websites automatically.
 	Enable / Disable Individual websites for Autologin
 	Controlling Autologin through a single password.
 	Managing Autologin details through settings
+	AES security for your passwords
 	
 Also
 
