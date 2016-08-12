@@ -29,7 +29,7 @@ vAPI.captureUI={
 	pwdelems:[],
 	init:function(appextnid,callback,pwdelems,isSelected){
 		
-		console.log("client capture ui init" )
+		
 		vAPI.captureUI.callback=callback
 		
 	vAPI.captureUI.disableIconURL=appextnid +"images/capture_disable.png"
@@ -38,7 +38,7 @@ vAPI.captureUI={
 	vAPI.captureUI.backgroundIconURL=appextnid +"images/bg.png"
 	vAPI.captureUI.pwdelems=pwdelems
 	
-	console.log(vAPI.captureUI.disableIconURL)
+	
 	// if form has one password field and one text field and both elements are visible
 	//call the autologin function to show
 
@@ -103,7 +103,7 @@ vAPI.captureUI={
 							
 							
 							vAPI.captureUI.dragged++
-							//console.log("changed",vAPI.captureUI.dragged)
+							////console.log("changed",vAPI.captureUI.dragged)
 							selected.style.left = (x_pos - x_elem) + 'px';
 							selected.style.top = (y_pos - y_elem) + 'px';
 						}
@@ -144,11 +144,11 @@ vAPI.captureUI={
 			for (l=0;l<elems.length;l++){
 				
 				if(vAPI.captureUI.isElementInViewport(elems[l])){
-					console.log("Is in viewport")
+					
 					document.querySelector("#draggable-element").style.visibility="visible"
 					
 				}else{
-					console.log("Is not in viewport")
+					
 					document.querySelector("#draggable-element").style.visibility="hidden"
 				}
 					
@@ -172,7 +172,7 @@ vAPI.captureUI={
 	onCaptureAutoLogin:function(){
 
 	if(vAPI.captureUI.dragged <2 ){
-	//console.log("on capture autologin")
+	////console.log("on capture autologin")
 		if(vAPI.captureUI.startCapture == false){
 		
 		//Change Background url
@@ -277,5 +277,5 @@ var captureElem={
 }
 
 
-console.log("")
+
 })();

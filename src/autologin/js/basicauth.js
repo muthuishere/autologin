@@ -70,7 +70,7 @@ var basicauth={
 		 }, false);
 		 document.querySelector("#btncancel").addEventListener('click', function(event){
 		
-		//console.log("sending auth info cancel ")
+		////console.log("sending auth info cancel ")
 		var data ={}
 		data.cancel =true
 		

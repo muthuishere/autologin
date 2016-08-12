@@ -96,7 +96,7 @@ if (undefined == capture) {
 		},
 		updateElements : function () {
 
-		//console.log("updateElements" ,capture.elems)
+		////console.log("updateElements" ,capture.elems)
 			for (index = 0, len = capture.elems.length; index < len; ++index) {
 
 				var elem = capture.getElementByXpath(capture.elems[index].xpath)
@@ -119,7 +119,7 @@ if (undefined == capture) {
 			}
 		},
 		init : function () {
-			console.log("client capture init")
+			////console.log("client capture init")
 			
 			var data ={}
 		data.url =vAPI.getdomainName(document.location.toString().split('?')[0])
@@ -215,14 +215,14 @@ if (undefined == capture) {
 														capture.elems.push(parentformelem)
 														parentform.addEventListener('submit', function (e) {
 
-														//console.log("Form submit validation")
+														////console.log("Form submit validation")
 															//if password element has value dont do anything or capture all input and send it to background
 															//if (capture.checkpasswordhasvalue() == false)
 																capture.updateElements();
 
 															if (capture.alreadySubmitted == false) {
 
-																//console.log("Updating through form submit")
+																////console.log("Updating through form submit")
 
 																capture.setelemevent(e.target, "submit")
 																capture.sendtoBackground()
@@ -246,8 +246,8 @@ if (undefined == capture) {
 
 								capture.elems.push(elem)
 
-								console.log("check")
-								//console.log(window.getEventListeners(formelement))
+								
+								////console.log(window.getEventListeners(formelement))
 								
 								
 								formelement.addEventListener('blur', function (e) {
@@ -331,13 +331,13 @@ if (undefined == capture) {
 				}
 			} */
 
-			console.log("capture result "+(formcount == 1 && null != parentform && flgCaptured))
+			////console.log("capture result "+(formcount == 1 && null != parentform && flgCaptured))
 			
-			console.log("formcount",formcount,"parentform",parentform,"flgCaptured",flgCaptured)
+			////console.log("formcount",formcount,"parentform",parentform,"flgCaptured",flgCaptured)
 			if(formcount == 1 && null != parentform && flgCaptured){
 				
 				if(parentform.innerText.toLowerCase().indexOf("picture displayed") >=0  || parentform.innerText.toLowerCase().indexOf("characters displayed") >=0  || parentform.innerText.toLowerCase().indexOf("captcha") >=0  || parentform.innerText.toLowerCase().indexOf("otp") >=0 ){
-														console.log("Has OTP /Captcha")
+														//console.log("Has OTP /Captcha")
 													
 														return;
 														
@@ -348,7 +348,7 @@ if (undefined == capture) {
 			
 			if (flgCaptured ) {
 			
-			console.log("capture.hiddencapture "+capture.hiddencapture)
+			////console.log("capture.hiddencapture "+capture.hiddencapture)
 		
 			if(capture.hiddencapture == true)
 				capture.onCaptureAutoLogin(true)
@@ -367,7 +367,7 @@ if (undefined == capture) {
 		},
 		onCaptureAutoLogin : function (startCapture ) {
 
-			//console.log("on capture autologin" + 	capture.startCapture)
+			////console.log("on capture autologin" + 	capture.startCapture)
 		
 		capture.startCapture = startCapture
 		
@@ -387,7 +387,7 @@ if (undefined == capture) {
 
 			if (capture.startCapture == true) {
 
-				//console.log(autoLoginXmlInfo)
+				////console.log(autoLoginXmlInfo)
 
 				var data = {}
 					data.domain = document.location.toString().split('?')[0];
@@ -403,12 +403,12 @@ if (undefined == capture) {
 						info : data
 					}, function (response) {
 
-						//console.log("Updated data ")
+						////console.log("Updated data ")
 
 					});
 			} else {
 
-				//console.log("Not required");
+				////console.log("Not required");
 			}
 
 			//capture.alreadySubmitted = true;
@@ -438,7 +438,7 @@ if (undefined == capture) {
 
 
 
-				//console.log(btnelem.outerHTML.toLowerCase())
+				////console.log(btnelem.outerHTML.toLowerCase())
 
 				if (btnelem.outerHTML.toLowerCase().indexOf("onclick") > 0) {
 
@@ -490,5 +490,5 @@ if (undefined == capture) {
 }
 
 
-console.log("Capture ")
+
 })();

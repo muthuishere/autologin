@@ -123,7 +123,7 @@ vAPI.messaging = {
             listener: typeof callback === 'function' ? callback : null,
             send: function(message, callback) {
 					
-					//console.log("client: message setup started")
+					////console.log("client: message setup started")
                 if ( !vAPI.messaging.connector ) {
                     vAPI.messaging.setup();
                 }

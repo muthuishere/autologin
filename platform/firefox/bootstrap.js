@@ -70,7 +70,7 @@ function startup(data, reason) {
 		
 		if(extensionstartupdata){
 			
-			console.log(extensionstartupdata , "INSTALL Bootstrap",reason)
+			//console.log(extensionstartupdata , "INSTALL Bootstrap",reason)
 			 
 			appShell.hiddenDOMWindow.sessionStorage.setItem('extensionstartupdata',JSON.stringify(extensionstartupdata));
 			extensionstartupdata=null;
@@ -169,7 +169,7 @@ function install(aData, aReason) {
 					  
 				  }
 				  
-				  console.log("INSTALL DATA",extensionstartupdata)
+				  //console.log("INSTALL DATA",extensionstartupdata)
 			
 			 } else if (aReason == ADDON_UPGRADE || aReason == ADDON_DOWNGRADE) {
 				 
@@ -180,7 +180,7 @@ function install(aData, aReason) {
 					  "data":installData
 					  
 				  }
-				  console.log("INSTALL DATA",extensionstartupdata)
+				  //console.log("INSTALL DATA",extensionstartupdata)
 			 }
 	 
 }
@@ -192,9 +192,9 @@ function install(aData, aReason) {
 
 function uninstall(aData, aReason) {
      if (aReason == ADDON_UNINSTALL) {
-          console.log('really uninstalling');
+          //console.log('really uninstalling');
      } else {
-          console.log('not a permanent uninstall, likely an upgrade or downgrade');
+          //console.log('not a permanent uninstall, likely an upgrade or downgrade');
      }
 }
 

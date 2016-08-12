@@ -3,7 +3,7 @@ if (undefined == validate){
 	var  messager= vAPI.messaging.channel('validate.js');
 	vAPI.messager=messager
 
-	console.log(vAPI)
+	//console.log(vAPI)
 	
 var validate={
 
@@ -11,7 +11,7 @@ var validate={
 	init:function(){
 		
 			messager.send({action: "hiddencapture",url:""}, function(response) {
-				console.log("validate response" , response)
+				//console.log("validate response" , response)
 				validate.showGetPassword(response.extnid)
 			});
 	},

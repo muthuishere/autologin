@@ -43,7 +43,7 @@ var userselect={
 								
 								
 								var selectstr="<select id='selectautologinuser' >"
-								//console.log(sites)
+								////console.log(sites)
 								for(k=0;k<sites.length;k++){
 								
 									selectstr += "<option  value='"+k+"' >"+sites[k].user +"</option>"

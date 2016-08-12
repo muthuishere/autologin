@@ -200,21 +200,21 @@ vAPI.storage = {
     },
 
     set: function(details, callback) {
-		console.log("setting details")
+		//console.log("setting details")
         var key, values = [], placeholders = [];
 
         for ( key in details ) {
             if ( !details.hasOwnProperty(key) ) {
                 continue;
             }
-			console.log("setting details pushing"+ key)
+			//console.log("setting details pushing"+ key)
             values.push(key);
             values.push(JSON.stringify(details[key]));
             placeholders.push('?, ?');
         }
 
         if ( !values.length ) {
-			console.log("Empty values returning")
+			//console.log("Empty values returning")
 			   if ( typeof callback === 'function'  ) {
                     callback();
                 }
@@ -334,7 +334,7 @@ var windowWatcher = {
 		
 		if(!tabContainer){
 		
-		console.log("No tab container identified")
+		//console.log("No tab container identified")
 			return
 			}
 
@@ -402,7 +402,7 @@ var tabWatcher = {
 			title: tabTitle
 		};
 	
-		console.log("Activate detail",detail)
+		//console.log("Activate detail",detail)
 		
 		vAPI.tabWatcher.events.handleActivate(detail)
     }
@@ -816,7 +816,7 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
     var tab = this.get(tabId);
 
     if ( !tab ) {
-		console.log("no tab ")
+		//console.log("no tab ")
         return;
     }
 
@@ -840,7 +840,7 @@ vAPI.tabs.injectScript = function(tabId, details, callback) {
 	}else{
 		
 			if ( typeof details.file !== 'string' ) {
-				console.log("err Injecting code  ")
+				//console.log("err Injecting code  ")
 				return;
 			}
 			
@@ -1332,7 +1332,7 @@ vAPI.net = {};
 
 vAPI.net.registerListeners = function() {
 	
-	console.log("listeners registered ")
+	//console.log("listeners registered ")
     // Since it's not used
     this.onBeforeSendHeaders = null;
 
@@ -1393,20 +1393,20 @@ vAPI.net.registerListeners = function() {
         var details = e.data;
         var browser = e.target;
         
-		   console.log("locationChangedListener:" ,details.url);
+		   //console.log("locationChangedListener:" ,details.url);
 		   /*
         if (details.noRefresh && details.url === browser.currentURI.asciiSpec) { // If the location changed message specified not to refresh, and the URL is the same, no need to do anything
-           console.log("nsIWebProgressListener: ignoring onLocationChange: " + details.url);
+           //console.log("nsIWebProgressListener: ignoring onLocationChange: " + details.url);
             return;
         }
 			*/
         var tabId = vAPI.tabs.getTabId(browser);
         if (tabId === vAPI.noTabId) {
 			
-			console.log("No tab data ")
+			//console.log("No tab data ")
             return; // Do not navigate for behind the scenes
         }
-        console.log("nsIWebProgressListener: onLocationChange: " + details.url + " (" + details.flags + ")" + tabId);        
+        //console.log("nsIWebProgressListener: onLocationChange: " + details.url + " (" + details.flags + ")" + tabId);        
 
         // LOCATION_CHANGE_SAME_DOCUMENT = "did not load a new document"
         //if ( details.flags & Ci.nsIWebProgressListener.LOCATION_CHANGE_SAME_DOCUMENT ) {
@@ -1511,7 +1511,7 @@ vAPI.lastError = function() {
 
 vAPI.onLoadAllCompleted = function() {
     var µb = AppExtn;
-	console.log("VAPI onLoadAllCompleted")
+	//console.log("VAPI onLoadAllCompleted")
     for ( var tab of this.tabs.getAll() ) {
         // We're insterested in only the tabs that were already loaded
         if ( !vAPI.fennec && tab.hasAttribute('pending') ) {
@@ -1526,7 +1526,7 @@ vAPI.onLoadAllCompleted = function() {
             location.host + '-load-completed'
         );
 		
-		//console.log("Injecting vapi client ")
+		////console.log("Injecting vapi client ")
 		
 		/*
 		//Injecting scripts for all tabs 
@@ -1536,7 +1536,7 @@ vAPI.onLoadAllCompleted = function() {
             runAt: 'document_start'
         }, function(){
 
-			console.log("Start process scripts ")
+			//console.log("Start process scripts ")
 			
 			vAPI.tabs.injectScript(tab.id, {
             file: 'js/vapi-init.js',
@@ -1563,7 +1563,7 @@ vAPI.onLoadAllCompleted = function() {
 				.getService(Components.interfaces.nsIAppShellService);
 		let hiddenDoc = appShell.hiddenDOMWindow.document.documentElement;
 				
-		//console.log(document,"BAckground Autologin",location.hash,hiddenDoc,appShell.hiddenDOMWindow)
+		////console.log(document,"BAckground Autologin",location.hash,hiddenDoc,appShell.hiddenDOMWindow)
 
 		var extensionstartupdata=appShell.hiddenDOMWindow.sessionStorage.getItem('extensionstartupdata')
 		if(extensionstartupdata){			

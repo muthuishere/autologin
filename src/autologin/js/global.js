@@ -34,7 +34,7 @@ var globalAutologinHandler = {
 			var hasParentXpath=false
 			var hasValidElems=false
 			
-			console.log("elems",elems)
+			//console.log("elems",elems)
 			for (index = 0, len = elems.length; index < len; ++index) {
 				var field=elems[index]
 				if(field.type === "password" && field.value == "" &&  "" != field.parentxpath ){
@@ -49,11 +49,11 @@ var globalAutologinHandler = {
 			}
 			
 			if(!hasValidElems){
-				console.log("Invalid Elements , Cannot add")
+				//console.log("Invalid Elements , Cannot add")
 				return
 			}
 				
-			//console.log("invalidxpaths",invalidxpaths)
+			////console.log("invalidxpaths",invalidxpaths)
 			for (i = 0, xlen = invalidxpaths.length; i < xlen; ++i) {
 				
 				var invalidxpath = invalidxpaths[i]
@@ -69,7 +69,7 @@ var globalAutologinHandler = {
 					
 				}
 			}
-			//console.log("indices",indices)
+			////console.log("indices",indices)
 			
 			
 			var username=""
@@ -91,7 +91,7 @@ var globalAutologinHandler = {
 								
 										if(field.value != "" && (field.xpath.toLowerCase().indexOf("user") >=0 ||  field.xpath.toLowerCase().indexOf("email") >=0 || field.xpath.toLowerCase().indexOf("login") >=0 || field.xpath.toLowerCase().indexOf("signin") >=0 || field.xpath.toLowerCase().indexOf("name") >=0  )){
 											username= field.value
-											//console.log("username",username,field.xpath)
+											////console.log("username",username,field.xpath)
 										}
 										
 								
@@ -148,7 +148,7 @@ var globalAutologinHandler = {
 		 
 			var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
 				if (index > -1) {
-					console.log ("removing existing domain" + curdomainName)
+					//console.log ("removing existing domain" + curdomainName)
 					globalAutologinHandler.poolingDomains.splice(index, 1);
 					}
 					
@@ -162,7 +162,7 @@ var globalAutologinHandler = {
 			 
 			 var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
 				if (index > -1) {
-				console.log ("removing domain" + curdomainName)
+				//console.log ("removing domain" + curdomainName)
 					globalAutologinHandler.poolingDomains.splice(index, 1);
 					}
 				
@@ -177,11 +177,11 @@ var globalAutologinHandler = {
 
 	
   if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) > -1 ){		
-  //console.log("Dont allow" + curdomainName)
+  ////console.log("Dont allow" + curdomainName)
   return false
   }
   
- // console.log("allow" + curdomainName)
+ // //console.log("allow" + curdomainName)
   return true
   
   },
@@ -192,7 +192,7 @@ var globalAutologinHandler = {
   //globalAutologinHandler.lastloggedInDomain=curdomainName
   //globalAutologinHandler.lastloggedInTimeinMilliseconds=curTimeinMs;
   
-  //console.log("Updating Success Login for domain" + globalAutologinHandler.lastloggedInDomain + " at time" + globalAutologinHandler.lastloggedInTimeinMilliseconds)
+  ////console.log("Updating Success Login for domain" + globalAutologinHandler.lastloggedInDomain + " at time" + globalAutologinHandler.lastloggedInTimeinMilliseconds)
   
   
   },
@@ -203,7 +203,7 @@ var globalAutologinHandler = {
   
   	var index = globalAutologinHandler.poolingDomains.indexOf(curdomainName);
 				if (index > -1) {
-					//console.log ("removing from pool" + curdomainName)
+					////console.log ("removing from pool" + curdomainName)
 					globalAutologinHandler.poolingDomains.splice(index, 1);
 					}
 					
@@ -242,7 +242,7 @@ var globalAutologinHandler = {
 		}
 		if(globalAutologinHandler.poolingDomains.indexOf(curdomainName) != -1){
 			
-			console.log("Blacklisted domain" + curdomainName)	
+			//console.log("Blacklisted domain" + curdomainName)	
 			result.status=-1;
 			//return result;
 			
@@ -251,7 +251,7 @@ var globalAutologinHandler = {
 		
 		if(flgAutologinEnabled == false){
 		
-			console.log("Disabled domain" + curdomainName)	
+			//console.log("Disabled domain" + curdomainName)	
 			result.status=-1;
 			//return result;
 			
@@ -267,7 +267,7 @@ var globalAutologinHandler = {
 
 //  alert(aMessage)
 
-//console.log(aMessage)
+////console.log(aMessage)
 
 	
 },
@@ -284,13 +284,13 @@ removeSite:function(autologinRawXML){
 
 removeSiteObject:function(autologinObject){
 	
-	//console.log("=====================")
-	//console.log(autologinObject)
+	////console.log("=====================")
+	////console.log(autologinObject)
    var currentURL= globalAutologinHandler.getXMLElementval(autologinObject,"loginurl")
 
    authtype=autologinObject.getElementsByTagName("site")[0].getAttribute("authtype")
 		//authtype= autologinObject.firstChild.getAttribute("authtype")
-   //console.log("==== END  =================")
+   ////console.log("==== END  =================")
 
 
 	
@@ -324,7 +324,7 @@ while (i--) {
 
 		 }catch(exception){
 			 
-			console.log("Issue" + exception) 
+			//console.log("Issue" + exception) 
 
 		 }
 
@@ -356,24 +356,24 @@ while (i--) {
 		
 	//if(globalAutologinHandler.popupopened)
 		//globalAutologinHandler.popupopened=false
-		//console.log("status",globalAutologinHandler.last_request_id,"status.requestId ",status.requestId )
+		////console.log("status",globalAutologinHandler.last_request_id,"status.requestId ",status.requestId )
 		if (status.requestId == globalAutologinHandler.last_request_id && status.tabId == globalAutologinHandler.last_tab_id) {
 					++globalAutologinHandler.try_count;
-					//console.log("increment try count")
+					////console.log("increment try count")
 						
 					
 				} else {
 					globalAutologinHandler.try_count = 0;
-				//	console.log("increment try count again")
+				//	//console.log("increment try count again")
 				}
 
 				if (globalAutologinHandler.try_count < 3) {
 
-				//	console.log("try_count" + globalAutologinHandler.try_count)
+				//	//console.log("try_count" + globalAutologinHandler.try_count)
 					globalAutologinHandler.last_request_id = status.requestId;
 					globalAutologinHandler.last_tab_id = status.tabId;
 					
-					//	console.log("Sending data to page " ,globalAutologinHandler.try_count,credential )
+					//	//console.log("Sending data to page " ,globalAutologinHandler.try_count,credential )
 					
 					
 					
@@ -407,8 +407,8 @@ while (i--) {
 			
 		var status=details
 		var url = status.challenger.host;
-		console.log("auth required")
-		//console.log(status)
+		//console.log("auth required")
+		////console.log(status)
 		
 		//TODO check url has authorization autologinsites in storage or user has set authorization autologinsites
 		
@@ -429,7 +429,7 @@ while (i--) {
 					globalAutologinHandler.authdetails=null
 					
 					//TODO show popup to retrieve autologin credential
-					//console.log("authentication sent from storage ",credential,status)
+					////console.log("authentication sent from storage ",credential,status)
 					globalAutologinHandler.sendcredentials(status,credential,callback)
 					
 					return;
@@ -449,14 +449,14 @@ while (i--) {
 					
 		globalAutologinHandler.popupopened=true
 		
-		//console.log("setting status ")
+		////console.log("setting status ")
 		globalAutologinHandler.authcallback=callback;
 		globalAutologinHandler.authdetails=status
 		
 		
 				
 				
-				//console.log("creating popup")
+				////console.log("creating popup")
 				
 				
 				globalAutologinHandler.authdetails.sitedata={}
@@ -491,7 +491,7 @@ while (i--) {
 				
 				}, function(win) {
 					globalAutologinHandler.authpopup=win
-					console.log("window id" ,win.id)
+					//console.log("window id" ,win.id)
 					
 					
 				});
@@ -547,7 +547,7 @@ while (i--) {
 			var usebasicauth= (storage.getUseBasicAuth() === 'true')
 		globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 		
-			//console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
+			////console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
 	//globalAutologinHandler.loadDoc( )
 	
@@ -555,17 +555,17 @@ while (i--) {
 	},
 	injectCapture:function(tabId){
 		
-			console.log("Attempting capture")
+			//console.log("Attempting capture")
 			var jscode='var extnid="'+ vAPI.getURL("/") + '"';
 		
 						vAPI.tabs.injectScript(tabId, {file:"js/captureUI.js", allFrames: false,
             runAt: 'document_end'}, function() {
 					
-									console.log("got autoLoginCapture" +tabId)
+									//console.log("got autoLoginCapture" +tabId)
 								vAPI.tabs.injectScript(tabId, {file:"js/capture.js",allFrames: false,
             runAt: 'document_end'}, function() {
 									//script injected
-									console.log("got autoLoginCapture" +tabId)
+									//console.log("got autoLoginCapture" +tabId)
 								});
 						
 						}); 
@@ -575,11 +575,11 @@ while (i--) {
 	processScripts:function(tab){
 		
 		var tabId=tab.id
-		console.log("Checking site for tab",tab.url)
+		//console.log("Checking site for tab",tab.url)
 	var  siteInfo = globalAutologinHandler.retrieveSiteInfo(tab.url)
 	var status=siteInfo.status
 	
-	console.log("status",status,globalAutologinHandler.loggedIn)
+	//console.log("status",status,globalAutologinHandler.loggedIn)
 	
 		if(  status == 0) {
 		
@@ -589,14 +589,14 @@ while (i--) {
 				vAPI.tabs.injectScript(tabId, {file:"js/validate.js",allFrames: false,
             runAt: 'document_end'}, function(details) {
 						//script injected
-						//console.log("Inserted validate module")
+						////console.log("Inserted validate module")
 					});
 				
 			}else{
 			
 			var jscode='var extnid="'+ vAPI.getURL("/") + '"';
 		
-		console.log("Injecting automate js ")
+		//console.log("Injecting automate js ")
 			
 						vAPI.tabs.injectScript(tabId, {file:"js/userselect.js",allFrames: false,
             runAt: 'document_end'}, function() {
@@ -604,7 +604,7 @@ while (i--) {
 							vAPI.tabs.injectScript(tabId, {file:"js/automate.js",allFrames: false,
             runAt: 'document_end'}, function() {
 										//script injected
-										console.log("Inserted autoLogin")
+										//console.log("Inserted autoLogin")
 									});
 						
 						});
@@ -614,7 +614,7 @@ while (i--) {
 	
 		}else{
 		
-	console.log("Injecting cAPTURE js ")
+	//console.log("Injecting cAPTURE js ")
 						
 					globalAutologinHandler.injectCapture(tabId)	
 			
@@ -717,7 +717,7 @@ vAPI.compareVersion =function(a, b) {
 }
 
 vAPI.openFAQ=function(){
-	console.log("opening faq")
+	//console.log("opening faq")
 	
 
 	
@@ -750,31 +750,31 @@ vAPI.handleInstallUpgrade =function(installData){
 			if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == 0){
 				
 				//equal 
-				//console.log("INSTALL Equal")
+				////console.log("INSTALL Equal")
 				
 			}else if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == 1){
 				
 				
-				console.log("Upgrade detected")
+				//console.log("Upgrade detected")
 				
 				var majorversion=parseInt(data.existingVersion.split(".")[0])
 				//Check major 
 				if(majorversion < 3){
 					
-					console.log("Upgrade autologinsites ")
+					//console.log("Upgrade autologinsites ")
 					storage.migrateautologinsites();
 					
 					//upgrade xml elements
 				}else if(majorversion < 4){
 					
 					//upgrade storage
-					console.log("Upgrade storage ")
+					//console.log("Upgrade storage ")
 					
 					storage.migratestorage();
 				}
 			}else if(vAPI.compareVersion(data.installedVersion,data.existingVersion) == -1){
 				//??Downgrade
-				console.log("INSTALL Downgrade")
+				//console.log("INSTALL Downgrade")
 			}
 			
 			
@@ -786,7 +786,7 @@ vAPI.handleInstallUpgrade =function(installData){
 		}
 		// Handle 
 		 
-		console.log("INSTALL DATA Listener" , data)
+		//console.log("INSTALL DATA Listener" , data)
 
 }
 
@@ -828,14 +828,14 @@ getautologinsites
 var handleOptionMsg= function(request, tab, sendResponse) {
 
 
-console.log("== handleOptionMsg ==")
+//console.log("== handleOptionMsg ==")
 			
 
  if (request.action == "hasCredential"){
 	
 			var savedCredential= storage.getCredential();
 			var result=(savedCredential != "")
-			//console.log("result",result)
+			////console.log("result",result)
 				sendResponse({"valid":result});
 			
 	
@@ -915,13 +915,13 @@ console.log("== handleOptionMsg ==")
 							
 							var site=request.siteenabledupdates[j]
 							
-							console.log("updating site enable",site);
+							//console.log("updating site enable",site);
 							storage.updatesiteenabled(site)
 						}
 						for ( j = 0; j < request.sitecredentialupdates.length; j++){
 							
 							var site=request.sitecredentialupdates[j]
-							console.log("updating site updatecredential",site);
+							//console.log("updating site updatecredential",site);
 							storage.updatecredential(site)
 						}
 
@@ -955,7 +955,7 @@ console.log("== handleOptionMsg ==")
 
 
 var handleGlobalMsg= function(request, tab, sendResponse) {
-    // console.log(sender.tab ?
+    // //console.log(sender.tab ?
                 // "from a content script:" + sender.tab.url :
                 // "from the extension");
 		
@@ -1032,7 +1032,7 @@ if (request.module && request.module == "options"){
 	
 			globalAutologinHandler.popupopened=false
 			var data=request.info;
-			//console.log("Basic auth details received",data)
+			////console.log("Basic auth details received",data)
 			if(data.cancel){
 				
 				//remove iframe on current tab
@@ -1053,8 +1053,8 @@ if (request.module && request.module == "options"){
 				
 				if(data.useAutologin &&  globalAutologinHandler.authdetails && globalAutologinHandler.authdetails.sitedata){
 				
-					//console.log("saving autologin")
-					//console.log(globalAutologinHandler.authdetails)
+					////console.log("saving autologin")
+					////console.log(globalAutologinHandler.authdetails)
 						for(k=0;k<globalAutologinHandler.authdetails.sitedata.elements.length;k++){
 							
 							var elem=globalAutologinHandler.authdetails.sitedata.elements[k]
@@ -1069,8 +1069,8 @@ if (request.module && request.module == "options"){
 							
 						}
 						
-						//console.log("Adding data")
-						//console.log(globalAutologinHandler.authdetails.sitedata)
+						////console.log("Adding data")
+						////console.log(globalAutologinHandler.authdetails.sitedata)
 					globalAutologinHandler.addAutoLoginElements(globalAutologinHandler.authdetails.sitedata,"basic")
 				}
 				
@@ -1133,7 +1133,7 @@ if (request.module && request.module == "options"){
 	
 	}else if (request.action == "updateBasicAuthHandlers"){
 	
-		console.log("changing " + request.usebasicAuth)
+		//console.log("changing " + request.usebasicAuth)
 			storage.setUseBasicAuth(request.usebasicAuth,function(){
 				
 				var usebasicauth= storage.getUseBasicAuth()
@@ -1206,7 +1206,7 @@ var onMessage = function(request, sender, callback) {
 	
 	 if(undefined == request  || undefined == request.action){
 		 
-		 //console.log("Invalid request" , request )
+		 ////console.log("Invalid request" , request )
 		 return;
 	 }
 	 
@@ -1214,7 +1214,7 @@ var onMessage = function(request, sender, callback) {
 	  
 	  var tab = sender && sender.tab && sender.tab.url ? sender.tab : null;
 	
-	//console.log(tab)
+	////console.log(tab)
 		//Firefox special
 	  if(null == tab){
 		  
@@ -1223,9 +1223,9 @@ var onMessage = function(request, sender, callback) {
 		
 		   vAPI.tabs.get(tabId, function(curtab) {
         
-			console.log("firefox tab")
-		  	console.log(curtab)
-			console.log("end tab")
+			//console.log("firefox tab")
+		  	//console.log(curtab)
+			//console.log("end tab")
 		
         
                 handleGlobalMsg(request, curtab, callback)

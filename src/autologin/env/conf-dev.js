@@ -39,7 +39,7 @@ Utils.log = function() {
 	try{
 		
 			
-			console.log(arguments)
+			////console.log(arguments)
 		
 		
 	}catch(exception){

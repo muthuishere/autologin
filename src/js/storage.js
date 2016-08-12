@@ -25,7 +25,7 @@ var storage = {
         //  alert(aMessage)
 
 		try{
-			console.log(aMessage)
+			//console.log(aMessage)
 		}catch(exception){}
 
     },
@@ -35,7 +35,7 @@ var storage = {
         //  alert(aMessage)
 
 		try{
-			console.log(aMessage)
+			//console.log(aMessage)
 		}catch(exception){}
 
     },
@@ -172,7 +172,7 @@ var storage = {
 			
 			result.flgvalid=false;
 			result.msg="Error in importing data";
-			console.log("Error",exception)
+			//console.log("Error",exception)
 		}
 		// check entries greater than zero and valid entries , return true or false
 		
@@ -203,6 +203,9 @@ var storage = {
 			
 			
 			storage.updatestorage();
+			
+			//Added for not migrating and error fixes 
+			localStorage["bkupautologinsites"]=localStorage["autologinsites"]
 			localStorage["autologinsites"]=""
 			return
 			
@@ -356,7 +359,7 @@ saveitem:function(response){
 
 		var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
 		
-		console.log("Saving encrypted" , localStorage_autologinsites)
+		//console.log("Saving encrypted" , localStorage_autologinsites)
 		var data={'autologinsites':localStorage_autologinsites}
 		
 		storage.saveitem(data)
@@ -374,7 +377,7 @@ saveitem:function(response){
 	add : function (site) {
 
 		var isPushed = false;
-		//console.log("Adding credentials", site)
+		////console.log("Adding credentials", site)
 		for (i = 0; i < storage.autologinsites.length; i++) {
 
 			cursite = storage.autologinsites[i]
@@ -393,7 +396,7 @@ saveitem:function(response){
 								isUserModfied = true
 									delete storage.autologinsites[i].credentials[k].elements
 									storage.autologinsites[i].credentials[k].elements = site.elements
-									//console.log("modifying credentials", site)
+									////console.log("modifying credentials", site)
 									break
 							}
 
@@ -406,7 +409,7 @@ saveitem:function(response){
 							credential.defaultsite = false
 							credential.elements = site.elements
 							storage.autologinsites[i].credentials.push(credential)
-							//console.log("Adding new credentials to site ", site)
+							////console.log("Adding new credentials to site ", site)
 
 					}
 
@@ -421,7 +424,7 @@ saveitem:function(response){
 		}
 
 		if (!isPushed) {
-			//console.log("Adding new  site ", site)
+			////console.log("Adding new  site ", site)
 			var currentsite = {}
 			currentsite.authtype = site.authtype
 				currentsite.url = site.url
@@ -435,12 +438,12 @@ saveitem:function(response){
 				credential.elements = site.elements
 
 				currentsite.credentials.push(credential)
-				//console.log("Adding site", currentsite)
+				////console.log("Adding site", currentsite)
 
 				storage.autologinsites.push(currentsite)
 
 		}
-		console.log("storage.autologinsites",storage.autologinsites)
+		//console.log("storage.autologinsites",storage.autologinsites)
 
 		storage.updatestorage();
 
@@ -571,7 +574,7 @@ saveitem:function(response){
 
 									}
 									
-									//console.log("datainfo",datainfo)
+									////console.log("datainfo",datainfo)
 
 									if (datainfo.user != "")
 										return datainfo
@@ -654,7 +657,7 @@ saveitem:function(response){
 								
 										
 
-								console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
+								//console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
 								if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {
 
 										storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser

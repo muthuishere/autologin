@@ -52,7 +52,7 @@ vAPI.app.restart = function() {
 
 // chrome.storage.local.get(null, function(bin){ console.debug('%o', bin); });
 
-console.log("Setting storage ")
+//console.log("Setting storage ")
 vAPI.storage = chrome.storage.local;
 vAPI.storage.preferences = vAPI.storage;
 
@@ -205,7 +205,7 @@ vAPI.tabs.registerListeners = function() {
     //chrome.webNavigation.onCreatedNavigationTarget.addListener(onCreatedNavigationTarget);
     //chrome.webNavigation.onBeforeNavigate.addListener(onBeforeNavigate);
     //chrome.webNavigation.onCommitted.addListener(onCommitted);
-	console.log("Adding updated listener")
+	//console.log("Adding updated listener")
     chrome.tabs.onUpdated.addListener(onUpdated);
     chrome.tabs.onRemoved.addListener(onClosed);
 };
@@ -515,7 +515,7 @@ vAPI.setAutologinIcon = function(tabId, detail) {
 		
 	 chrome.browserAction.setIcon({ tabId: tabId, path: AUTOLOGIN_ICON_PATHS[iconStatus] }, onIconReady);
 	chrome.browserAction.setTitle({ tabId: tabId, title: label })
-	//console.log("state.img",state.img)
+	////console.log("state.img",state.img)
 	
 	/*
     var state = vAPI.iconStateForTabId[tabId];

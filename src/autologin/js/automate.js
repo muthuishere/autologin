@@ -36,7 +36,7 @@ var automate = {
         var formObject = automate.getelembyidname("form", formname)
 
         automate.formObject = null;
-        //console.log(formObject)
+        ////console.log(formObject)
         if (null != formObject) {
 
             automate.formObject = formObject;
@@ -154,7 +154,7 @@ var automate = {
 		
 		var keyboardEvent = document.createEvent("KeyboardEvent");
 		var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-		//console.log(keycode)
+		////console.log(keycode)
 
 		keyboardEvent[initMethod](
 						   "keydown", // event type : keydown, keyup, keypress
@@ -182,7 +182,7 @@ var automate = {
 	
 	 //
 						 if(obj.enterelement){
-						//	 console.log("Enter key event ")
+						//	 //console.log("Enter key event ")
 							 
 							 
 							 var elem =automate.getElementByXpath(obj.enterelement.xpath)
@@ -208,8 +208,8 @@ var automate = {
 	
 		if(obj.clickelement){
 							 
-							  //console.log("click key event ")
-							  //console.log(obj.clickelement.xpath)
+							  ////console.log("click key event ")
+							  ////console.log(obj.clickelement.xpath)
 							 var elem =automate.getElementByXpath(obj.clickelement.xpath)						
 							
 							 var result = automate.raiseClickEvent(elem)
@@ -223,9 +223,9 @@ var automate = {
 	},
 	triggersubmit:function(obj){
 	
-	 //console.log("triggersubmit event ")
+	 ////console.log("triggersubmit event ")
 						  if(obj.formelement){
-							//  console.log("Form submit  event ")
+							//  //console.log("Form submit  event ")
 							 
 							 try{
 								 var elem =automate.getElementByXpath(obj.formelement.xpath)
@@ -244,7 +244,7 @@ var automate = {
 						 }
 	},
 	submiterror:function(){
-	//console.log("submit error called")
+	////console.log("submit error called")
 	
 	
 										for(t=0;t<automate.inputelems.length;t++){
@@ -307,13 +307,13 @@ var automate = {
                     }, function (response) {
 
                         if (response.actionresponse == false) {
-                         // console.log("Cannot submit the form")
+                         // //console.log("Cannot submit the form")
                             return
                         }
 						
 						//TODO Use JSONObj
 						
-                        //console.log("Submitting form")
+                        ////console.log("Submitting form")
 						
 						var enterelement=null
 						var formelement =null
@@ -344,7 +344,7 @@ var automate = {
 											curtype="text"
 										
 							if(curtype  === "text" ||   curtype  === "password" ){
-								//console.log(field)
+								////console.log(field)
 								capturedelemcount++
 								
 							}
@@ -356,7 +356,7 @@ var automate = {
 									
 									elem.value=field.value
 									automate.inputelems.push(elem)
-									//console.log(elem.value)
+									////console.log(elem.value)
 								}
 								
 							}
@@ -366,7 +366,7 @@ var automate = {
 						
 						//iterate all input elements of form , identify text elements 
 						//capturedelemcount
-						// console.log("==================")
+						// //console.log("==================")
 						 if(null != formelement){
 							  var curform =automate.getElementByXpath(formelement.xpath)
 							  
@@ -390,7 +390,7 @@ var automate = {
 										if(automate.isVisible(formchild)){
 											
 											if(curtype == "text" || curtype == "password"  ){
-												//console.log(formchild)
+												////console.log(formchild)
 												actInputCount++
 											}
 										}
@@ -398,7 +398,7 @@ var automate = {
 								
 								if(capturedelemcount < actInputCount   ){
 										
-										//console.log(  "Invalid Form Identified , Cannot Submit actInputCount " + actInputCount + "capturedelemcount " + capturedelemcount )
+										////console.log(  "Invalid Form Identified , Cannot Submit actInputCount " + actInputCount + "capturedelemcount " + capturedelemcount )
 										
 										automate.submiterror()
 										return
@@ -431,7 +431,7 @@ var automate = {
 
         } catch (exception) {
 				
-            console.log("process exception " + exception);
+            //console.log("process exception " + exception);
         }
 	
 	},
@@ -514,7 +514,7 @@ var automate = {
 					  }
 						  if(canadd){
 							 
-							// console.log("Adding" +curcredential.user )
+							// //console.log("Adding" +curcredential.user )
 							 
 							  
 							
@@ -557,7 +557,7 @@ var automate = {
         //  alert(aMessage)
 
 		try{
-			console.log(aMessage)
+			//console.log(aMessage)
 		}catch(exception){}
 
     },

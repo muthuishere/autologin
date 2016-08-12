@@ -49,7 +49,7 @@ var autoLoginOptions = {
 	infoChanged:function(event){
 	
 	
-	//console.log(event.target)
+	////console.log(event.target)
 	
 		document.querySelector("#sitechangedstatus").innerHTML="";
 	
@@ -291,7 +291,7 @@ flashsuccess:function(txt){
 	
 				messager.send({module:"options",action: "hasCredential"}, function(response) {
 				
-				//console.log("option hasCredential ",response)
+				////console.log("option hasCredential ",response)
 				if(response.valid){
 				
 					//Show Password panel
@@ -534,7 +534,7 @@ flashsuccess:function(txt){
 									
 									
                                     
-                                    //                                console.log(result);
+                                    //                                //console.log(result);
                                 };
                                 
                                 reader.readAsText(file);
@@ -546,7 +546,7 @@ flashsuccess:function(txt){
                             var importFileElement = document.querySelector('#fileimport');
 							
                             importFileElement.addEventListener('change', function(event) {
-                               // console.log(event.target.files);
+                               // //console.log(event.target.files);
 							   
                                 if (event.target.files.length === 1) {
                                     readFileUpdateUI(event.target.files[0] /*, mod, modFileName*/ );
@@ -572,7 +572,7 @@ flashsuccess:function(txt){
 		  //get queryselector targetId
 		  //set textbox values from targetids
 		  //
-		  //console.log(domname,document.querySelector("#select"+domname))
+		  ////console.log(domname,document.querySelector("#select"+domname))
 		  var option =document.querySelector("#select"+domname).options[document.querySelector("#select"+domname).selectedIndex]
 		  
 		  
@@ -702,7 +702,7 @@ flashsuccess:function(txt){
 			//autoLoginOptions.infoChanged
 			autoLoginOptions.onSelectboxchanged(evt.target.getAttribute("data-domname"))
 			
-				//console.log("changed event " + evt.target.getAttribute("data-domname"))
+				////console.log("changed event " + evt.target.getAttribute("data-domname"))
 			}, false);
 			 
 		
@@ -936,7 +936,7 @@ removeAutologin: function (event) {
 			for (var i = 0, inputElement; inputElement = inputElements[i]; i++) {
 
 				if (inputElement.getAttribute("data-changed") == "true") {
-					console.log("Data changed" , inputElement)
+					//console.log("Data changed" , inputElement)
 					var site = {}
 
 						site.authtype = inputElement.getAttribute("data-authtype")

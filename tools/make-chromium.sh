@@ -45,7 +45,7 @@ cat src/autologin/env/conf-$ENV.js >> $DES/js/autologin-conf.js
 cp platform/chromium/autologin/*.js $DES/js/
 
 cp -R src/_locales $DES/
-cp -R $DES/_locales/nb $DES/_locales/no
+#cp -R $DES/_locales/nb $DES/_locales/no
 cp src/*.html $DES/
 cp platform/chromium/*.js $DES/js/
 

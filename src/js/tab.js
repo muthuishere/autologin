@@ -300,14 +300,14 @@ var µb = AppExtn;
 
 vAPI.tabs.onNavigation = function(details) {
 	
-	console.log("On navigation ")
+	//console.log("On navigation ")
     if ( details.frameId !== 0 ) {
         return;
     }
     var tabContext = µb.tabContextManager.commit(details.tabId, details.url);
     var pageStore = µb.bindTabToPageStats(details.tabId, 'afterNavigate');
 
-console.log("Changing page refreshing all vi navigation",details)
+//console.log("Changing page refreshing all vi navigation",details)
 //if(vAPI.tabs.updateOnNavigate)
 
 
@@ -325,7 +325,7 @@ console.log("Changing page refreshing all vi navigation",details)
 
 vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
 
-console.log("vAPI.tabs.onUpdated tab.js " + tab.url )
+//console.log("vAPI.tabs.onUpdated tab.js " + tab.url )
     if ( !tab.url || tab.url === '' ) {
         return;
     }
@@ -335,7 +335,7 @@ console.log("vAPI.tabs.onUpdated tab.js " + tab.url )
 
 
 
-console.log("Changing page refreshing onupdated" + tab.url )
+//console.log("Changing page refreshing onupdated" + tab.url )
 
 	
     µb.tabContextManager.commit(tabId, changeInfo.url);
