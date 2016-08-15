@@ -828,9 +828,6 @@ getautologinsites
 var handleOptionMsg= function(request, tab, sendResponse) {
 
 
-//console.log("== handleOptionMsg ==")
-			
-
  if (request.action == "hasCredential"){
 	
 			var savedCredential= storage.getCredential();
@@ -852,6 +849,20 @@ var handleOptionMsg= function(request, tab, sendResponse) {
 	}else if (request.action == "getUseBasicAuth"){
 					sendResponse({"valid":true ,"usebasicauth":storage.getUseBasicAuth()});	
 	
+	}else if (request.action == "updateBasicAuthHandlers"){
+	
+		//console.log("changing " + request.usebasicAuth)
+			storage.setUseBasicAuth(request.usebasicAuth,function(){
+				
+				var usebasicauth= storage.getUseBasicAuth()
+				globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
+				sendResponse({"valid":true });
+				
+			});
+				
+			
+	
+	
 	}else if (request.action == "getCredential"){
 					sendResponse({"valid":true ,"credential":storage.getCredential()});	
 	
@@ -872,23 +883,7 @@ var handleOptionMsg= function(request, tab, sendResponse) {
 					sendResponse({"valid":true ,"flgvalid":importresp.flgvalid,"msg":importresp.msg});	
 	
 	}			
-	/*
 	
-		
-	updatedefaultcredential  inp "site"	:site
-		
-	
-	messager.send({module:"options",action: "removeCredential","site"	:site}
-	
-	
-	
-	messager.send({module:"options",action: "updatedefaultcredential","site"	:site}, function(response) {});
-	
-	
-	messager.send({module:"options",action: "siteupdates","sitecredentialupdates":sitecredentialupdates,"siteenabledupdates"	:siteenabledupdates}, function(response) {
-	
-
-	*/
 	else if (request.action == "updatedefaultcredential"){
 					var flgvalid=storage.updatedefaultcredential(request.site)
 					sendResponse({"valid":true });	
@@ -949,6 +944,9 @@ var handleOptionMsg= function(request, tab, sendResponse) {
 			
 	
 	
+	}else{
+		
+		console.log("Error Unable to handle Option module request",request)
 	}
 	
 }
@@ -1131,20 +1129,6 @@ if (request.module && request.module == "options"){
 			
 	
 	
-	}else if (request.action == "updateBasicAuthHandlers"){
-	
-		//console.log("changing " + request.usebasicAuth)
-			storage.setUseBasicAuth(request.usebasicAuth,function(){
-				
-				var usebasicauth= storage.getUseBasicAuth()
-				globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
-				sendResponse({"valid":true });
-				
-			});
-				
-			
-	
-	
 	}else if (request.action == "refreshData"){
 	
 	globalAutologinHandler.loadDoc()
@@ -1186,6 +1170,9 @@ if (request.module && request.module == "options"){
 		sendResponse({});
 	
 	
+	}else{
+		
+		console.log("Error Unable to handle Global request",request)
 	}
      
   };

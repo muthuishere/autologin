@@ -391,7 +391,7 @@ flashsuccess:function(txt){
 						});
 						
 						
-		messager.send({action: "getUseBasicAuth"}, function(response) {
+		messager.send({module:"options",action: "getUseBasicAuth"}, function(response) {
 				
 						if(response.usebasicauth == true)
 							document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
