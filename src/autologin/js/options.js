@@ -383,20 +383,20 @@ flashsuccess:function(txt){
 			
 			messager.send({action: "getPromptAtStartup"}, function(response) {
 				
-						if(response.promptrequired == true)
-							document.querySelector('#chkpromptAutologin').setAttribute("CHECKED","CHECKED")
+						if(response.promptrequired == true || response.promptrequired == "true")
+							document.querySelector('#chkpromptAutologin').checked=true
 						else	
-							document.querySelector('#chkpromptAutologin').removeAttribute("CHECKED")
+							document.querySelector('#chkpromptAutologin').checked=false
 				
 						});
 						
 						
 		messager.send({module:"options",action: "getUseBasicAuth"}, function(response) {
 				
-						if(response.usebasicauth == true)
-							document.querySelector('#chkpromptBasicAuth').setAttribute("CHECKED","CHECKED")
+						if(response.usebasicauth == true || response.usebasicauth == "true")
+							document.querySelector('#chkpromptBasicAuth').checked=true
 						else	
-							document.querySelector('#chkpromptBasicAuth').removeAttribute("CHECKED")
+							document.querySelector('#chkpromptBasicAuth').checked=false
 				
 						});
 						
@@ -434,9 +434,12 @@ flashsuccess:function(txt){
 								}
 						
 							}
+					console.log("updatePromptAtStartup",event.target.checked)
 					
-					
-								messager.send({module:"options",action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(response) {});
+								messager.send({module:"options",action: "updatePromptAtStartup",promptrequired:event.target.checked}, function(responsenew) {
+									
+									
+								});
 						
 						
 				
