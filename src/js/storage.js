@@ -5,6 +5,7 @@ var storage = {
 	credential:null,
 	promptrequired:'false',
 	usebasicauth:'false',
+	usecaptureIcon:'true',
 	getExportData:function(callback){
 		
 		
@@ -39,7 +40,40 @@ var storage = {
 		}catch(exception){}
 
     },
-	
+	getCaptureIconOnPwd:function(){
+		
+		return storage.usecaptureIcon;
+	},
+	setCaptureIconOnPwd:function(flgUseCaptureIcon,callback){
+		
+		var data={'usecaptureIcon':flgUseCaptureIcon+""}
+		
+		vAPI.storage.set(data, function ()
+					{
+						
+						
+						var lastError = vAPI.lastError();
+						if (lastError)
+						{
+							//details.error = 'Error: ' + lastError.message;
+							storage.logerror('save usecaptureIcon error:' + lastError.message);
+							response={'status':1,"msg":"Unable to save information ,Storage error "}
+						
+								
+						}else{
+							
+							storage.usecaptureIcon=	flgUseCaptureIcon
+							response={"status":0,"msg":"Success"}
+						}
+						
+						if(typeof callback === 'function') {
+							callback(response)
+						}
+						
+					});
+					
+		
+	},
 	
 	getUseBasicAuth:function(){
 		
@@ -751,6 +785,9 @@ saveitem:function(response){
 					storage.autologinsites=JSON.parse(decrypteddata);
 				}
 					
+					
+				else if(key == "usecaptureIcon")
+					storage.usecaptureIcon=localStorageObject['usecaptureIcon'];	
 				else if(key == "usebasicauth")
 					storage.usebasicauth=localStorageObject['usebasicauth'];
 				else if(key == "credential")

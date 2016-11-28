@@ -418,6 +418,37 @@ flashsuccess:function(txt){
 					
 			}, false);
 			
+			
+			
+		messager.send({module:"options",action: "getCaptureIconOnPwd"}, function(response) {
+				
+						if(response.getCaptureIconOnPwd == true || response.getCaptureIconOnPwd == "true")
+							document.querySelector('#chkshowcaptureicononpwd').checked=true
+						else	
+							document.querySelector('#chkshowcaptureicononpwd').checked=false
+				
+						});
+						
+			
+							
+			
+
+		
+			
+							
+			document.querySelector('#chkshowcaptureicononpwd').addEventListener('click', function(event){
+					
+					
+					
+					messager.send({module:"options",action: "updateCaptureIconOnPwd",usecaptureIconOnPwd:event.target.checked}, function(response) {
+				
+				
+				
+						});
+					
+			}, false);
+			
+			
 		
 			document.querySelector('#chkpromptAutologin').addEventListener('click', function(event){
 					

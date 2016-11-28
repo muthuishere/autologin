@@ -846,7 +846,25 @@ var handleOptionMsg= function(request, tab, sendResponse) {
 			})
 			
 	
-	}else if (request.action == "getUseBasicAuth"){
+	}	else if (request.action == "getCaptureIconOnPwd"){
+					sendResponse({"valid":true ,"getCaptureIconOnPwd":storage.getCaptureIconOnPwd()});	
+	
+	}else if (request.action == "updateCaptureIconOnPwd"){
+	
+		//console.log("changing " + request.usebasicAuth)
+			storage.setCaptureIconOnPwd(request.usecaptureIconOnPwd,function(){
+				
+				var usecaptureIcon= storage.getCaptureIconOnPwd()
+				globalAutologinHandler.updateUsecaptureIconOnPwdHandlers(usecaptureIcon)
+				sendResponse({"valid":true });
+				
+			});
+				
+			
+	
+	
+	}
+	else if (request.action == "getUseBasicAuth"){
 					sendResponse({"valid":true ,"usebasicauth":storage.getUseBasicAuth()});	
 	
 	}else if (request.action == "updateBasicAuthHandlers"){

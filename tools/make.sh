@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script assumes a linux environment
+# This script assumes a linux BROWSERironment
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
@@ -9,34 +9,34 @@ BASE_DIR="$(dirname "$SCRIPTPATH")"
 cd $BASE_DIR
 
 if (( $# < 1 )); then
-	echo "Invalid arguments , Usage: make-firefox.sh (local|dev|qa|prod) [debug]" >&2
+	echo "Invalid arguments , Usage: make-chromium.sh (chrome|opera|firefox) [debug]" >&2
     exit 1
 fi
 
-ENV=$1
+BROWSER=$1
 
-if [ "$ENV" = "mock" ] || [ "$ENV" = "dev" ] ||  [ "$ENV" = "qa" ] ||  [ "$ENV" = "prod" ]; then
+if [ "$BROWSER" = "chrome" ] || [ "$BROWSER" = "firefox" ] ||  [ "$BROWSER" = "opera" ]; then
 	echo ""
 else
-	echo "Invalid arguments , Usage: make-firefox.sh (mock|dev|qa|prod) [debug]" >&2
+	echo "Invalid arguments , Usage: make-chromium.sh (mock|dev|qa|prod) [debug]" >&2
 	exit 1
 fi
 
-echo "*** autologin.firefox: Copying files"
-DES=dist/build/autologin.firefox
+echo "*** autologin.$BROWSER: Copying files"
+DES=dist/build/autologin.$BROWSER
 rm -rf $DES
 mkdir -p $DES
 
 
-echo "*** autologin.firefox: Copying css"
+echo "*** autologin.$BROWSER: Copying css"
 cp -R src/css $DES/
-echo "*** autologin.firefox: Copying css"
+echo "*** autologin.$BROWSER: Copying css"
 cp -R src/img $DES/
 cp -R src/images $DES/
 cp -R src/js $DES/
 
 cp -R faq $DES/
-mv $DES/faq/chrome-index.html $DES/faq/index.hr
+mv $DES/faq/$BROWSER-index.html $DES/faq/index.hr
 rm $DES/faq/*.html
 mv $DES/faq/index.hr $DES/faq/index.html
 
@@ -45,20 +45,21 @@ cp src/autologin/env/env.json $DES/
 cp -R src/autologin/js/* $DES/js/
 cp -R src/autologin/html/* $DES/
 
+export ENV="prod"
 cat src/autologin/env/conf-$ENV.js >> $DES/js/autologin-conf.js
-cp platform/firefox/autologin/*.js $DES/js/
+cp platform/chrome/autologin/*.js $DES/js/
 
 cp -R src/_locales $DES/
 #cp -R $DES/_locales/nb $DES/_locales/no
 cp src/*.html $DES/
-cp platform/firefox/*.js $DES/js/
+cp platform/chrome/*.js $DES/js/
+
+cp platform/$BROWSER/images/* $DES/images/
 
 
 
-
-
-echo "*** autologin.firefox: Generating meta..."
-python tools/make-firefox-meta.py $DES/ $ENV
+echo "*** autologin.chromium: Generating meta..."
+python tools/make-chromium-meta.py $DES/ $ENV
 
 rm $DES/env.json
 
@@ -142,12 +143,12 @@ if [ "$2" != "debug" ]; then
 	# mv $DES/jsmin/* $DES
 	# rm -R $DES/jsmin
 
-    echo "*** autologin.firefox: Creating package..."
+    echo "*** autologin.chromium: Creating package..."
     pushd $(dirname $DES/)
-    zip autologin.firefox.zip -qr $(basename $DES/)/*
+    zip autologin.chromium.zip -qr $(basename $DES/)/*
     popd
 
 fi
 
-echo "*** autologin.firefox: Package done."
+echo "*** autologin.chromium: Package done."
 		

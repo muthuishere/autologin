@@ -9,7 +9,7 @@ BASE_DIR="$(dirname "$SCRIPTPATH")"
 cd $BASE_DIR
 
 if (( $# < 1 )); then
-	echo "Invalid arguments , Usage: make-firefox.sh (local|dev|qa|prod) [debug]" >&2
+	echo "Invalid arguments , Usage: make-opera.sh (local|dev|qa|prod) [debug]" >&2
     exit 1
 fi
 
@@ -18,25 +18,25 @@ ENV=$1
 if [ "$ENV" = "mock" ] || [ "$ENV" = "dev" ] ||  [ "$ENV" = "qa" ] ||  [ "$ENV" = "prod" ]; then
 	echo ""
 else
-	echo "Invalid arguments , Usage: make-firefox.sh (mock|dev|qa|prod) [debug]" >&2
+	echo "Invalid arguments , Usage: make-opera.sh (mock|dev|qa|prod) [debug]" >&2
 	exit 1
 fi
 
-echo "*** autologin.firefox: Copying files"
-DES=dist/build/autologin.firefox
+echo "*** autologin.opera: Copying files"
+DES=dist/build/autologin.opera
 rm -rf $DES
 mkdir -p $DES
 
 
-echo "*** autologin.firefox: Copying css"
+echo "*** autologin.opera: Copying css"
 cp -R src/css $DES/
-echo "*** autologin.firefox: Copying css"
+echo "*** autologin.opera: Copying css"
 cp -R src/img $DES/
 cp -R src/images $DES/
 cp -R src/js $DES/
 
 cp -R faq $DES/
-mv $DES/faq/chrome-index.html $DES/faq/index.hr
+mv $DES/faq/opera-index.html $DES/faq/index.hr
 rm $DES/faq/*.html
 mv $DES/faq/index.hr $DES/faq/index.html
 
@@ -46,19 +46,19 @@ cp -R src/autologin/js/* $DES/js/
 cp -R src/autologin/html/* $DES/
 
 cat src/autologin/env/conf-$ENV.js >> $DES/js/autologin-conf.js
-cp platform/firefox/autologin/*.js $DES/js/
+cp platform/opera/autologin/*.js $DES/js/
 
 cp -R src/_locales $DES/
 #cp -R $DES/_locales/nb $DES/_locales/no
 cp src/*.html $DES/
-cp platform/firefox/*.js $DES/js/
+cp platform/opera/*.js $DES/js/
 
 
 
 
 
-echo "*** autologin.firefox: Generating meta..."
-python tools/make-firefox-meta.py $DES/ $ENV
+echo "*** autologin.opera: Generating meta..."
+python tools/make-opera-meta.py $DES/ $ENV
 
 rm $DES/env.json
 
@@ -142,12 +142,12 @@ if [ "$2" != "debug" ]; then
 	# mv $DES/jsmin/* $DES
 	# rm -R $DES/jsmin
 
-    echo "*** autologin.firefox: Creating package..."
+    echo "*** autologin.opera: Creating package..."
     pushd $(dirname $DES/)
-    zip autologin.firefox.zip -qr $(basename $DES/)/*
+    zip autologin.opera.zip -qr $(basename $DES/)/*
     popd
 
 fi
 
-echo "*** autologin.firefox: Package done."
+echo "*** autologin.opera: Package done."
 		

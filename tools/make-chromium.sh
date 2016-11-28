@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script assumes a linux environment
+# This script assumes a linux BROWSERironment
 
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
@@ -9,39 +9,44 @@ BASE_DIR="$(dirname "$SCRIPTPATH")"
 cd $BASE_DIR
 
 if (( $# < 1 )); then
-	echo "Invalid arguments , Usage: make-chromium.sh (local|dev|qa|prod) [debug]" >&2
+	echo "Invalid arguments , Usage: make-chromium.sh (chrome|opera|firefox) [debug]" >&2
     exit 1
 fi
 
-ENV=$1
+BROWSER=$1
 
-if [ "$ENV" = "mock" ] || [ "$ENV" = "dev" ] ||  [ "$ENV" = "qa" ] ||  [ "$ENV" = "prod" ]; then
+if [ "$BROWSER" = "chrome" ] || [ "$BROWSER" = "firefox" ] ||  [ "$BROWSER" = "opera" ]; then
 	echo ""
 else
 	echo "Invalid arguments , Usage: make-chromium.sh (mock|dev|qa|prod) [debug]" >&2
 	exit 1
 fi
 
-echo "*** autologin.chromium: Copying files"
-DES=dist/build/autologin.chromium
+echo "*** autologin.$BROWSER: Copying files"
+DES=dist/build/autologin.$BROWSER
 rm -rf $DES
 mkdir -p $DES
 
 
-echo "*** autologin.chromium: Copying css"
+echo "*** autologin.$BROWSER: Copying css"
 cp -R src/css $DES/
-echo "*** autologin.chromium: Copying css"
+echo "*** autologin.$BROWSER: Copying css"
 cp -R src/img $DES/
 cp -R src/images $DES/
 cp -R src/js $DES/
 
 cp -R faq $DES/
+mv $DES/faq/$BROWSER-index.html $DES/faq/index.hr
+rm $DES/faq/*.html
+mv $DES/faq/index.hr $DES/faq/index.html
+
 
 cp src/autologin/env/env.json $DES/
 cp -R src/autologin/js/* $DES/js/
 cp -R src/autologin/html/* $DES/
 
-cat src/autologin/env/conf-$ENV.js >> $DES/js/autologin-conf.js
+export ENV="prod"
+cat src/autologin/BROWSER/conf-$ENV.js >> $DES/js/autologin-conf.js
 cp platform/chromium/autologin/*.js $DES/js/
 
 cp -R src/_locales $DES/
