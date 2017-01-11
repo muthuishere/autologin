@@ -13,9 +13,10 @@ if ( !vAPI ) {
     return;
 }
 
-if (undefined == capture) {
+if (undefined == capture && undefined == vAPI.injected) {
 	var  messager= vAPI.messaging.channel('capture.js');
 	vAPI.messager=messager
+	vAPI.injected=messager
 
 	
 	var capture = {
