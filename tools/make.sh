@@ -9,7 +9,7 @@ BASE_DIR="$(dirname "$SCRIPTPATH")"
 cd $BASE_DIR
 
 if (( $# < 1 )); then
-	echo "Invalid arguments , Usage: make-chromium.sh (chrome|opera|firefox) [debug]" >&2
+	echo "Invalid arguments , Usage: make.sh (chrome|opera|firefox) [debug]" >&2
     exit 1
 fi
 
@@ -18,7 +18,7 @@ BROWSER=$1
 if [ "$BROWSER" = "chrome" ] || [ "$BROWSER" = "firefox" ] ||  [ "$BROWSER" = "opera" ]; then
 	echo ""
 else
-	echo "Invalid arguments , Usage: make-chromium.sh (mock|dev|qa|prod) [debug]" >&2
+	echo "Invalid arguments , Usage: make.sh (mock|dev|qa|prod) [debug]" >&2
 	exit 1
 fi
 
@@ -31,7 +31,7 @@ mkdir -p $DES
 echo "*** autologin.$BROWSER: Copying css"
 cp -R src/css $DES/
 echo "*** autologin.$BROWSER: Copying css"
-cp -R src/img $DES/
+#cp -R src/img $DES/
 cp -R src/images $DES/
 cp -R src/js $DES/
 
