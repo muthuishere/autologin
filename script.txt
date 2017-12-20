@@ -1,0 +1,32 @@
+Hi all,
+
+	 we are going to look about What  Autologin extension does
+	 
+	 It allows you to login to websites without clicking
+	 
+		how did it do that
+			for the first time when you logging in , On typing password , Just see the icon on top right
+			
+			could you see it 
+			
+			Now click on it to save your credentials
+			
+			Fine now , you are done , From next time onwards , whenever you go to the site Autologin will do the typing and clicking work for you
+			
+			
+		
+		WHat ABout security
+		
+				Set a Master password via going to options and change master password
+				
+				
+				
+				
+			
+			
+			
+			
+	
+	
+	
+	
