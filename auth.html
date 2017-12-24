@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Basic Auth Login</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+<link href="css/auth.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/options.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="js/vapi-client.js"></script>
+
+<script type="text/javascript" src="js/Helper.js"></script>
+<!-- <script type="text/javascript" src="js/autoLoginCaptureIcon.js"></script> -->
+<script type="text/javascript" src="js/basicauth.js"></script>
+
+</head>
+
+
+<body >
+<!--
+
+<div  style="background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));">
+<div id="header" class="container">
+	<table width="100%"><tbody><tr><td valign="middle">
+	
+	<div style="float:left"><h3 id="pagetitle" >The Page host:port requires username & password</h3></div>
+	<div id="logo" >
+		
+		
+	
+		
+      </div></td>
+	  </tr></table>
+	  </div>
+</div>
+<hr/>
+-->
+<div class="container" style="margin-top:10px;margin-left:10px">
+
+  <div id="login">
+
+        <h2>
+		<span style="float:left;background:url('images/bg5.png');margin-right:20px;height:48px;width:48px">&nbsp;</span>
+		<span id="realm">Sign In</span> <span id="pagetitle" >The Page host:port requires username & password</span></h2>
+
+        <form action="#" method="POST">
+
+          <fieldset>
+
+            <p><label for="username">User</label></p>
+            <p><input type="text" id="username" placeholder="User name"></p>
+
+            <p><label for="password">Password</label></p>
+            <p><input type="password" id="password" placeholder="Password"></p>
+
+			
+            <p><input type="checkbox" id="chkuseautologin" value="1" checked> Use AutoLogin</p>
+
+			
+			<p>
+			<span> <input style="float:left" type="reset" value="Cancel" id="btncancel"> <input style="float:right" type="submit" value="Sign In" id="btnlogin"></span>
+</p>
+          </fieldset>
+
+		  	
+	<table  style="width:680px;" >
+			<tbody>
+			<tr>
+			
+			<th align="right">
+			
+			
+			
+			<span id="statusError" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				<span id="statusSuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				</th>			
+				</tr></tbody></table>
+				
+        </form>
+
+      </div> <!-- end login -->
+	  
+
+</div>
+<div id="copyright">
+	&nbsp;
+</div>
+</body>
+</html>

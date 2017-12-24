@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Autologin Options</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+<link href="css/default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/options.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="js/vapi-client.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+
+<script type="text/javascript" src="js/Helper.js"></script>
+
+<script type="text/javascript" src="js/options.js"></script>
+
+
+</head>
+<body>
+
+<div  class="optionsbg" >
+<div id="header" class="container">
+	<table width="100%"><tbody><tr><td valign="middle">
+	
+	<div style="float:left"><img src="images/autologin-128.png"></div>
+	<div id="logo" style="float:left;padding-top:48px;">
+		<h1 >
+		
+		<a href="#">Autologin Options</a></h1>
+		
+      </div></td><td align="right">
+	<div id="navigation" style="visibility:hidden;float:right">
+	
+		<ul style="margin-top:15px">
+			<li id="mnusitesparent" class="current"><a  id="mnusites" href="#">Sites</a></li>
+			<li id="mnuautologinsettingsparent" ><a id="mnuautologinsettings" href="#">Settings</a></li>	
+				<li id="mnusupportparent" ><a id="mnusupport" href="#">Support</a></li>	
+			
+			
+			
+		</ul>
+	
+      </div></td></tr></tbody></table>
+</div>
+</div>
+<hr/>
+<div class="container">
+<div id="page-wrapper">
+	
+	<div id="" class="boxA">
+	<table  style="margin:0 auto" >
+			<tbody>
+			<tr>
+			
+			<th align="right">
+			
+			
+			
+			<span id="statusError" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"><p/></span>
+				<span id="statusSuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"><p/></span>
+				</th>			
+				</tr></tbody></table>
+				
+		<div id="divSites"  style="display:none;">
+			<div id="sitechangedstatus" style="float:left;margin-left:50px;text-align:center;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></div>
+			
+			<table id="tblOptions" style="margin:0 auto;width:90%" >
+			<tbody>
+			<tr>
+			<th>Domain</th>
+			<th>Auth</th>
+			<th>Users</th>
+			<th>Username</th>
+			<th>Password</th>
+			<th>Enabled</th>
+			<th>Remove</th>
+			</tr>
+			
+			</tbody>
+			</table>
+			<div style="height:20px"> &nbsp; </div>
+			
+			<div style="margin:0 auto">
+			<div style="float:right;margin-right:50px"> 
+			<button id="btnUpdate"  href="#" class="buttondisable">Update</button>
+			</div>
+			
+			</div>
+			<div style="height:20px;clear:both"> &nbsp; </div>
+		</div>
+		
+		<div id="divpasswordask"  style="">
+			<table id="" style="margin:0 auto" >
+			<tbody>
+			<tr>
+			<th>Enter Password to view options:</th>
+			<th> <input type="password" id="txtaskpassword" class="inptxt" /> </th>			
+			<th>
+				
+				<button id="btnaskpassword" class="buttongeneric" >Show</button> 
+						
+				</th>			
+			</tr>
+			<tr>
+			<td colspan="3" align="right">
+			<span id="validatepwdstatus" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			</td>
+			</tr>
+			
+			</tbody>
+			</table>
+			
+			<div style="height:20px"> &nbsp; </div>
+			
+			<div style="height:20px;clear:both"> &nbsp; </div>
+		</div>
+		
+			<div id="divpasswordchange"  style="display:none;">
+			
+			
+	<table id="tblsettings" style="text-align:left;width:100%" cellpadding="10">
+  <tbody><tr><td valign="top">
+<table class="tblsubsettings" cellpadding="10">
+			<tbody>
+			<tr>
+			
+			<th colspan="2" align="left"><u>Password</u></th>			
+			
+			</tr>
+			
+			
+			<tr>
+		
+			<td style="text-align:left">			
+			Prompt on startup?			
+			</td>
+			<td>
+			<div class="bigonoffswitch">
+				<input type="checkbox" name="chkpromptAutologin" class="bigonoffswitch-checkbox" id="chkpromptAutologin" checked>
+				<label class="bigonoffswitch-label" for="chkpromptAutologin">
+					<span class="bigonoffswitch-inner"></span>
+					<span class="bigonoffswitch-switch"></span>
+				</label>
+			</div>
+			
+			
+			</td>			
+			
+			</tr>
+			
+			
+			<tr>
+			
+			<td style="text-align:left"> 
+			Master Password 
+			</td>
+			<td>
+			<button id="btnshowchangepwd" href="#" class="button">Change</button>
+			
+			<!-- <input type="button" id="btnshowchangepwd" value="Change Password"> -->
+
+			</td>			
+			
+			</tr>
+			
+			
+			<tr>
+			<td colspan="2" align="right">
+			<span id="settingssuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			<span id="settingsfailure" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			</td>
+			</tr>
+			
+			</tbody>
+			</table>
+    
+    </td><td valign="top">
+    <table class="tblsubsettings" id="tblbasicauth" style="visibility:hidden"  cellpadding="10">
+			<tbody>
+			<tr>
+			
+			<th align="left"><u>Capture Icon</u></th>			
+			
+			</tr>
+			
+			
+			
+			<tr>
+              <td style="text-align:left"> Show icon only on input </td>			
+		
+			<td style="text-align:left"> 
+			<div class="bigonoffswitch">
+				<input type="checkbox" name="chkshowcaptureonlyonfocus" class="bigonoffswitch-checkbox" id="chkshowcaptureonlyonfocus" checked>
+				<label class="bigonoffswitch-label" for="chkshowcaptureonlyonfocus">
+					<span class="bigonoffswitch-inner"></span>
+					<span class="bigonoffswitch-switch"></span>
+				</label>
+			</div>
+			
+			
+			
+			</td>			
+			
+			</tr>
+              
+              <tr>
+			
+			<th align="left"><u>Basic Auth</u></th>			
+			
+			</tr>
+			
+			
+			
+			<tr>
+              <td style="text-align:left"> Use Basic Auth </td>			
+		
+			<td style="text-align:left"> 
+			<div class="bigonoffswitch">
+				<input type="checkbox" name="chkpromptBasicAuth" class="bigonoffswitch-checkbox" id="chkpromptBasicAuth" checked>
+				<label class="bigonoffswitch-label" for="chkpromptBasicAuth">
+					<span class="bigonoffswitch-inner"></span>
+					<span class="bigonoffswitch-switch"></span>
+				</label>
+			</div>
+			
+			
+			
+			</td>			
+			
+			</tr>
+                 
+			
+			
+			
+			
+			
+			
+			</tbody>
+			</table>
+    </td><td  valign="top">
+    <table class="tblsubsettings" cellpadding="10">
+			<tbody>
+			<tr>
+			
+			<th colspan="2" align="left"><u>Export/Import Data</u></th>			
+			
+			</tr>
+			
+			
+              
+              <tr>
+             	
+		
+			<td style="text-align:left">Export Data </td><td  style="text-align:right">
+			
+			<button id="btnExport" href="#" class="button">Export</button>
+			
+			
+			</td>			
+			
+			</tr>
+                 <tr>
+            	
+		
+			<td style="text-align:left">Import Data </td><td>  
+			<input type="file" id="fileimport" style="visibility:hidden;width:100px" value="Import" accept=".bin"/> 
+			<button  style="text-align:right" id="btnImport" href="#" class="button">Import</button>
+			
+			</td>
+			
+			
+			
+			</tr>
+			
+			
+			
+			
+			
+			
+			</tbody>
+			</table>
+  </td>
+  
+  </tr>
+<tr><td>
+  
+  </td></tr>
+</tbody></table>		
+			
+			
+			<table id="tblchangepwd" style="margin:0 auto;display:none" >
+			<tbody>
+			<tr>
+			<th>&nbsp;</th>
+			<th align="right"><div style="float:right"> </div></th>			
+			
+			</tr>
+			
+			<tr id="rowoldpassword" >
+			<th>Enter Old Password :</th>
+			<th> <input type="password" id="txtoldpassword" class="inptxt" /> </th>			
+			
+			</tr>
+			<tr>
+			<th>Enter New Password :</th>
+			<th> <input type="password" id="txtnewpassword" class="inptxt" /> </th>			
+			
+			</tr>
+			<tr>
+			<th>Confirm New Password :</th>
+			<th> <input type="password" id="txtrepeatnewpassword" class="inptxt" /> </th>			
+			
+			</tr>
+			<tr rowspan="3">
+  <th colspan="2">
+  &nbsp;
+</th></tr>
+
+			<tr>
+			<th align="left">
+				<button id="btncancelchangepassword" class="buttongrey" >Cancel</button> 
+			
+			 </th>
+			<th align="right">
+			
+				<button id="btnchangepassword" class="button" >Save</button> 
+			
+			</th>			
+			
+			</tr>
+			<tr>
+			<td colspan="2" align="right">
+			<span id="validatepwderror" style="float:right;text-align:center;color:red;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+				<span id="validatepwdsuccess" style="float:right;text-align:center;color:green;font-size:14px;font-weight:bold;font-family: Calibri, Verdana, sans-serif"></span>
+			</td>
+			</tr>
+			
+			</tbody>
+			</table>
+			
+			<div style="height:20px"> &nbsp; </div>
+			
+			<div style="height:20px;clear:both"> &nbsp; </div>
+		</div>
+	
+	
+	
+		<div id="divsupport"  style="display:none;">
+			<table id="" style="text-align:left" >
+			<tbody>
+			
+			<tr>
+			<td colspan="3" align="right">
+			
+					<div style="text-align:left;   padding: 20px;     width: 800px;   ">
+
+
+							<span style=" color: #6C825D;font-weight:bold;  " > This project is done as a part of save the second initiative.
+							If you believe , We have saved your time you could support us through tip.
+							</span>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="3YY5S5YWNQUR6">
+<input type="image" src="images/paypal.png" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+
+
+
+							<span style="  color: #C32B8A;font-size:10px;font-weight:bold        " > * 21% of your contribution will go to support Tamil literature , Fight hunger & Helping orphans.</span>
+							
+							<br/><br/><br/>
+
+
+							<span style=" color: #6C825D;font-weight:bold;  " > For Queries on Autologin
+								<a href="https://www.facebook.com/pages/Auto-Login/433751853437039" target="_blank">Click Here</a> </span>
+				</div>
+			</td>
+			</tr>
+			
+			</tbody>
+			</table>
+			
+		</div>
+		
+	
+	</div>
+	
+	
+				
+</div>
+</div>
+<div id="copyright">
+	&nbsp;
+</div>
+<div class="corner-ribbon bottom-right sticky red shadow"><a href="faq/index.html" target="_blank">FAQ</a></div>
+</body>
+</html>

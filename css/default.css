@@ -1,0 +1,458 @@
+	html, body
+	{
+		height: 100%;
+	}
+	
+	body
+	{
+		margin: 0px;
+		padding: 0px;
+		background: #FFF;
+		font-family: 'Source Sans Pro', sans-serif;
+		font-size: 12pt;
+		font-weight: 300;
+		color: #000000;
+	}
+	
+	
+	h1, h2, h3
+	{
+		margin: 0;
+		padding: 0;
+	}
+	
+	p, ol, ul
+	{
+		margin-top: 0;
+	}
+	
+	ol, ul
+	{
+		padding: 0;
+		list-style: none;
+	}
+	
+	p
+	{
+		line-height: 180%;
+	}
+	
+	strong
+	{
+	}
+	td{
+	text-align:center;
+	align:center;
+	}
+	a
+	{
+		color: #862525;
+	}
+	
+	a:hover
+	{
+		text-decoration: none;
+	}
+	
+	
+	.container
+	{
+		overflow: hidden;
+		margin: 0em auto;
+		width: 1200px;
+	}
+
+/*********************************************************************************/
+/* Button Style                                                                  */
+/*********************************************************************************/
+
+
+
+.buttondisable
+	{
+		display: inline-block;
+		/*padding: 1em 2em 1em 2em; */
+		padding:0.4em 1em 0.4em 1em;
+		border-radius: 7px;
+		
+		background: #A09898;
+		
+		letter-spacing: 0.10em;
+		text-decoration: none;
+		
+		font-weight: 400;
+		font-size: 0.90em;
+		
+		
+		color: #FFF;
+	}
+	
+		.buttonred
+	{
+		display: inline-block;
+		/*padding: 1em 2em 1em 2em; */
+		padding:0.4em 1em 0.4em 1em;
+		border-radius: 7px;
+		
+		background: #862525;
+		letter-spacing: 0.10em;
+		text-decoration: none;
+		
+		font-weight: 400;
+		font-size: 0.90em;
+		color: #FFF;
+		cursor:pointer;
+	}
+	
+	
+		.buttongreen
+	{
+		display: inline-block;
+		/*padding: 1em 2em 1em 2em; 
+		padding:0.4em 0.4em 0.4em 0.4em;*/
+		padding:0.4em 1em 0.4em 1em;
+		border-radius: 7px;
+		background: #21842D;
+		
+		
+		letter-spacing: 0.10em;
+		text-decoration: none;
+		
+		font-weight: 400;
+		font-size: 0.90em;
+		color: #FFF;
+		cursor:pointer;
+	}
+	
+	.button
+	{
+		display: inline-block;
+		/*padding: 1em 2em 1em 2em; 
+		padding:0.4em 0.4em 0.4em 0.4em;*/
+		padding:0.4em 1em 0.4em 1em;
+		border-radius: 7px;
+		background: #213F56;
+		
+		
+		letter-spacing: 0.10em;
+		text-decoration: none;
+		
+		font-weight: 400;
+		font-size: 0.90em;
+		color: #FFF;
+		cursor:pointer;
+	}
+	
+	.button:hover
+	{
+	
+ /*	
+	-webkit-box-shadow: 0px 0px 2px 4px rgba(0, 0, 0, 0.86);
+	background: #352121; */
+	}
+	
+	.button:before
+	{
+	}
+		
+/*********************************************************************************/
+/* 4-column                                                                      */
+/*********************************************************************************/
+
+	.box1,
+	.box2,
+	.box3,
+	.box4
+	{
+		width: 235px;
+	}
+	
+	.box1,
+	.box2,
+	.box3,
+	{
+		float: left;
+		margin-right: 20px;
+	}
+	
+	.box4
+	{
+		float: right;
+	}
+	
+/*********************************************************************************/
+/* 3-column                                                                      */
+/*********************************************************************************/
+
+	.boxA,
+	.boxB,
+	.boxC
+	{
+		
+		
+		width: 1200px;
+		padding: 40px 40px;
+		
+	}
+
+	.boxA,
+	.boxB
+	{
+		float: left;
+		margin-right: 24px;
+	}
+	
+	.boxC
+	{
+		float: right;
+	}
+
+/*********************************************************************************/
+/* 2-column                                                                      */
+/*********************************************************************************/
+
+	.tbox1,
+	.tbox2
+	{
+		width: 575px;
+	}
+	
+	.tbox1
+	{
+		float: left;
+	}
+
+	.tbox2
+	{
+		float: right;
+	}
+
+/*********************************************************************************/
+/* Header                                                                        */
+/*********************************************************************************/
+
+	#header-wrapper
+	{
+	}
+
+	#header
+	{
+		position: relative;
+		/* padding: 3em 0em;*/
+	}
+
+/*********************************************************************************/
+/* Logo                                                                          */
+/*********************************************************************************/
+
+	#logo
+	{
+		/*position: absolute;*/
+		top: 1em;
+		left: 0;
+	}
+	
+	#logo h1
+	{
+		
+	}
+	
+	#logo a
+	{
+		text-decoration: none;
+		color: #000;
+	}
+
+/*********************************************************************************/
+/* Menu                                                                          */
+/*********************************************************************************/
+
+
+/*********************************************************************************/
+/* Page                                                                          */
+/*********************************************************************************/
+
+	#page-wrapper
+	{
+		overflow: hidden;
+		padding: 1em 0em;
+		background-color:#E9EFF2;
+		border-radius: 25px;
+	
+	}
+
+	#page
+	{
+	}
+
+	#page .title
+	{
+		margin-bottom: 3em;
+		text-align: center;
+	}
+	
+	#page h3
+	{
+		margin-bottom: 1em;
+		font-size: 1.4em;
+		font-weight: 600;
+		color: rgba(0,0,0,.8);
+	}
+
+	.pboxA,
+	.pboxB,
+	.pboxC
+	{
+		width: 384px;
+	}
+
+	.pboxA,
+	.pboxB
+	{
+		float: left;
+		margin-right: 24px;
+	}
+	
+	.pboxC
+	{
+		float: right;
+	}
+
+/*********************************************************************************/
+/* Content                                                                       */
+/*********************************************************************************/
+
+	#content
+	{
+	}
+
+/*********************************************************************************/
+/* Sidebar                                                                       */
+/*********************************************************************************/
+
+	#sidebar
+	{
+	}
+
+/*********************************************************************************/
+/* Footer                                                                        */
+/*********************************************************************************/
+
+	#footer-wrapper
+	{
+		overflow: hidden;
+		padding: 5em 0em;
+		background: rgba(0,0,0,.05);
+	}
+
+	#footer
+	{
+	}
+	
+	#footer h2
+	{
+		display: inline-block;
+		padding-bottom: 1em;
+		font-size: 1.6em;
+		font-weight: 400;
+	}
+
+	#footer #fbox1
+	{
+		float: left;
+		width: 384px;
+	}
+
+	#footer #fbox2
+	{
+		float: right;
+		width: 792px;
+	}
+
+/*********************************************************************************/
+/* Copyright                                                                     */
+/*********************************************************************************/
+
+	#copyright
+	{
+		overflow: hidden;
+		padding: 5em 0em;
+		border-top: 1px solid rgba(0,0,0,0.08);
+	}
+	
+	#copyright p
+	{
+		letter-spacing: 0.20em;
+		text-align: center;
+		text-transform: uppercase;
+		font-size: 0.80em;
+		color: rgba(0,0,0,0.6);
+	}
+	
+	#copyright a
+	{
+		text-decoration: none;
+		color: rgba(0,0,0,0.8);
+	}
+
+	
+/*********************************************************************************/
+/* Featured                                                                      */
+/*********************************************************************************/
+
+	#featured
+	{
+		padding: 5em 0em 2em 0em;
+	}
+
+	#featured .title
+	{
+		margin-bottom: 3em;
+		text-align: center;
+	}
+	
+	#featured h3
+	{
+		margin-bottom: 1em;
+		font-size: 1.4em;
+		font-weight: 600;
+		color: rgba(0,0,0,.8);
+	}
+
+	#featured .button,#featured .buttondisable
+	{
+		margin-top: 1em;
+	}
+
+
+	
+	.buttongrey
+	{
+		display: inline-block;
+		/*padding: 1em 2em 1em 2em; 
+		padding:0.4em 0.4em 0.4em 0.4em;*/
+		padding:0.4em 1em 0.4em 1em;
+		border-radius: 7px;
+		background: #6C6060;
+		letter-spacing: 0.10em;
+		text-decoration: none;
+		font-weight: 400;
+		font-size: 0.90em;
+		color: #FFF;
+		cursor:pointer;
+	}
+	/*
+	old style="background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));"
+	*/
+	
+	.optionsbg{
+
+		background: #f2f6f8;
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(51%,#b5c6d0), color-stop(100%,#e0eff9));
+		background: -o-linear-gradient(top, #f2f6f8 0%, #8a9ca8 50%, #d8e1e7 51%, #d8e1e7 100%);
+		background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #f2f6f8 0%, #f2f6f8 50%, #d8e1e7 51%, #d8e1e7 100%) repeat scroll 0 0;
+		
+		
+
+	
+	}
