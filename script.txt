@@ -7,21 +7,92 @@ Hi all,
 		how did it do that
 			for the first time when you logging in , On typing password , Just see the icon on top right
 			
-			could you see it 
+				could you see it 
 			
 			Now click on it to save your credentials
 			
 			Fine now , you are done , From next time onwards , whenever you go to the site Autologin will do the typing and clicking work for you
 			
+			============= show the demo
+			
 			
 		
 		WHat ABout security
 		
-				Set a Master password via going to options and change master password
+				Set a Master password via going to options and set  master password
+				
+				Close the browser and re-open 
+				
+				Goto the web page 
+				
+		
+		What is Basic Authentication
+				 basic access authentication is a method for an HTTP user agent to provide a user name and password when making a request.
+				 
+					If you could goto this web page , You will be prompted with username & password 
+					
+					Autologin helps you to save this credentials as well 
+					
+						=== show the demo
+						
+					I am going to this web page 
+							for the first time , I am logging in , Now i am closing the browser
+							
+		
+		What about change password
+		
+			Goto Autologin options => 
+			
+				Select your website username and set password here   /  if you could change the password in website , Autologin identifies automatically
+				
+		
+
+		Multiple passwords
+
+				If you have multiple userids for Autologin , Autologin has the ability to use that as well
+				
+				To set a Default credential, Goto options -> set default username 
+				
+		
+		Please connect with 
+					with our fb page for queries
+					
+				
+				
+							
+							
+
+					
+					
 				
 				
 				
 				
+				
+
+
+6.7
+10.5				
+				
+				
+
+Hi,   
+
+  I am sure your would be using Aws dynamodbclient for android  in order to make request with dynamo db. 
+  
+  The client was just a wrapper part , Underneath , its a plain REST call with encrypted AWS credentials
+  
+  for more info have a look into the source (https://github.com/aws/aws-sdk-java/blob/master/aws-java-sdk-dynamodb/src/main/java/com/amazonaws/services/dynamodbv2/AmazonDynamoDBClient.java) This in turn will transform your request as specified in (http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html)
+	
+		Hope it answers , what is underneath , rather how it appears
+		
+Thanks
+				
+				  
+				  
+				  
+				  
+				  
 			
 			
 			
