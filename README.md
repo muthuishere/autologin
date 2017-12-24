@@ -1,6 +1,8 @@
 Auto Login
 =========
 
+Working 
+
 AUtologin Extension for Firefox & Chrome 
 
 	To Login  to your websites automatically.
