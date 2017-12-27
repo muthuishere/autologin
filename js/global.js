@@ -1,3 +1,7 @@
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-111668653-1']);
+_gaq.push(['_trackPageview']);
+
 
 
 
@@ -721,6 +725,7 @@ vAPI.openFAQ=function(){
 	//console.log("opening faq")
 	
 
+	  _gaq.push(['_trackEvent', "faq", "open"]);
 	
 	vAPI.tabs.open({
 					type: 'normal',
@@ -1190,6 +1195,8 @@ if (request.module && request.module == "options"){
 		if(flgResponse == true){
 			globalAutologinHandler.updateSuccessLogin(tab.url)
 			
+			  _gaq.push(['_trackEvent', "loggedin", tab.url]);
+			
 		}else{
 			
 			globalAutologinHandler.injectCapture(tab.id)	
@@ -1282,3 +1289,12 @@ vAPI.net.registerListeners();
   
 
 
+
+(function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+})();

@@ -3,6 +3,7 @@
    "background": {
       "page": "background.html"
    },
+     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
    "browser_action": {
 
    },
@@ -24,8 +25,7 @@
    "name": "Auto Login",
    "options_page": "options.html",
    "permissions": [ "tabs", "webRequest", "webRequestBlocking", "storage", "http://*/*", "https://*/*" ],
-   "short_name": "Auto Login",
-   "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "4.5.0.0",
+   "short_name": "Auto Login",   
+   "version": "4.6.0.0",
    "web_accessible_resources": [ "manifest.json", "images/*.png", "images/*.jpg", "css/*.css", "auth.html", "js/*.js" ]
 }
