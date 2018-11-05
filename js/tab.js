@@ -1,11 +1,7 @@
-
-
 /* global vAPI, AppExtn */
 
 /******************************************************************************/
 /******************************************************************************/
-
-
 
 (function() {
 
@@ -32,11 +28,11 @@ var µb = AppExtn;
     if ( vAPI.isBehindTheSceneTabId(tabId) ) {
         return 'http://behind-the-scene/';
     }
-	
-	
+
+
 	return pageURL;
 	/*
-	
+
     var uri = this.URI.set(pageURL);
     var scheme = uri.scheme;
     if ( scheme === 'https' || scheme === 'http' ) {
@@ -59,7 +55,6 @@ var µb = AppExtn;
 µb.tabContextManager = (function() {
     var tabContexts = Object.create(null);
 
-  
     // This is to be used as last-resort fallback in case a tab is found to not
     // be bound while network requests are fired for the tab.
     var mostRecentRootDocURL = '';
@@ -151,7 +146,7 @@ var µb = AppExtn;
     };
 
     // Called when a former push is a false positive:
-    
+
     TabContext.prototype.unpush = function(url) {
         if ( vAPI.isBehindTheSceneTabId(this.tabId) ) {
             return;
@@ -213,7 +208,7 @@ var µb = AppExtn;
         if ( entry !== undefined ) {
             return entry;
         }
-        
+
         // Google Hangout popup opens without a root frame. So for now we will
         // just discard that best-guess root frame if it is too far in the
         // future, at which point it ceases to be a "best guess".
@@ -271,7 +266,7 @@ var µb = AppExtn;
         var tabContext = lookup(tabId);
         this.rootHostname = tabContext.rootHostname;
         this.rootDomain = tabContext.rootDomain;
-        this.pageHostname = 
+        this.pageHostname =
         this.pageDomain =
         this.requestURL =
         this.requestHostname =
@@ -299,7 +294,7 @@ var µb = AppExtn;
 // content has changed.
 
 vAPI.tabs.onNavigation = function(details) {
-	
+
 	//console.log("On navigation ")
     if ( details.frameId !== 0 ) {
         return;
@@ -333,25 +328,23 @@ vAPI.tabs.onUpdated = function(tabId, changeInfo, tab) {
         return;
     }
 
-
-
 //console.log("Changing page refreshing onupdated" + tab.url )
 
-	
+
     µb.tabContextManager.commit(tabId, changeInfo.url);
     µb.bindTabToPageStats(tabId, 'tabUpdated');
-	
 
-	 if(tab.url.indexOf("http") == 0 || tab.url.indexOf("www") == 0  ){
-	  
-			
-		}else{
+
+	 if (tab.url.indexOf("http") == 0 || tab.url.indexOf("www") == 0) {
+
+
+		} else {
 			return;
 		}
-  
-		
+
+
 			globalAutologinHandler.processScripts(tab)
-			
+
 
 };
 
@@ -361,16 +354,12 @@ vAPI.tabs.onClosed = function(tabId) {
     if ( tabId < 0 ) {
         return;
     }
-	
+
     µb.unbindTabFromPageStats(tabId);
 };
 
 
-
-
 /******************************************************************************/
-
-
 
 vAPI.tabs.onPopup = function(details) {
     // console.debug('vAPI.tabs.onPopup: details = %o', details);
@@ -386,7 +375,7 @@ vAPI.tabs.onPopup = function(details) {
 
     var µburi = µb.URI;
     var openerHostname = DomUtils.parseUri(tab.url).hostname;
-    var openerDomain = DomUtils.parseUri.secondLevelDomainOnly(openerHostname,false) 
+    var openerDomain = DomUtils.parseUri.secondLevelDomainOnly(openerHostname,false)
 
     var targetURL = details.targetURL;
 
@@ -412,7 +401,7 @@ vAPI.tabs.onPopup = function(details) {
     }
 
 
-    var pageStore = µb.pageStoreFromTabId(details.openerTabId); 
+    var pageStore = µb.pageStoreFromTabId(details.openerTabId);
     if ( pageStore ) {
         pageStore.logRequest(context, result);
     }
@@ -429,7 +418,7 @@ vAPI.tabs.onPopup = function(details) {
     }
 
     // It is a popup, block and remove the tab.
-    if(details.targetTabId !== "preempt") {
+    if (details.targetTabId !== "preempt") {
         µb.unbindTabFromPageStats(details.targetTabId);
         vAPI.tabs.remove(details.targetTabId);
     }
@@ -445,15 +434,12 @@ vAPI.tabs.registerListeners();
 // Create an entry for the tab if it doesn't exist.
 
 µb.bindTabToPageStats = function(tabId, context) {
-  
 
-	
     if ( µb.tabContextManager.exists(tabId) === false ) {
         this.unbindTabFromPageStats(tabId);
         return null;
     }
-	
-	
+
     // Reuse page store if one exists: this allows to guess if a tab is a popup
     var pageStore = this.pageStores[tabId];
 
@@ -462,7 +448,6 @@ vAPI.tabs.registerListeners();
         return this.pageStores[tabId] = this.PageStore.factory(tabId);
     }
 
-    
     // If context if 'beforeRequest', do not rebind
     if ( context === 'beforeRequest' ) {
         return pageStore;
@@ -474,12 +459,10 @@ vAPI.tabs.registerListeners();
     pageStore.reuse(context);
 
 		if ( context !== 'beforeRequest' ) {
-		
-		
-		
+
 		}
-	
-	
+
+
     return pageStore;
 };
 
@@ -506,8 +489,6 @@ vAPI.tabs.registerListeners();
 
 /******************************************************************************/
 /******************************************************************************/
-
-
 
 
 var pageStoreJanitorPeriod = 15 * 60 * 1000;

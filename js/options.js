@@ -21,11 +21,11 @@ var autoLoginOptions = {
   		});
 	},
 	escapeSelector: function(domname) {
-				if (domname.indexOf(":") > 0)
-					domname = domname.replace(":","\\:")
+			if (domname.indexOf(":") > 0)
+				domname = domname.replace(":","\\:")
 
-				return domname
-			},
+			return domname
+	},
 	infoChanged: function(event) {
     	document.querySelector("#sitechangedstatus").innerHTML = "";
 
@@ -63,7 +63,7 @@ var autoLoginOptions = {
 
     	autoLoginOptions.loadOptions();
 	},
-	changePassword:function(pwd) {
+	changePassword: function(pwd) {
 			messager.send({module:"options", action: "addCredential", info: document.querySelector("#txtnewpassword").value}, function(response) {
 					if (response.valid) {
 							autoLoginOptions.flashsuccess("Successfully changed Password");
@@ -108,7 +108,7 @@ var autoLoginOptions = {
   							autoLoginOptions.changePassword(document.querySelector("#txtnewpassword").value)
   						} else {
   							// Show sites
-  							autoLoginOptions.flasherror("Invalid Old Password");
+  							autoLoginOptions.flasherror("Invalid old password");
   							document.querySelector("#txtoldpassword").focus();
   							return;
   						}
@@ -117,7 +117,7 @@ var autoLoginOptions = {
   			autoLoginOptions.changePassword(document.querySelector("#txtnewpassword").value)
   		}
 	},
-	menuAutologinSettingsClicked:function(event) {
+	menuAutologinSettingsClicked: function(event) {
 		// On Sites clicked
 		document.querySelector("#navigation").style.visibility = "visible"
 		document.querySelector("#mnuautologinsettingsparent").setAttribute("class", "current");
@@ -132,7 +132,7 @@ var autoLoginOptions = {
 		document.querySelector("#divpasswordchange").style.display = "";
 		autoLoginOptions.loadSettings();
 	},
-	showSupport:function() {
+	showSupport: function() {
 		// On Support clicked
 		document.querySelector("#navigation").style.visibility = "visible"
 		document.querySelector("#mnusitesparent").removeAttribute("class");
@@ -145,7 +145,7 @@ var autoLoginOptions = {
 		document.querySelector("#divpasswordask").style.display = "none";
 		document.querySelector("#divpasswordchange").style.display = "none";
 	},
-	showPasswordPane:function(){
+	showPasswordPane: function() {
 		// On Sites clicked
 		document.querySelector("#navigation").style.visibility = "hidden"
 
@@ -167,7 +167,7 @@ var autoLoginOptions = {
 			 buttonaskPassword.addEventListener('click', autoLoginOptions.validateViewOptions, false);
 			 document.querySelector("input#txtaskpassword").focus();
 	},
-	init:function(){
+	init: function() {
 		if (vAPI.supportsbasicAuth)
 			document.querySelector("#tblbasicauth").style.visibility = "visible"
 		else
@@ -175,7 +175,7 @@ var autoLoginOptions = {
 
 		autoLoginOptions.initdata();
 	},
-	initdata:function() {
+	initdata: function() {
 			messager.send({module:"options", action: "hasCredential"}, function(response) {
 					////console.log("option hasCredential ",response)
 					if (response.valid) {
@@ -278,7 +278,7 @@ var autoLoginOptions = {
   						if (undefined == response.credential || null == response.credential ) {
     							if (event.target.checked == true) {
     								event.target.checked = false;
-    								alert("Error: Master Password is empty. Set Master Password and select again.")
+    								alert("Error: master password is empty. Set master password and select again.")
 
     								return false;
     							}
