@@ -1,13 +1,8 @@
-
-
-
-/******************************************************************************/
-
-vAPI.formatCount=function (count) {
-	
-	if ( typeof count !== 'number' ) {
+vAPI.formatCount = function(count) {
+		if ( typeof count !== 'number' ) {
         return '';
     }
+
     var s = count.toFixed(0);
     if ( count >= 1000 ) {
         if ( count < 10000 ) {
@@ -23,21 +18,17 @@ vAPI.formatCount=function (count) {
         }
     }
     return s;
-	
-
 }
 
 
 
-vAPI.getdomainName=function (str) {
-	
-	if(str.indexOf("http") != 0)
-			return str
-		
-					var   a= document.createElement('a');
-					 a.href = str;
-					 var domain = a.hostname+(a.port ? ':'+a.port : '');
-					return domain
-	
+vAPI.getdomainName = function(str) {
+		if (str.indexOf("http") != 0)
+				return str
 
+		var a = document.createElement('a');
+		a.href = str;
+
+		var domain = a.hostname + (a.port ? ':' + a.port : '');
+		return domain
 }

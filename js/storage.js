@@ -1,270 +1,170 @@
-
 var storage = {
-
-	autologinsites : [],
-	credential:null,
-	promptrequired:'false',
-	usebasicauth:'false',
-	showcaptureonlyonfocus:'true',
-	getExportData:function(callback){
-		
-		
-		vAPI.storage.get("autologinsites", function (localStorageObject)
-			{
-
-			
-					
+	autologinsites: [],
+	credential: null,
+	promptrequired: 'false',
+	usebasicauth: 'false',
+	showcaptureonlyonfocus: 'true',
+	getExportData: function(callback) {
+			vAPI.storage.get("autologinsites", function (localStorageObject) {
 					callback(localStorageObject["autologinsites"])
-			
-			
 			});
-			
 	},
-	  log: function (aMessage) {
+  log: function(aMessage) {
+			try {
+				//console.log(aMessage)
+			} catch(exception) {}
+  },
+  logerror: function(aMessage) {
+			try {
+				//console.log(aMessage)
+			} catch (exception) {}
+  },
+	getCaptureOnlyOnFocus: function() {
+			return storage.showcaptureonlyonfocus;
+	},
+	setCaptureOnlyOnFocus: function(flgshowcaptureonlyonfocus, callback) {
+			var data = {'showcaptureonlyonfocus': flgshowcaptureonlyonfocus + ""}
 
+			vAPI.storage.set(data, function () {
+					var lastError = vAPI.lastError();
+					if (lastError) {
+						//details.error = 'Error: ' + lastError.message;
+						storage.logerror('save captureonlyonfocus error: ' + lastError.message);
+						response = {'status': 1, "msg": "Unable to save information. Storage error"}
+					} else {
+						storage.showcaptureonlyonfocus = flgshowcaptureonlyonfocus
+						response = {"status": 0, "msg": "Success"}
+					}
 
-        //  alert(aMessage)
+					if (typeof callback === 'function') {
+						callback(response)
+					}
+			});
+	},
+	getUseBasicAuth: function() {
+			return storage.usebasicauth;
+	},
+	setUseBasicAuth:function(flgUseBasicAuth, callback) {
+			var data = {'usebasicauth': flgUseBasicAuth + ""}
 
-		try{
-			//console.log(aMessage)
-		}catch(exception){}
+			// TODO: Convert repeated code into a function?
+			vAPI.storage.set(data, function() {
+					var lastError = vAPI.lastError();
+					if (lastError) {
+						//details.error = 'Error: ' + lastError.message;
+						storage.logerror('save usebasicauth error: ' + lastError.message);
+						response = {'status': 1, "msg": "Unable to save information. Storage error"}
+					} else {
+						storage.usebasicauth =	flgUseBasicAuth
+						response = {"status": 0, "msg": "Success"}
+					}
 
-    },
-	  logerror: function (aMessage) {
+					if (typeof callback === 'function') {
+						callback(response)
+					}
+			});
+	},
+	getCredential: function() {
+			return Helper.decrypt(storage.credential)
+	},
+	getPromptRequired: function() {
+			return storage.promptrequired
+	},
+	setCredential: function(pwd, callback) {
+			var data = {'credential': Helper.encrypt(pwd)}
 
+			vAPI.storage.set(data, function() {
+					var lastError = vAPI.lastError();
+					if (lastError) {
+						//details.error = 'Error: ' + lastError.message;
+						storage.logerror('save credential error: ' + lastError.message);
 
-        //  alert(aMessage)
+						response = {'status': 1, "msg": "Unable to save credential. Storage error"}
 
-		try{
-			//console.log(aMessage)
-		}catch(exception){}
+					} else {
+						storage.credential=	Helper.encrypt(pwd)
+						response = {"status": 0, "msg": "Success"}
+					}
 
-    },
-	getCaptureOnlyOnFocus:function(){
-		
-		return storage.showcaptureonlyonfocus;
+					if (typeof callback === 'function') {
+						callback(response)
+					}
+			});
 	},
-	setCaptureOnlyOnFocus:function(flgshowcaptureonlyonfocus,callback){
-		
-		var data={'showcaptureonlyonfocus':flgshowcaptureonlyonfocus+""}
-		
-		vAPI.storage.set(data, function ()
-					{
-						
-						
-						var lastError = vAPI.lastError();
-						if (lastError)
-						{
-							//details.error = 'Error: ' + lastError.message;
-							storage.logerror('save captureonlyonfocus error:' + lastError.message);
-							response={'status':1,"msg":"Unable to save information ,Storage error "}
-						
-								
-						}else{
-							
-							storage.showcaptureonlyonfocus=	flgshowcaptureonlyonfocus
-							response={"status":0,"msg":"Success"}
-						}
-						
-						if(typeof callback === 'function') {
-							callback(response)
-						}
-						
-					});
-					
-		
+	setPromptRequired: function(flgPromptRequired, callback) {
+			var data = {'promptrequired': flgPromptRequired + ""}
+
+			vAPI.storage.set(data, function() {
+					var lastError = vAPI.lastError();
+					if (lastError) {
+						//details.error = 'Error: ' + lastError.message;
+						storage.logerror('save promptrequired error: ' + lastError.message);
+						response = {'status': 1, "msg": "Unable to save information. Storage error "}
+					} else {
+						storage.promptrequired = flgPromptRequired
+						response={"status": 0, "msg": "Success"}
+					}
+
+					if (typeof callback === 'function') {
+						callback(response)
+					}
+			})
 	},
-	
-	getUseBasicAuth:function(){
-		
-		return storage.usebasicauth;
-	},
-	setUseBasicAuth:function(flgUseBasicAuth,callback){
-		
-		var data={'usebasicauth':flgUseBasicAuth+""}
-		
-		vAPI.storage.set(data, function ()
-					{
-						
-						
-						var lastError = vAPI.lastError();
-						if (lastError)
-						{
-							//details.error = 'Error: ' + lastError.message;
-							storage.logerror('save usebasicauth error:' + lastError.message);
-							response={'status':1,"msg":"Unable to save information ,Storage error "}
-						
-								
-						}else{
-							
-							storage.usebasicauth=	flgUseBasicAuth
-							response={"status":0,"msg":"Success"}
-						}
-						
-						if(typeof callback === 'function') {
-							callback(response)
-						}
-						
-					});
-					
-		
-	},
-	getCredential:function(){
-		
-		return Helper.decrypt(storage.credential)
-	},
-	getPromptRequired:function(){
-		
-		
-		return storage.promptrequired
-	},
-	setCredential:function(pwd,callback){
-		
-		var data={'credential':Helper.encrypt(pwd)}
-		
-		vAPI.storage.set(data, function ()
-					{
-						
-						
-						var lastError = vAPI.lastError();
-						if (lastError)
-						{
-							//details.error = 'Error: ' + lastError.message;
-							storage.logerror('save credential error:' + lastError.message);
-							
-							response={'status':1,"msg":"Unable to save credential ,Storage error "}
-								
-						}else{
-							
-							storage.credential=	Helper.encrypt(pwd)
-							response={"status":0,"msg":"Success"}
-						}
-						
-						if(typeof callback === 'function') {
-							callback(response)
-						}
-					});
-		
-		
-	},
-	setPromptRequired:function(flgPromptRequired,callback){
-		
-			var data={'promptrequired':flgPromptRequired+""}
-		
-		vAPI.storage.set(data, function ()
-					{
-						
-						
-						var lastError = vAPI.lastError();
-						if (lastError)
-						{
-							//details.error = 'Error: ' + lastError.message;
-							storage.logerror('save promptrequired error:' + lastError.message);
-							response={'status':1,"msg":"Unable to save information ,Storage error "}
-						
-								
-						}else{
-							
-							storage.promptrequired=	flgPromptRequired
-							response={"status":0,"msg":"Success"}
-						}
-						
-						if(typeof callback === 'function') {
-							callback(response)
-						}
-						
-					})
-					
-		
-	},
-	importdata:function(rawdata){
-		
-		//decrypt data
-		
-		var result={flgvalid:true,"msg":"Successfully imported data"}
-		
+	importdata: function(rawdata) {
+		// Decrypt data
+		var result = {flgvalid: true, "msg": "Successfully imported data"}
 		var jsonobj;
-		
-		try{
-			
-			var rawbytes=rawdata.split(',').map(Number);
-			
-			
 
-			
-		var data =Helper.decrypt(rawbytes)
-			
-			jsonobj=JSON.parse(data);
-		
-		storage.autologinsites = jsonobj
-		
-	
-		
-		storage.updatestorage();	
-			
-		}catch(exception){
-			
-			result.flgvalid=false;
-			result.msg="Error in importing data";
-			//console.log("Error",exception)
+		try {
+			var rawbytes = rawdata.split(',').map(Number);
+			var data = Helper.decrypt(rawbytes)
+
+			jsonobj = JSON.parse(data);
+			storage.autologinsites = jsonobj
+			storage.updatestorage();
+		} catch(exception) {
+
+			result.flgvalid = false;
+			result.msg = "Error in importing data";
+			//console.log("Error", exception)
 		}
-		// check entries greater than zero and valid entries , return true or false
-		
+		// Check entries greater than zero and valid entries, return true or false
+
 		return result;
 	},
 	migratestorage : function () {
-
-	
-
-		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== ""){
-				
-				//Migrate storage only 
+		if (localStorage["autologinsites"] !== undefined && localStorage["autologinsites"] !== "") {
+			//Migrate storage only
 			storage.autologinsites = JSON.parse(Helper.migrantdecrypt(localStorage["autologinsites"]));
-			
+
 			//set credential
 			if (localStorage["credential"] !== undefined && localStorage["credential"] !== "")
 				storage.setCredential(Helper.migrantdecrypt(localStorage["credential"]))
-				
-			
+
 			//set prompt required
 			if (localStorage["promptrequired"] !== undefined && localStorage["promptrequired"] !== "")
 				storage.setPromptRequired(localStorage["promptrequired"])
-			
-			
+
 			//set use basic auth
 			if (localStorage["usebasicauth"] !== undefined && localStorage["usebasicauth"] !== "")
 				storage.setUseBasicAuth(localStorage["usebasicauth"])
-			
-			
+
 			storage.updatestorage();
-			
-			//Added for not migrating and error fixes 
-			localStorage["bkupautologinsites"]=localStorage["autologinsites"]
-			localStorage["autologinsites"]=""
+
+			//Added for not migrating and error fixes
+			localStorage["bkupautologinsites"] = localStorage["autologinsites"]
+			localStorage["autologinsites"] = ""
 			return
-			
-			}
-			
-			
-			
-
+		}
 	},
-		migrateautologinsites : function () {
-
+	migrateautologinsites : function() {
 		if (localStorage["autologinxml"] == undefined || localStorage["autologinxml"] == "")
 			return
 
-		
-			
-			
-
-			var rawxml = Helper.migrantdecrypt(localStorage["autologinxml"])
-
-				var parser = new DOMParser();
+		var rawxml = Helper.migrantdecrypt(localStorage["autologinxml"])
+		var parser = new DOMParser();
 		var docxml = parser.parseFromString(rawxml, "text/xml");
-
 		var legacyjson = new Array();
-
 		var divs = docxml.getElementsByTagName("site"),
 		i = divs.length;
 
@@ -272,7 +172,7 @@ var storage = {
 			return;
 
 		var autologinsites = [];
-		
+
 		while (i--) {
 
 			var partner = {}
@@ -320,7 +220,7 @@ var storage = {
 					"type" : "password"
 				})
 
-				//Button
+				// Button
 				if (partner.btnelement !== "") {
 
 					elements.push({
@@ -331,7 +231,8 @@ var storage = {
 					})
 
 				}
-				//form
+
+				// Form
 				if (partner.formelement !== "") {
 
 					elements.push({
@@ -356,69 +257,50 @@ var storage = {
 		localStorage["autologinxml"] = ""
 
 	},
-	
-saveitem:function(response){
-	
-			vAPI.storage.set(response, function ()
-					{
-						
-						
-						var lastError = vAPI.lastError();
-						if (lastError)
-						{
-							//details.error = 'Error: ' + lastError.message;
-							storage.logerror('save Item error:' + lastError.message);
-						
-								
-						}
-						
-						storage.log('ad definitions stored in local storage');
-						});
-				
-					
-					
-	},
-	getitem:function(item,callbackFunction){
-		
-		vAPI.storage.get(item, function (localStorageObject)
-			{
+	saveitem: function(response) {
+			vAPI.storage.set(response, function () {
+					var lastError = vAPI.lastError();
+					if (lastError) {
+						//details.error = 'Error: ' + lastError.message;
+						storage.logerror('save Item error:' + lastError.message);
+					}
 
-				if (typeof callbackFunction === 'function')
-				{
-					callbackFunction(localStorageObject[item]);
-				}
+					// TODO: Explain better?
+					storage.log('ad definitions stored in local storage');
 			});
 	},
-	updatestorage : function () {
-
-		var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
-		
-		//console.log("Saving encrypted" , localStorage_autologinsites)
-		var data={'autologinsites':localStorage_autologinsites}
-		
-		storage.saveitem(data)
-
+	getitem: function(item, callbackFunction) {
+			vAPI.storage.get(item, function (localStorageObject) {
+					if (typeof callbackFunction === 'function') {
+						callbackFunction(localStorageObject[item]);
+					}
+			});
 	},
-	getCredentialAtIndex : function (index) {
+	updatestorage: function() {
+			var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
 
-		if (index < storage.autologinsites.length)
-			return storage.autologinsites[index];
-		else
+			//console.log("Saving encrypted" , localStorage_autologinsites)
+			var data = {'autologinsites': localStorage_autologinsites}
+
+			storage.saveitem(data)
+	},
+	getCredentialAtIndex: function(index) {
+			if (index < storage.autologinsites.length)
+				return storage.autologinsites[index];
+			else
 				return null
-
 	},
 
-	add : function (site) {
-
+	add: function(site) {
 		var isPushed = false;
-		////console.log("Adding credentials", site)
+		// console.log("Adding credentials", site)
 		for (i = 0; i < storage.autologinsites.length; i++) {
 
 			cursite = storage.autologinsites[i]
 
 				if (cursite.authtype == site.authtype && cursite.url == site.url) {
 
-					//Iterate credentials
+					// Iterate credentials
 					isPushed = true;
 					var isUserModfied = false;
 					for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
@@ -435,7 +317,7 @@ saveitem:function(response){
 							}
 
 					}
-					//basic auth requires only one credential
+					// Basic auth requires only one credential
 					if (!isUserModfied && site.authtype != "basic" ) {
 
 						var credential = {}
@@ -482,99 +364,80 @@ saveitem:function(response){
 		storage.updatestorage();
 
 	},
-	credentialExistsForUser : function (site) {
+	credentialExistsForUser: function(site) {
+			for (i = 0; i < storage.autologinsites.length; i++) {
+					cursite = storage.autologinsites[i]
 
-		for (i = 0; i < storage.autologinsites.length; i++) {
+					if (cursite.authtype == site.authtype && cursite.url == site.url) {
+							for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
+									var curcredential = storage.autologinsites[i].credentials[k]
 
-			cursite = storage.autologinsites[i]
-				if (cursite.authtype == site.authtype && cursite.url == site.url) {
-
-					for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
-
-						var curcredential = storage.autologinsites[i].credentials[k]
-
-							if (curcredential.user == site.user) {
-
-								return true
-
+									if (curcredential.user == site.user) {
+										return true
+									}
 							}
 
+							break;
 					}
+			}
 
-					break;
-
-				}
-		}
-
-		return false
+			return false
 	},
-	get : function (authtype, url) {
+	get: function(authtype, url) {
 
 		var resultsite = null
 
 			for (i = 0; i < storage.autologinsites.length; i++) {
-
 				cursite = storage.autologinsites[i]
 					if (cursite.authtype == authtype && cursite.url == url) {
-
 						resultsite = cursite
 					}
 			}
 
 			return resultsite
-
 	},
-	getbasicauthdata : function ( url) {
+	getbasicauthdata: function(url) {
+			var credential = null
+			var site = storage.get("basic", url)
 
-		var credential=null
-			var site = storage.get("basic",url)
+			if (null != site) {
+					credential = {}
+					credential.sitedata = {
+						"authtype" : "basic",
+						"url" : url
+					}
 
-			if(null != site){
-			
-			 credential = {}
-				credential.sitedata = {
-					"authtype" : "basic",
-					"url" : url
-				}
-				var elems = site.credentials[0].elements
+					var elems = site.credentials[0].elements
 
 					for (index = 0, len = elems.length; index < len; ++index) {
-
-						var field = elems[index]
+							var field = elems[index]
 
 							if (field.type === "password") {
 								credential.password = field.value
-
 							}
 
+							// IDEA: Else-if?
 							if (field.type === "text") {
 								credential.username = field.value
-
 							}
-
 					}
-		}
-	return credential
+			}
 
+			return credential
 	},
-	changeflag : function (authtype, url, flgenabled) {
+	changeflag: function(authtype, url, flgenabled) {
+			for (i = 0; i < storage.autologinsites.length; i++) {
+					cursite = storage.autologinsites[i]
 
-		for (i = 0; i < storage.autologinsites.length; i++) {
+					if (cursite.authtype == authtype && cursite.url == url) {
+						storage.autologinsites[i].enabled = flgenabled
+					}
+			}
 
-			cursite = storage.autologinsites[i]
-				if (cursite.authtype == authtype && cursite.url == url) {
-
-					storage.autologinsites[i].enabled = flgenabled
-				}
-		}
-
-		storage.updatestorage();
-
+			storage.updatestorage();
 	},
+	getuserdata: function(site) {
 
-	getuserdata : function (site) {
-
-	
 		for (index = 0; index < storage.autologinsites.length; index++) {
 
 			cursite = storage.autologinsites[index]
@@ -607,216 +470,141 @@ saveitem:function(response){
 											}
 
 									}
-									
+
 									////console.log("datainfo",datainfo)
 
 									if (datainfo.user != "")
 										return datainfo
 							}
-
 					}
 				}
 		}
 
 		return null
 	},
-
-		updatedefaultcredential : function (site) {
+	updatedefaultcredential: function(site) {
 
 		for (i = 0; i < storage.autologinsites.length; i++) {
-
-			cursite = storage.autologinsites[i]
+				cursite = storage.autologinsites[i]
 
 				if (cursite.authtype == site.authtype && cursite.url == site.url) {
-
-					
 						for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
+								var curcredential = storage.autologinsites[i].credentials[k]
 
-							var curcredential = storage.autologinsites[i].credentials[k]
-							
-							
-								if(site.defaultsite == true && curcredential.user != site.user )
+								if (site.defaultsite == true && curcredential.user != site.user )
 									storage.autologinsites[i].credentials[k].defaultsite=false
-								
-								
+
 								if (curcredential.user == site.user ) {
 									storage.autologinsites[i].credentials[k].defaultsite=site.defaultsite
-									
-								}
 
+								}
 						}
+
 						storage.updatestorage();
-					
 				}
 		}
 
 	},
-	updatesiteenabled : function (site) {
-		
-		
-		for (i = 0; i < storage.autologinsites.length; i++) {
-
-			cursite = storage.autologinsites[i]
+	updatesiteenabled: function(site) {
+			for (i = 0; i < storage.autologinsites.length; i++) {
+				cursite = storage.autologinsites[i]
 
 				if (cursite.authtype == site.authtype && cursite.url == site.url && undefined != site.enabled ) {
-
 					storage.autologinsites[i].enabled = site.enabled
 					storage.updatestorage();
-					}
-		}
-		
-	},
-	updatecredential : function (site) {
-
-		for (i = 0; i < storage.autologinsites.length; i++) {
-
-			cursite = storage.autologinsites[i]
-
-				if (cursite.authtype == site.authtype && cursite.url == site.url) {
-
-				
-					
-						for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
-
-							
-							
-
-								var obj = {}
-								obj.authtype = site.authtype
-								obj.url = site.url
-								obj.user = storage.autologinsites[i].credentials[k].user
-
-								 var curcredential = storage.getuserdata(obj)
-								
-								
-										
-
-								//console.log("storage.autologinsites[i].credentials[k]",storage.autologinsites[i].credentials[k])
-								if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {
-
-										storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser
-										storage.autologinsites[i].credentials[k].elements[curcredential.pwdIndex].value = site.changedpassword
-										storage.autologinsites[i].credentials[k].user=site.changeduser
-										
-										
-										storage.updatestorage();
-										return;
-								}
-
-						}
-
-					
 				}
-		}
-
+			}
 	},
+	updatecredential: function(site) {
+			for (i = 0; i < storage.autologinsites.length; i++) {
+					cursite = storage.autologinsites[i]
 
-	removeCredential : function (site) {
+					if (cursite.authtype == site.authtype && cursite.url == site.url) {
+							for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
+									var obj = {}
+									obj.authtype = site.authtype
+									obj.url = site.url
+									obj.user = storage.autologinsites[i].credentials[k].user
 
-		var isCredentialRemoved = false;
+									var curcredential = storage.getuserdata(obj)
 
-		for (i = 0; i < storage.autologinsites.length; i++) {
+									//console.log("storage.autologinsites[i].credentials[k]: ",storage.autologinsites[i].credentials[k])
+									if (null != curcredential && curcredential.userxpath == site.userxpath &&  curcredential.pwdxpath == site.pwdxpath) {
+											storage.autologinsites[i].credentials[k].elements[curcredential.userIndex].value = site.changeduser
+											storage.autologinsites[i].credentials[k].elements[curcredential.pwdIndex].value = site.changedpassword
+											storage.autologinsites[i].credentials[k].user=site.changeduser
 
-			cursite = storage.autologinsites[i]
-
-				if (cursite.authtype == site.authtype && cursite.url == site.url) {
-
-					for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
-
-						var curcredential = storage.autologinsites[i].credentials[k]
-
-							if (curcredential.user == site.user) {
-
-								isCredentialRemoved = true
-									storage.autologinsites[i].credentials.splice(k, 1); //  [k].elements
-								break;
-
+											storage.updatestorage();
+											return;
+									}
 							}
-
 					}
-
-					break;
-				}
-		}
-
-		if (isCredentialRemoved) {
-
-			// storage.autologinsites.splice(removeIndex,1);
-			storage.updatestorage();
-		}
-
+			}
 	},
-	removeSite : function (site) {
 
-		var removeIndex = -1
+	removeCredential: function(site) {
+			var isCredentialRemoved = false;
 
 			for (i = 0; i < storage.autologinsites.length; i++) {
+					cursite = storage.autologinsites[i]
+					if (cursite.authtype == site.authtype && cursite.url == site.url) {
+							for (k = 0; k < storage.autologinsites[i].credentials.length; k++) {
+									var curcredential = storage.autologinsites[i].credentials[k]
 
-				cursite = storage.autologinsites[i]
+									if (curcredential.user == site.user) {
+										isCredentialRemoved = true
+										storage.autologinsites[i].credentials.splice(k, 1); //  [k].elements
+										break;
+									}
+							}
+
+						break;
+					}
+			}
+
+			if (isCredentialRemoved) {
+				// storage.autologinsites.splice(removeIndex,1);
+				storage.updatestorage();
+			}
+	},
+	removeSite: function(site) {
+			var removeIndex = -1
+
+			for (i = 0; i < storage.autologinsites.length; i++) {
+					cursite = storage.autologinsites[i]
 
 					if (cursite.authtype == site.authtype && cursite.url == site.url) {
 						removeIndex = i
-							break;
+						break;
 					}
 			}
 
 			if (removeIndex >= 0) {
-
 				storage.autologinsites.splice(removeIndex, 1);
 				storage.updatestorage();
 			}
-
 	},
+	init: function(callback) {
+		vAPI.storage.get(null, function (localStorageObject) {
+				// Go through each storage entry
+				for (var key in localStorageObject) {
+					if (key == "autologinsites") {
+							var decrypteddata = Helper.decrypt(localStorageObject["autologinsites"])
+							storage.autologinsites = JSON.parse(decrypteddata);
+					}
 
-	init : function (callback) {
-
-		vAPI.storage.get(null, function (localStorageObject)
-		{
-			
-			
-			//go through each storage entry
-			for (var key in localStorageObject)
-			{
-
-				
-				if(key == "autologinsites"){
-					
-					var decrypteddata=Helper.decrypt(localStorageObject["autologinsites"])				
-					storage.autologinsites=JSON.parse(decrypteddata);
+					else if (key == "showcaptureonlyonfocus")
+						storage.showcaptureonlyonfocus=localStorageObject['showcaptureonlyonfocus'];
+					else if (key == "usebasicauth")
+						storage.usebasicauth=localStorageObject['usebasicauth'];
+					else if (key == "credential")
+						storage.credential=localStorageObject['credential'];
+					else if (key == "promptrequired")
+						storage.promptrequired=localStorageObject['promptrequired'];
 				}
-					
-					
-					
-				else if(key == "showcaptureonlyonfocus")
-					storage.showcaptureonlyonfocus=localStorageObject['showcaptureonlyonfocus'];	
-				else if(key == "usebasicauth")
-					storage.usebasicauth=localStorageObject['usebasicauth'];
-				else if(key == "credential")
-					storage.credential=localStorageObject['credential'];
-				else if(key == "promptrequired")
-					storage.promptrequired=localStorageObject['promptrequired'];
-				
-				
-			}
-			
-			if(typeof callback === 'function') 
-				callback();
-			
-		});
-		
-			
-	
-			
-		
-		/*
-		var localStorage_autologinsites = Helper.encrypt(JSON.stringify(storage.autologinsites));
-		
-		var data={'autologinsites':localStorage_autologinsites}
-		
-		storage.saveitem(data)
-		*/
-		
-		
 
+				if (typeof callback === 'function')
+					callback();
+		});
 	}
 }

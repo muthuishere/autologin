@@ -1,11 +1,4 @@
-
-
-
 // For background page
-
-
-
-/******************************************************************************/
 
 (function() {
 
@@ -267,7 +260,7 @@ vAPI.tabs.open = function(details) {
             details.active = true;
         }
 
-        var subWrapper = function() {
+        var subWrapper = function()   {
             var _details = {
                 url: targetURL,
                 active: !!details.active
@@ -488,12 +481,10 @@ vAPI.setIcon = function(tabId, iconStatus, badge) {
 /******************************************************************************/
 
 vAPI.setAutologinIcon = function(tabId, detail) {
-	
-	var iconStatus=detail.status
-	var badge=detail.badge
-	var label=detail.label
-	
-	
+  	var iconStatus = detail.status
+  	var badge = detail.badge
+  	var label = detail.label
+
     tabId = vAPI.tabs.toChromiumTabId(tabId);
     if ( tabId === 0 ) {
         return;
@@ -511,31 +502,30 @@ vAPI.setAutologinIcon = function(tabId, detail) {
         });
 		*/
     };
-	
-		
-	 chrome.browserAction.setIcon({ tabId: tabId, path: AUTOLOGIN_ICON_PATHS[iconStatus] }, onIconReady);
-	chrome.browserAction.setTitle({ tabId: tabId, title: label })
-	////console.log("state.img",state.img)
-	
-	/*
-    var state = vAPI.iconStateForTabId[tabId];
-    if(typeof state === "undefined") {
-        state = vAPI.iconStateForTabId[tabId] = new IconState(badge, iconStatus);
-    }
-    else {
-        state.dirty = ((state.badge !== badge) << 1) | ((state.img !== iconStatus) << 0);
-        state.badge = badge;
-        state.img = iconStatus;
-    }
-    if(state.dirty & 1) { // got a new icon?
-       
-    }
-    else if(state.dirty & 2) {
-        chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
-    }
-*/
-};
 
+
+  	chrome.browserAction.setIcon({ tabId: tabId, path: AUTOLOGIN_ICON_PATHS[iconStatus] }, onIconReady);
+  	chrome.browserAction.setTitle({ tabId: tabId, title: label })
+  	////console.log("state.img",state.img)
+
+  	/*
+      var state = vAPI.iconStateForTabId[tabId];
+      if(typeof state === "undefined") {
+          state = vAPI.iconStateForTabId[tabId] = new IconState(badge, iconStatus);
+      }
+      else {
+          state.dirty = ((state.badge !== badge) << 1) | ((state.img !== iconStatus) << 0);
+          state.badge = badge;
+          state.img = iconStatus;
+      }
+      if(state.dirty & 1) { // got a new icon?
+
+      }
+      else if(state.dirty & 2) {
+          chrome.browserAction.setBadgeText({ tabId: tabId, text: badge });
+      }
+    */
+};
 
 vAPI.messaging = {
     ports: {},
@@ -734,131 +724,98 @@ vAPI.net.registerListeners = function() {
         details.type = 'object';
     };
 
-   
+
 
 };
 
 /******************************************************************************/
-  
-  
+
+
 vAPI.contextMenu = {
-	menus:[],
-	handleContextMenu:function(info,curtab){
-	
-		
-		var index=vAPI.contextMenu.getMenuIndex(info.menuItemId)
-		
-		if(index > -1){
-			
-			var menu=vAPI.contextMenu.menus[index]
-			var details=menu["details"]			
-			var callback=menu["callback"]	
-			
-			
-			if(callback && typeof callback === 'function'){
-			
-				callback(info,curtab)
+	menus: [],
+	handleContextMenu: function(info, curtab) {
+  		var index = vAPI.contextMenu.getMenuIndex(info.menuItemId)
+
+  		if (index > -1) {
+    			var menu = vAPI.contextMenu.menus[index]
+    			var details = menu["details"]
+    			var callback = menu["callback"]
+
+    			if (callback && typeof callback === 'function') {
+    				callback(info,curtab)
+    			}
 			}
-			
-			}
-				
-	},
-    create: function(details, callback) {
-    
-	
-		//Handle inappropriate variables
-		if(details.isParent)
-			delete details.isParent
-			
-       var uuid= chrome.contextMenus.create(details);
-	   
-	   vAPI.contextMenu.menus.push({"callback":callback,"details":details,"id":uuid})	
-      
     },
-    removeAll: function() {
-		
-       
-	   vAPI.contextMenu.menus=[]
-			
-			chrome.contextMenus.removeAll(function(){
-			
-			} )
-					
-		
-    },
+  create: function(details, callback) {
+    	// Handle inappropriate variables
+    	if (details.isParent)
+    		delete details.isParent
+
+      var uuid = chrome.contextMenus.create(details);
+      vAPI.contextMenu.menus.push({"callback": callback, "details": details, "id": uuid})
+  },
+  removeAll: function() {
+      vAPI.contextMenu.menus = []
+    	chrome.contextMenus.removeAll(function(){ })
+  },
 	getMenuIndex:function(menuId){
-		for(var  i=0;i<vAPI.contextMenu.menus.length;i++){
-		var details=vAPI.contextMenu.menus[i]["details"]
-				
-				
-				if(details.id == menuId)
+  		for (var i = 0; i < vAPI.contextMenu.menus.length; i++) {
+        var details = vAPI.contextMenu.menus[i]["details"]
+        if (details.id == menuId)
 					return i
-		}
-		return -1;
-	
+  		}
+
+  		return -1;
 	},
-	disabledmenus:[],
-	getDisabledMenuIndex:function(menuId){
-		for(var i=0;i<vAPI.contextMenu.disabledmenus.length;i++){
-			var details=vAPI.contextMenu.disabledmenus[i]["details"]
-				
-				if(details.id == menuId)
-					return i
-		}
-		return -1;
-	
+	disabledmenus: [],
+	getDisabledMenuIndex: function(menuId) {
+  		for (var i = 0;i < vAPI.contextMenu.disabledmenus.length; i++) {
+  			var details = vAPI.contextMenu.disabledmenus[i]["details"]
+  			if (details.id == menuId)
+  				return i
+  		}
+
+  		return -1;
 	},
 	hide: function(menuId) {
-	
-		var index=vAPI.contextMenu.getMenuIndex(menuId)
-		if(index > -1){
-			
-			vAPI.contextMenu.disabledmenus.push(vAPI.contextMenu.menus[index])
-			this.remove(menuId)
-		}
+  		var index = vAPI.contextMenu.getMenuIndex(menuId)
+  		if (index > -1) {
+  			vAPI.contextMenu.disabledmenus.push(vAPI.contextMenu.menus[index])
+  			this.remove(menuId)
+  		}
 	},
 	show: function(menuId) {
-	
-		var index=this.getDisabledMenuIndex(menuId)
-		if(index > -1){
-			
-			//vAPI.contextMenu.disabledmenus.push(vAPI.contextMenu.menus[index])
-			//this.remove(menuId)
-			var menu=vAPI.contextMenu.disabledmenus[index]
-			var details=menu["details"]
-			var callback=menu["callback"]
-			vAPI.contextMenu.create(details, callback)
-			 vAPI.contextMenu.disabledmenus.splice(index,1);
-		}
-		
+  		var index = this.getDisabledMenuIndex(menuId)
+  		if (index > -1) {
+    			var menu = vAPI.contextMenu.disabledmenus[index]
+    			var details = menu["details"]
+    			var callback = menu["callback"]
+    			vAPI.contextMenu.create(details, callback)
+    			vAPI.contextMenu.disabledmenus.splice(index,1);
+  		}
 	},
 	changeLabel: function(menuId,label) {
-	
-		var index=vAPI.contextMenu.getMenuIndex(menuId)
-		
-		if(index > -1){
-			
-			var menu=vAPI.contextMenu.menus[index]
-			var details=menu["details"]
-			details.title=label
-			var callback=menu["callback"]			
-			vAPI.contextMenu.remove(menuId)		
-			vAPI.contextMenu.create(details, callback)
-		}
+  		var index = vAPI.contextMenu.getMenuIndex(menuId)
+  		if (index > -1) {
+    			var menu = vAPI.contextMenu.menus[index]
+    			var details = menu["details"]
+    			details.title = label
+
+    			var callback = menu["callback"]
+    			vAPI.contextMenu.remove(menuId)
+    			vAPI.contextMenu.create(details, callback)
+  		}
 	},
 	remove: function(menuId) {
-	
-	var index=vAPI.contextMenu.getMenuIndex(menuId)
-		if(index > -1){
-		
-		
-			var details=vAPI.contextMenu.menus[index]["details"]
-			
-			chrome.contextMenus.onClicked.removeListener(vAPI.contextMenu.menus[index]["callback"]);
-			chrome.contextMenus.remove(details.id);
-			 vAPI.contextMenu.menus.splice(index,1);
-		}
-    }
+      var index = vAPI.contextMenu.getMenuIndex(menuId)
+      if (index > -1) {
+    			var details = vAPI.contextMenu.menus[index]["details"]
+
+    			chrome.contextMenus.onClicked.removeListener(vAPI.contextMenu.menus[index]["callback"]);
+    			chrome.contextMenus.remove(details.id);
+  			  vAPI.contextMenu.menus.splice(index, 1);
+      }
+  }
 };
 
 
@@ -884,72 +841,36 @@ vAPI.onLoadAllCompleted = function() {
         vAPI.lastError();
     };
     var scriptEnd = function(tabId) {
-        if ( vAPI.lastError() ) {
+        if (vAPI.lastError()) {
             return;
         }
-
-		
-     
-
 		}
-		
-		
-		 
-		
-		
-		
-	
+
     var scriptStart = function(tab) {
-		 
-		
         vAPI.tabs.injectScript(tab.id, {
             file: 'js/vapi-client.js',
             allFrames: false,
             runAt: 'document_start'
-        }, function(){
-
-
-				 vAPI.tabs.injectScript(tab.id, {
-				file: 'js/utils.js',
-				allFrames: false,
-				runAt: 'document_start'
-			}, function(){
-
-
-					globalAutologinHandler.processScripts(tab)
-					});
-		
-		
-		
-		
-		
-		});
-		
- 		// Autologin Script
-		
-	
-		
-		
-		
-
-							
-						
-		
-		
-		
-		
-       
+        }, function() {
+            vAPI.tabs.injectScript(tab.id, {
+      				file: 'js/utils.js',
+      				allFrames: false,
+      				runAt: 'document_start'
+      			}, function() {
+              globalAutologinHandler.processScripts(tab)
+            });
+        });
     };
+
     var bindToTabs = function(tabs) {
         var µb = AppExtn;
         var i = tabs.length, tab;
-        while ( i-- ) {
+        while (i--) {
             tab = tabs[i];
             µb.tabContextManager.commit(tab.id, tab.url);
             µb.bindTabToPageStats(tab.id);
-         
+
            scriptStart(tab);
-		   
         }
     };
 
@@ -968,33 +889,19 @@ vAPI.punycodeURL = function(url) {
 };
 
 
-
-
-
 ///Install update listeners
-chrome.runtime.onInstalled.addListener(function(details){
-	 
-	 var vAPI = self.vAPI = self.vAPI || {};
-	  
-	  var installData=details || {}
-	  
-	 
-    if((details.reason == "install"  || details.reason == "update" ) ){
-      
-	  
-	  if(installData.previousVersion){
-		  
-		 
-		  installData.existingVersion=installData.previousVersion
-		  delete  installData.previousVersion;
-	  }
-			
-		
-		installData.installedVersion=manifest.version
+chrome.runtime.onInstalled.addListener(function(details) {
+    var vAPI = self.vAPI = self.vAPI || {};
+	  var installData = details || {}
 
-		vAPI.handleInstallUpgrade({reason:details.reason,data:installData})
-		
-		
+    if ((details.reason == "install"  || details.reason == "update")) {
+    	  if (installData.previousVersion) {
+    		  installData.existingVersion = installData.previousVersion
+    		  delete installData.previousVersion;
+    	  }
+
+    		installData.installedVersion = manifest.version
+    		vAPI.handleInstallUpgrade({reason:details.reason, data: installData})
     }
 });
 
@@ -1002,5 +909,3 @@ chrome.runtime.onInstalled.addListener(function(details){
 /******************************************************************************/
 
 })();
-
-/******************************************************************************/

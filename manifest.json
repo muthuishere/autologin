@@ -12,14 +12,14 @@
       "run_at": "document_start"
    } ],
    "default_locale": "en",
-   "description": "Automatically login to your favourite websites  without entering credentials , even for Basic Auth Now",
+   "description": "Automatically login to your favorite websites without entering credentials.",
    "homepage_url": "https://www.facebook.com/Auto-Login-433751853437039/",
    "icons": {
       "128": "images/autologin-128.png",
       "48": "images/autologin-48.png",
       "64": "images/autologin-64.png"
    },
-  
+
    "manifest_version": 2,
    "name": "Auto Login",
    "options_page": "options.html",
