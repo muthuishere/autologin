@@ -1,4 +1,6 @@
-Auto Login
+(deprecated) feel free to fork and use
+
+Auto Login 
 =========
 
 
