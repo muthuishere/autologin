@@ -85,16 +85,16 @@ vAPI.messaging = {
     requestId: 1,
 
     setup: function() {
-        console.log('[vAPI Client] Setting up messaging port, sessionId:', vAPI.sessionId);
+        // console.log('[vAPI Client] Setting up messaging port, sessionId:', vAPI.sessionId);
         this.port = chrome.runtime.connect({name: vAPI.sessionId});
         this.port.onMessage.addListener(messagingConnector);
         
         this.port.onDisconnect.addListener(() => {
-            console.log('[vAPI Client] Port disconnected', {
-                lastError: chrome.runtime.lastError,
-                url: window.location.href,
-                sessionId: vAPI.sessionId
-            });
+            // // console.log('[vAPI Client] Port disconnected', {
+            //     lastError: chrome.runtime.lastError,
+            //     url: window.location.href,
+            //     sessionId: vAPI.sessionId
+            // });
             this.close();
         });
     },
@@ -103,7 +103,7 @@ vAPI.messaging = {
         if ( this.port === null ) {
             return;
         }
-        console.log('[vAPI Client] Closing port manually');
+        // console.log('[vAPI Client] Closing port manually');
         this.port.disconnect();
         this.port.onMessage.removeListener(messagingConnector);
         this.port = null;
@@ -115,7 +115,7 @@ vAPI.messaging = {
         if ( !channelName ) {
             return;
         }
-        console.log('[vAPI Client] Creating channel:', channelName);
+        // console.log('[vAPI Client] Creating channel:', channelName);
 
         this.channels[channelName] = {
             channelName: channelName,

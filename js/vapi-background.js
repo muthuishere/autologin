@@ -561,18 +561,18 @@
     /******************************************************************************/
     
     vAPI.messaging.listen = function(listenerName, callback) {
-        console.log('[vAPI Background] Adding message listener:', listenerName);
+        // console.log('[vAPI Background] Adding message listener:', listenerName);
         this.listeners[listenerName] = callback;
     };
     
     /******************************************************************************/
     
     vAPI.messaging.onPortMessage = function(request, port) {
-        console.log('[vAPI Background] Port message received', {
-            channel: request.channelName,
-            port: port.name,
-            url: port.sender?.tab?.url
-        });
+        // // console.log('[vAPI Background] Port message received', {
+        //     channel: request.channelName,
+        //     port: port.name,
+        //     url: port.sender?.tab?.url
+        // });
         
         var callback = vAPI.messaging.NOOPFUNC;
         if ( request.requestId !== undefined ) {
@@ -602,11 +602,11 @@
     /******************************************************************************/
     
     vAPI.messaging.onPortDisconnect = function(port) {
-        console.log('[vAPI Background] Port disconnected', {
-            port: port.name,
-            url: port.sender?.tab?.url,
-            lastError: chrome.runtime.lastError
-        });
+        // console.log('[vAPI Background] Port disconnected', {
+        //     port: port.name,
+        //     url: port.sender?.tab?.url,
+        //     lastError: chrome.runtime.lastError
+        // });
         port.onDisconnect.removeListener(vAPI.messaging.onPortDisconnect);
         port.onMessage.removeListener(vAPI.messaging.onPortMessage);
         delete vAPI.messaging.ports[port.name];

@@ -13,8 +13,7 @@ To create a log of net requests
 //ss
 /******************************************************************************/
 /******************************************************************************/
-console.log("PageStore.js loaded")
-console.log(AppExtn)
+
 
 AppExtn.PageStore = (function() {
 
@@ -333,7 +332,7 @@ PageStore.prototype.reuse = function(context) {
 
 PageStore.prototype.dispose = function() {
     // Clean up when page goes into bfcache
-    console.log('[PageStore] Disposing page store for tab:', this.tabId);
+    // console.log('[PageStore] Disposing page store for tab:', this.tabId);
     this.hostnameToCountMap = null;
     this.disposeFrameStores();
     this.netFilteringCache = this.netFilteringCache.dispose();
