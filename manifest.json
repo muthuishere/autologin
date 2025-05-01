@@ -35,8 +35,7 @@
  
    "permissions": [
      "tabs",
-     "storage", 
-     "alarms",
+     "storage",  
      "scripting"
    ],
  
