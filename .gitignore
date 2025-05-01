@@ -14,8 +14,8 @@ bun.lockb
 
 # Build output
 dist/
-*.zip
-releases/
+
+
 
 # IDE and Editor files
 .DS_Store
