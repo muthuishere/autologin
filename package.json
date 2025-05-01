@@ -1,0 +1,16 @@
+{
+  "name": "autologin", 
+  "type": "module",
+  "scripts": {
+    "build": "bun run bundle.js",
+    "watch": "bun run bundle.js --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/chrome": "^0.0.260",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

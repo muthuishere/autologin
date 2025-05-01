@@ -9,7 +9,7 @@
 
 (function() {
 
-'use strict';
+
 
 /******************************************************************************/
 
@@ -262,8 +262,8 @@ var µb = AppExtn;
         entry.stack.push('');
         entry.rawURL = '';
         entry.normalURL = µb.normalizePageURL(entry.tabId);
-        entry.rootHostname = DomUtils.parseUri(entry.normalURL);
-       entry.rootDomain = DomUtils.parseUri.secondLevelDomainOnly(entry.rootHostname);
+        entry.rootHostname = self.DomUtils.parseUri(entry.normalURL);
+       entry.rootDomain = self.DomUtils.parseUri.secondLevelDomainOnly(entry.rootHostname);
     })();
 
     // Context object, typically to be used to feed filtering engines.

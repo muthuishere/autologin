@@ -1,5 +1,5 @@
 
-var storage = {
+self.storage = {
 
 	autologinsites : [],
 	credential:null,

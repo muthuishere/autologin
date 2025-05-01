@@ -634,7 +634,7 @@
 
 
     // The block cipher
-    var aesjs = {
+   self.aesjs = {
         AES: AES,
         Counter: Counter,
         ModeOfOperation: ModeOfOperation,
@@ -645,27 +645,21 @@
         }
     };
 
+    // vAPI.aesjs = aesjs;
 
-    // node.js
-    if (typeof exports !== 'undefined') {
-        module.exports = aesjs
+    // if (typeof(define) === 'function' && define.amd) {
+    //     define(aesjs);
 
-    // RequireJS/AMD
-    // http://www.requirejs.org/docs/api.html
-    // https://github.com/amdjs/amdjs-api/wiki/AMD
-    } else if (typeof(define) === 'function' && define.amd) {
-        define(aesjs);
+    // // Web Browsers
+    // } else {
 
-    // Web Browsers
-    } else {
+    //     // If there was an existing library at "aes" make sure it's still available
+    //     if (root.aes) {
+    //         aesjs._aes = root.aes;
+    //     }
 
-        // If there was an existing library at "aes" make sure it's still available
-        if (root.aes) {
-            aesjs._aes = root.aes;
-        }
-
-        root.aesjs = aesjs;
-    }
+    //     root.aesjs = aesjs;
+    // }
 
 
 })(this);

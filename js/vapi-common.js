@@ -9,68 +9,52 @@
 
 (function() {
 
-'use strict';
+
 
 self.vAPI = self.vAPI || {};
 
 var chrome = self.chrome;
 var vAPI = self.vAPI;
 
-/******************************************************************************/
-
-// http://www.w3.org/International/questions/qa-scripts#directions
-
-var setScriptDirection = function(language) {
-    document.body.setAttribute(
-        'dir',
-        ['ar', 'he', 'fa', 'ps', 'ur'].indexOf(language) !== -1 ? 'rtl' : 'ltr'
-    );
-};
-
-/******************************************************************************/
-
-vAPI.download = function(details) {
-    if ( !details.url ) {
-        return;
-    }
-
-    var a = document.createElement('a');
-    a.href = details.url;
-    a.setAttribute('download', details.filename || '');
-    a.dispatchEvent(new MouseEvent('click'));
-};
-
-/******************************************************************************/
-
-vAPI.insertHTML = function(node, html) {
-    node.innerHTML = html;
-};
-
-/******************************************************************************/
 
 vAPI.getURL = chrome.runtime.getURL;
-
-/******************************************************************************/
-
 vAPI.i18n = chrome.i18n.getMessage;
 
-setScriptDirection(vAPI.i18n('@@ui_locale'));
 
-/******************************************************************************/
+self.AppExtn  = (function() {
 
-vAPI.closePopup = function() {
-    window.open('','_self').close();
-};
 
-/******************************************************************************/
 
-// A localStorage-like object which should be accessible from the
-// background page or auxiliary pages.
-// This storage is optional, but it is nice to have, for a more polished user
-// experience.
+    /******************************************************************************/
+    
+    var oneSecond = 1000;
+    var oneMinute = 60 * oneSecond;
+    var oneHour = 60 * oneMinute;
+    
+    
+    return {
+        userSettings: {
+        
+        },
+    
+     
+    
+        pageStores: {},    
+   
+        storageUsed: 0,
+    
+        noopFunc: function(){},
+    
+    
+        // so that I don't have to care for last comma
+        dummy: 0
+    };
+    
+    /******************************************************************************/
+    
+    })();
 
-vAPI.localStorage = window.localStorage;
-
+vAPI.AppExtn= AppExtn; 
 /******************************************************************************/
 
 })();

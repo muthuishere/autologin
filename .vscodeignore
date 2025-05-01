@@ -1,0 +1,46 @@
+# Source control
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build artifacts
+dist/
+releases/
+*.zip
+
+# Development files
+.vscode/
+.idea/
+*.log
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Documentation and examples
+README.md
+docs/
+examples/
+*.md
+
+# Source maps
+**/*.map
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# Bundle source files (since they're bundled)
+background-bundle.js
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*

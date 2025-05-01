@@ -29,15 +29,16 @@ vAPI.formatCount=function (count) {
 
 
 
-vAPI.getdomainName=function (str) {
-	
-	if(str.indexOf("http") != 0)
-			return str
-		
-					var   a= document.createElement('a');
-					 a.href = str;
-					 var domain = a.hostname+(a.port ? ':'+a.port : '');
-					return domain
-	
+vAPI.getdomainName = function (str) {
+    if (!str.startsWith("http")) return str;
 
-}
+    try {
+        // Use URL class (works in all contexts)
+        const url = new URL(str);
+        return url.hostname + (url.port ? `:${url.port}` : '');
+    } catch (e) {
+        console.warn("Invalid URL:", str);
+        return str;
+    }
+};
+

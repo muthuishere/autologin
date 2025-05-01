@@ -1,11 +1,7 @@
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-111668653-1']);
-_gaq.push(['_trackPageview']);
 
 
 
-
-var globalAutologinHandler = {
+self.globalAutologinHandler = {
 	doc:null ,
 	initialized:false,
 	autologinList:null,	
@@ -129,21 +125,7 @@ var globalAutologinHandler = {
 	},
 	
 		
-			
-	updateBasicAuthHandlers:function(usebasicauth){
-	
-		
-	
-			if(usebasicauth){
-			
-				vAPI.onAuthRequired.addListener(globalAutologinHandler.retrieveautologinsites) 
-			
-		
-			}else{
-					vAPI.onAuthRequired.removeListener(globalAutologinHandler.retrieveautologinsites)
-			}
-	
-	},	
+
 
   startsWith:function (data,str) {
         return !data.indexOf(str);
@@ -485,20 +467,8 @@ while (i--) {
 					globalAutologinHandler.authdetails.sitedata.elements.push(elem)
 					
 					globalAutologinHandler.authpopup=null;
-				//TODO handle close
-				vAPI.windows.open({
-					type: 'popup',
-					 focused: true,
-					url: vAPI.getURL('auth.html'),
-					height: 450, width:450
-				
-				
-				}, function(win) {
-					globalAutologinHandler.authpopup=win
-					//console.log("window id" ,win.id)
-					
-					
-				});
+			
+			
 				
 		
 
@@ -548,8 +518,6 @@ while (i--) {
 			
 		
 
-			var usebasicauth= (storage.getUseBasicAuth() === 'true')
-		globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
 		
 			////console.log("globalAutologinHandler.loggedIn" +globalAutologinHandler.loggedIn);
 			
@@ -725,7 +693,6 @@ vAPI.openFAQ=function(){
 	//console.log("opening faq")
 	
 
-	  _gaq.push(['_trackEvent', "faq", "open"]);
 	
 	vAPI.tabs.open({
 					type: 'normal',
@@ -886,20 +853,6 @@ var handleOptionMsg= function(request, tab, sendResponse) {
 	}
 	else if (request.action == "getUseBasicAuth"){
 					sendResponse({"valid":true ,"usebasicauth":storage.getUseBasicAuth()});	
-	
-	}else if (request.action == "updateBasicAuthHandlers"){
-	
-		//console.log("changing " + request.usebasicAuth)
-			storage.setUseBasicAuth(request.usebasicAuth,function(){
-				
-				var usebasicauth= storage.getUseBasicAuth()
-				globalAutologinHandler.updateBasicAuthHandlers(usebasicauth)
-				sendResponse({"valid":true });
-				
-			});
-				
-			
-	
 	
 	}else if (request.action == "getCredential"){
 					sendResponse({"valid":true ,"credential":storage.getCredential()});	
@@ -1195,8 +1148,7 @@ if (request.module && request.module == "options"){
 		if(flgResponse == true){
 			globalAutologinHandler.updateSuccessLogin(tab.url)
 			
-			  _gaq.push(['_trackEvent', "loggedin", tab.url]);
-			
+	
 		}else{
 			
 			globalAutologinHandler.injectCapture(tab.id)	
@@ -1236,7 +1188,7 @@ if (request.module && request.module == "options"){
 
 (function() {
 
-'use strict';
+
 
 /******************************************************************************/
 
@@ -1290,11 +1242,3 @@ vAPI.net.registerListeners();
 
 
 
-(function() {
-    var ga = document.createElement('script');
-    ga.type = 'text/javascript';
-    ga.async = true;
-    ga.src = 'https://ssl.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(ga, s);
-})();

@@ -3,15 +3,7 @@ vAPI.EXTENSION_VERSION = chrome.runtime.getManifest().version;
 
 
 
-vAPI.onAuthRequired={};
 
-vAPI.onAuthRequired.addListener = function(callback) {
-   
-   chrome.webRequest.onAuthRequired.addListener(callback, {
-						urls : ["http://*/*","https://*/*"]
-						}, ['asyncBlocking']);
-						
-};
 
 vAPI.windows={};
 
@@ -19,11 +11,7 @@ vAPI.windows.open = function(details,callback) {
 	
 	chrome.windows.create(details,callback)
 }
-vAPI.onAuthRequired.removeListener = function(callback) {
-   
- chrome.webRequest.onAuthRequired.removeListener(callback)
-						
-};
+
 
 
 /*

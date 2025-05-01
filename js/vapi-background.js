@@ -9,7 +9,7 @@
 
 (function() {
 
-'use strict';
+
 
 /******************************************************************************/
 
@@ -398,23 +398,39 @@ vAPI.tabs.reload = function(tabId /*, flags*/) {
 /******************************************************************************/
 
 vAPI.tabs.injectScript = function(tabId, details, callback) {
+    const inject = (resolvedTabId) => {
+        const injection = {
+            target: {
+                tabId: resolvedTabId,
+                allFrames: !!details.allFrames
+            },
+            files: details.files || [details.file]
+        };
 
-    var onScriptExecuted = function() {
-        // https://code.google.com/p/chromium/issues/detail?id=410868#c8
-        if ( chrome.runtime.lastError ) {
-            /* noop */
-        }
-        if ( typeof callback === 'function' ) {
-            callback();
-        }
+        chrome.scripting.executeScript(injection)
+            .then(() => {
+                if (typeof callback === 'function') callback();
+            })
+            .catch((err) => {
+                console.error('Script injection failed:', err);
+            });
     };
-    if ( tabId ) {
-        chrome.tabs.executeScript(toChromiumTabId(tabId), details, onScriptExecuted);
+
+    if (tabId) {
+        inject(toChromiumTabId(tabId));
     } else {
-        chrome.tabs.executeScript(details, onScriptExecuted);
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs && tabs.length > 0) {
+                inject(tabs[0].id);
+            } else {
+                console.error('No active tab found for injection.');
+            }
+        });
     }
 };
 
+
+  
 /******************************************************************************/
 
 var IconState = function(badge, img) {
@@ -1004,3 +1020,5 @@ chrome.runtime.onInstalled.addListener(function(details){
 })();
 
 /******************************************************************************/
+
+

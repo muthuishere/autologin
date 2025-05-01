@@ -1,4 +1,4 @@
-var Helper = {
+self.Helper = {
 
 key:"154djduidusidusi",//Any Valid Integer Value
 

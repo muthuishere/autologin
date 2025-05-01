@@ -1,33 +1,56 @@
 {
-"update_url": "https://clients2.google.com/service/update2/crx",
-
-   "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
-   "background": {
-      "page": "background.html"
-   },
-     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
-   "browser_action": {
-
-   },
-   "content_scripts": [ {
-      "js": [ "js/vapi-client.js", "js/utils.js" ],
-      "matches": [ "http://*/*", "https://*/*" ],
-      "run_at": "document_start"
-   } ],
-   "default_locale": "en",
-   "description": "Automatically login to your favourite websites  without entering credentials , even for Basic Auth Now",
-   "homepage_url": "https://www.facebook.com/Auto-Login-433751853437039/",
-   "icons": {
-      "128": "images/autologin-128.png",
-      "48": "images/autologin-48.png",
-      "64": "images/autologin-64.png"
-   },
-  
-   "manifest_version": 2,
+   "manifest_version": 3,
    "name": "Auto Login",
-   "options_page": "options.html",
-   "permissions": [ "tabs", "webRequest", "webRequestBlocking", "storage", "http://*/*", "https://*/*" ],
-   "short_name": "Auto Login",   
-   "version": "4.6.0.0",
-   "web_accessible_resources": [ "manifest.json", "images/*.png", "images/*.jpg", "css/*.css", "auth.html", "js/*.js" ]
-}
+   "author": "Muthukumaran Navaneethakrishnan(https://github.com/muthuishere)",
+   "version": "0.7.0",
+   "description": "Automatically login to your favourite websites without entering credentials",
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiWnab4RA/G3iYN+XqU1EkuWEf6qqtNzgvE2p829oj9ArhceNifnmCo1DYBDFAUn4CRA8NtXy6BWOqhmJkqvs+dvGCn5ygIkXuI8isFvsg9fIcxIGlx9LeU6jBRe+P3la/YHzbelfbqgUzyhsA2teCwcyRXn5wYm5LlLjxTYstG7Lrg9SfklMLW/HXVyCOBJ+fpkwYsWSQ4EGCAeZieRZISpPp6wisx9IolOWeMfTv+QAiuhhrvEjUyThqliAcZGs698LfGqqd7DzEu10aCgGE98XKSUTdqwZ2QoHTiUsMBGO3l93coVkycvo7fmF+8oLwZFrqEXmonvMoyWGAEjVNwIDAQAB",
+   
+   "background": {
+     "service_worker": "background-bundle.js"
+   },
+ 
+   "action": {},
+ 
+   "content_scripts": [{
+     "js": ["js/vapi-client.js", "js/utils.js"],
+     "matches": ["http://*/*", "https://*/*"],
+     "run_at": "document_start"
+   }],
+ 
+   "web_accessible_resources": [{
+     "resources": [
+       "js/*.js",       
+       "images/*.png", 
+       "images/*.jpg",
+       "css/*.css"
+     ],
+     "matches": ["<all_urls>"]
+   }],
+ 
+   "options_ui": {
+     "page": "options.html",
+     "open_in_tab": true
+   },
+ 
+   "permissions": [
+     "tabs",
+     "storage", 
+     "alarms",
+     "scripting"
+   ],
+ 
+   "host_permissions": [
+     "http://*/*",
+     "https://*/*"
+   ],
+ 
+   "icons": {
+     "128": "images/autologin-128.png",
+     "48": "images/autologin-48.png",
+     "64": "images/autologin-64.png"
+   },
+ 
+   "default_locale": "en",
+   "homepage_url": "https://www.facebook.com/Auto-Login-433751853437039/"
+ }
