@@ -1,6 +1,3 @@
-
-
-
 /*******************************************************************************
 
 A PageRequestStore object is used to store net requests in two ways:
@@ -335,10 +332,8 @@ PageStore.prototype.reuse = function(context) {
 /******************************************************************************/
 
 PageStore.prototype.dispose = function() {
-    // rhill 2013-11-07: Even though at init time these are reset, I still
-    // need to release the memory taken by these, which can amount to
-    // sizeable enough chunks (especially requests, through the request URL
-    // used as a key).
+    // Clean up when page goes into bfcache
+    console.log('[PageStore] Disposing page store for tab:', this.tabId);
     this.hostnameToCountMap = null;
     this.disposeFrameStores();
     this.netFilteringCache = this.netFilteringCache.dispose();

@@ -128,6 +128,14 @@ ${content}
   }
 }
 
+// Helper function to check if path should be ignored
+function shouldIgnorePath(filename) {
+  return filename.includes('.git/') || 
+         filename.startsWith('dist/') ||
+         filename.includes('node_modules/') ||
+         filename.startsWith('.');
+}
+
 if (process.argv.includes('--watch')) {
   console.log('Initial setup...');
   initialSetup();
@@ -135,12 +143,9 @@ if (process.argv.includes('--watch')) {
   
   console.log('Watching for changes...');
   
-  // Watch the entire project directory for changes
+  // Watch the entire project directory for changes, with filtering
   watch(__dirname, { recursive: true }, (eventType, filename) => {
-    if (!filename) return;
-    
-    // Ignore dist directory changes to prevent infinite loops
-    if (filename.startsWith('dist/')) return;
+    if (!filename || shouldIgnorePath(filename)) return;
     
     // If it's a JS file in the watched list, trigger rebuild
     if (files.some(file => filename === file)) {

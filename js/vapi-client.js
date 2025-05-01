@@ -1,5 +1,3 @@
-
-
 // For non background pages
 
 /* global self */
@@ -8,14 +6,11 @@
 
 (function(self) {
 
-
-
 /******************************************************************************/
 
 var vAPI = self.vAPI = self.vAPI || {};
 var chrome = self.chrome;
 
-// https://github.com/chrisaljoudi/uBlock/issues/456
 // Already injected?
 if ( vAPI.vapiClientInjected ) {
     //console.debug('vapi-client.js already injected: skipping.');
@@ -28,7 +23,6 @@ vAPI.sessionId = String.fromCharCode(Date.now() % 25 + 97) +
 vAPI.chrome = true;
 vAPI.supportsbasicAuth = true;
 
-		
 /******************************************************************************/
 
 if (!chrome.runtime) {
@@ -82,9 +76,6 @@ var messagingConnector = function(response) {
     }
 };
 
-
-
-		
 /******************************************************************************/
 
 vAPI.messaging = {
@@ -94,14 +85,25 @@ vAPI.messaging = {
     requestId: 1,
 
     setup: function() {
+        console.log('[vAPI Client] Setting up messaging port, sessionId:', vAPI.sessionId);
         this.port = chrome.runtime.connect({name: vAPI.sessionId});
         this.port.onMessage.addListener(messagingConnector);
+        
+        this.port.onDisconnect.addListener(() => {
+            console.log('[vAPI Client] Port disconnected', {
+                lastError: chrome.runtime.lastError,
+                url: window.location.href,
+                sessionId: vAPI.sessionId
+            });
+            this.close();
+        });
     },
 
     close: function() {
         if ( this.port === null ) {
             return;
         }
+        console.log('[vAPI Client] Closing port manually');
         this.port.disconnect();
         this.port.onMessage.removeListener(messagingConnector);
         this.port = null;
@@ -113,6 +115,7 @@ vAPI.messaging = {
         if ( !channelName ) {
             return;
         }
+        console.log('[vAPI Client] Creating channel:', channelName);
 
         this.channels[channelName] = {
             channelName: channelName,
