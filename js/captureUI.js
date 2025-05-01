@@ -139,15 +139,30 @@ vAPI.captureUI={
 
 	},
 	hide:function(){
+		
+		if(undefined == document.querySelector("#draggable-element"))
+				return
+			
+		
 		document.querySelector("#draggable-element").style.display="none"
 		
 	},
 	show:function(){
 		
+		
+		if(undefined == document.querySelector("#draggable-element"))
+				return
+			
+			
+			
 		document.querySelector("#draggable-element").style.display=""
 	},
 	onVisibilityChange:function (elems, callback) {
 		return function () {
+			
+			if(undefined == document.querySelector("#draggable-element"))
+				return
+			
 			
 			for (l=0;l<elems.length;l++){
 				
@@ -179,6 +194,10 @@ vAPI.captureUI={
 	},	
 	onCaptureAutoLogin:function(){
 
+		if(undefined == document.querySelector("div#captureUI"))
+				return
+			
+			
 	if(vAPI.captureUI.dragged <2 ){
 	////console.log("on capture autologin")
 		if(vAPI.captureUI.startCapture == false){
@@ -190,9 +209,10 @@ vAPI.captureUI={
 			document.querySelector("div#captureUI").setAttribute("title","Click to Disable Capturing Auto Login Information");
 			document.querySelector("div#captureUI").setAttribute("alt","Click to Disable Capturing Auto Login Information");
 			document.querySelector("div#captureUI").innerHTML="Cancel";
-		//	document.querySelector("a#captureUIlink").setAttribute("Title","Click to Disable Capturing Auto Login Information");
-		
-		//initautoLoginCaptureIcon()
+			
+				
+			//	document.querySelector("a#captureUIlink").setAttribute("Title","Click to Disable Capturing Auto Login Information");		
+			//initautoLoginCaptureIcon()
 		
 		vAPI.captureUI.startCapture=true
 			
