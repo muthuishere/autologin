@@ -28,6 +28,22 @@ This extension requires broad host permissions (`http://*/*` and `https://*/*`) 
 
 5. **Privacy**: The extension does not send any data to external servers. All data is stored locally in your browser.
 
+## Browser Compatibility
+
+The extension is available in two versions:
+
+### Manifest V2 (For Brave Browser)
+- Supports basic authentication
+- Works on Brave browser
+- Not compatible with latest Chrome versions
+- Download: [autologin-mv2.zip](https://github.com/muthuishere/autologin/releases/download/5.0.0/autologin-mv2.zip)
+
+### Manifest V3 (For Chrome)
+- Compatible with latest Chrome versions
+- Does not support basic authentication due to Chrome's Manifest V3 policies
+- Recommended for Chrome users
+- Download: [autologin-mv3.zip](https://github.com/muthuishere/autologin/releases/download/5.0.0/autologin-mv3.zip)
+
 ## Installation
 
 To install dependencies:
