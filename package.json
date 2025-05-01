@@ -1,6 +1,14 @@
 {
-  "name": "autologin", 
+  "name": "autologin",
+  "version": "1.0.0",
+  "description": "A secure Chrome extension for automatic website login with encrypted credential storage",
   "type": "module",
+  "author": "Muthukumaran Navaneethakrishnan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muthuishere/autologin"
+  },
   "scripts": {
     "build": "bun run bundle.js",
     "watch": "bun run bundle.js --watch"
