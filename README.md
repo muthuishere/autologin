@@ -1,4 +1,5 @@
 # AutoLogin Extension
+[![Discord](https://img.shields.io/badge/AgentNexus-join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/V9C2kvHC8D)
 
 A Chrome extension that enables automatic login to websites by securely saving and auto-filling your credentials.
 
@@ -72,6 +73,11 @@ This project was created using `bun init` in bun v1.1.38. [Bun](https://bun.sh) 
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues and pull requests.
+
+## Community
+
+Questions, ideas, or built something with this? Join **[AgentNexus](https://discord.gg/V9C2kvHC8D)** — a Discord
+for people building with AI agents and open tools. This project lives in **#other-tools**.
 
 ## License
 
