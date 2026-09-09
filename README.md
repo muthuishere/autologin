@@ -89,3 +89,10 @@ Copyright (c) 2025 Muthukumaran Navaneethakrishnan
 
 Muthukumaran Navaneethakrishnan
 GitHub: https://github.com/muthuishere
+
+---
+
+Built and maintained by **[deemwar](https://examples.deemwar.com)** — we build messaging and
+browser automation, and the plumbing that keeps it delivering when it silently stops.
+
+Need help with this, or something like it in production? **io@deemwar.com**
